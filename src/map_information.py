@@ -25,25 +25,27 @@ _MISSION_FILENAME = "mission.sqm"
 class MapInformation:
     """Information about a map."""
 
-    name: str
+    map_name: str
     climate: str | None = None
     towns_count: int | None = None
+    """Explicit `None` if no towns found."""
     markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
     @classmethod
     def from_data(
         cls,
-        name: str,
+        map_name: str,
         climate_: str | None,
         populations_: Sequence[tuple[str, int]],
         markers_: Sequence[JSONNode],
     ) -> MapInformation:
         """Construct instance from parsed data, ignoring anything not needed."""
+        towns_count_ = None if not populations_ else len(populations_)
         return cls(
-            name=name,
+            map_name=map_name,
             climate=climate_,
-            towns_count=len(populations_),
+            towns_count=towns_count_,
             markers=[Marker.from_data(m) for m in markers_],
         )
 
@@ -54,12 +56,8 @@ class MapInformation:
         marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
 
-        return MapInformation.from_data(
-            name=map_name,
-            climate_=map_info["climate"],
-            populations_=map_info["populations"],
-            markers_=marker_nodes,
-        )
+        return MapInformation.from_data(map_name=map_name, climate_=map_info["climate"],
+                                        populations_=map_info["populations"], markers_=marker_nodes)
 
     @property
     def airports_count(self) -> int:

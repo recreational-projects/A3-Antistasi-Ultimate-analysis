@@ -1,2 +1,3 @@
 INPUT_RELATIVE_DIR = "../../A3-Antistasi-Ultimate/A3A/addons/maps"
 DATA_RELATIVE_DIR = "../data"
+OUTPUT_RELATIVE_FILE = "../docs/index.md"
