@@ -33,14 +33,14 @@ class Marker:
         return self.name.startswith("airport")
 
     @property
-    def is_seaport(self) -> bool:
-        """Return `True` if a seaport."""
-        return self.name.startswith("seaport")
-
-    @property
     def is_base(self) -> bool:
         """Return `True` if a base."""
         return self.name.startswith("milbase")
+
+    @property
+    def is_factory(self) -> bool:
+        """Return `True` if a factory."""
+        return self.name.startswith("factory")
 
     @property
     def is_outpost(self) -> bool:
@@ -53,6 +53,6 @@ class Marker:
         return self.name.startswith("resource")
 
     @property
-    def is_factory(self) -> bool:
-        """Return `True` if a factory."""
-        return self.name.startswith("factory")
+    def is_waterport(self) -> bool:
+        """Return `True` if a sea/riverport."""
+        return self.name.startswith("seaport")
