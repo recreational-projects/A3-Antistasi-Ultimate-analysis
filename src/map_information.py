@@ -56,8 +56,12 @@ class MapInformation:
         marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
 
-        return MapInformation.from_data(map_name=map_name, climate_=map_info["climate"],
-                                        populations_=map_info["populations"], markers_=marker_nodes)
+        return MapInformation.from_data(
+            map_name=map_name,
+            climate_=map_info["climate"],
+            populations_=map_info["populations"],
+            markers_=marker_nodes,
+        )
 
     @property
     def airports_count(self) -> int:
@@ -83,3 +87,15 @@ class MapInformation:
     def factories_count(self) -> int:
         """Enumerate factories."""
         return len([m for m in self.markers if m.is_factory])
+
+    @property
+    def objectives_count(self) -> int:
+        """Enumerate objectives."""
+        return sum(
+            (
+                self.waterports_count,
+                self.bases_count,
+                self.resources_count,
+                self.factories_count,
+            )
+        )

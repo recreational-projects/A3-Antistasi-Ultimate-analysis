@@ -16,13 +16,14 @@ from rich.progress import track
 from src.map_information import MapInformation
 from src.utils import load_config
 
-_COLUMNS = ["map_name", "climate", "towns_count"]
+_COLUMNS = ["map_name", "climate", "towns_count", "objectives_count"]
 _INTRO_MARKDOWN = """
 # Compare missions
 
 - Generated from Antistasi Ultimate stable release v11.5.6
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
-- [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis) for this site
+- [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
+  for this site
 - Objectives = airports, sea/riverports, resources, factories
 
 """
