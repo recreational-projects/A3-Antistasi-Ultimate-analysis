@@ -28,7 +28,7 @@ _INTRO_MARKDOWN = """
 
 """
 _KNOWN_ISSUES_MARKDOWN = """
-# Known issues
+## Known issues
 
 - Towns aren't counted if they aren't explicitly declared in the mission files.
 """
