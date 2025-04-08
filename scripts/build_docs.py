@@ -18,7 +18,7 @@ from src.utils import load_config
 
 _COLUMNS = ["map_name", "climate", "towns_count", "objectives_count"]
 _INTRO_MARKDOWN = """
-# Compare missions
+# Compare missions in a sortable table
 
 - Generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
