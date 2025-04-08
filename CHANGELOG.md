@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- This CHANGELOG
 - Outposts included in `objectives_count`
 - Update for Antistasi Ultimate v11.6.0 (already included new map, but text had old version number)
 - Point out table is sortable
