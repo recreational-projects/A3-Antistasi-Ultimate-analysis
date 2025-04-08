@@ -93,9 +93,10 @@ class MapInformation:
         """Enumerate objectives."""
         return sum(
             (
-                self.waterports_count,
+                self.airports_count,
                 self.bases_count,
-                self.resources_count,
                 self.factories_count,
+                self.resources_count,
+                self.waterports_count,
             )
         )
