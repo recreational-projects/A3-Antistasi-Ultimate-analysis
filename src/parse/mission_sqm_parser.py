@@ -6,14 +6,10 @@ from typing import Any
 
 import armaclass
 
+from src.constants import INCLUDE_MARKER_NAMES_STARTS_WITH
+
 _LOGGER = logging.getLogger(__name__)
-_INCLUDE_MARKER_NAME_STARTS_WITH = {
-    "airport",
-    "seaport",
-    "milbase",
-    "resource",
-    "factory",
-}
+
 type JSONNode = dict[str, Any]
 
 
@@ -56,7 +52,7 @@ def _get_marker_nodes(node: JSONNode) -> list[JSONNode]:
         for e in _get_entities(node)
         if e.get("dataType") == "Marker"
         and any(
-            e["name"].startswith(string) for string in _INCLUDE_MARKER_NAME_STARTS_WITH
+            e["name"].startswith(string) for string in INCLUDE_MARKER_NAMES_STARTS_WITH
         )
     ]
 

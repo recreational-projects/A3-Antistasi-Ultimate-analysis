@@ -24,7 +24,7 @@ _INTRO_MARKDOWN = """
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site
-- Objectives = airports, sea/riverports, resources, factories
+- Objectives = airports, sea/riverports, factories, outposts, resources
 
 """
 _KNOWN_ISSUES_MARKDOWN = """
@@ -84,7 +84,7 @@ def alphasort(map_info: MapInformation) -> str:
 
 def handle_missing_value(val: int | str | None) -> str:
     """Show `?` instead of `0` if value is missing/unknown."""
-    if val is None:
+    if val is None or val == 0:
         return ""
     return str(val)
 
