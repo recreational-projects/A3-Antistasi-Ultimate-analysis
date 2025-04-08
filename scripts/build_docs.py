@@ -18,17 +18,18 @@ from src.utils import load_config
 
 _COLUMNS = ["map_name", "climate", "towns_count", "objectives_count"]
 _INTRO_MARKDOWN = """
-# Compare missions
+# Compare missions in a sortable table
 
 - Generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
-  for this site
+  for this site;
+  [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md)
 - Objectives = airports, bases, sea/riverports, factories, outposts, resources
 
 """
 _KNOWN_ISSUES_MARKDOWN = """
-# Known issues
+## Known issues
 
 - Towns aren't counted if they aren't explicitly declared in the mission files.
 """
