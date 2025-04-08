@@ -20,7 +20,7 @@ _COLUMNS = ["map_name", "climate", "towns_count", "objectives_count"]
 _INTRO_MARKDOWN = """
 # Compare missions
 
-- Generated from Antistasi Ultimate stable release v11.5.6
+- Generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site
