@@ -24,7 +24,7 @@ _INTRO_MARKDOWN = """
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site
-- Objectives = airports, sea/riverports, factories, outposts, resources
+- Objectives = airports, bases, sea/riverports, factories, outposts, resources
 
 """
 _KNOWN_ISSUES_MARKDOWN = """
