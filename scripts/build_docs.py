@@ -20,7 +20,11 @@ _COLUMNS = ["map_name", "climate", "towns_count"]
 _INTRO_MARKDOWN = """
 # Compare missions
 
-Generated from Antistasi Ultimate stable release v11.5.6 [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate).
+- Generated from Antistasi Ultimate stable release v11.5.6
+  [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
+- [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis) for this site
+- Objectives = airports, sea/riverports, resources, factories
+
 """
 _KNOWN_ISSUES_MARKDOWN = """
 # Known issues
