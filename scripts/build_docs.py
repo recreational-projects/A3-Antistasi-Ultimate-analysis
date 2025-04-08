@@ -23,7 +23,8 @@ _INTRO_MARKDOWN = """
 - Generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
-  for this site
+  for this site;
+  [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md)
 - Objectives = airports, bases, sea/riverports, factories, outposts, resources
 
 """
