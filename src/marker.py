@@ -43,11 +43,6 @@ class Marker:
         return self.name.startswith("factory")
 
     @property
-    def is_outpost(self) -> bool:
-        """Return `True` if a outpost."""
-        return self.name.startswith("outpost")
-
-    @property
     def is_resource(self) -> bool:
         """Return `True` if a resource."""
         return self.name.startswith("resource")
