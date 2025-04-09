@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [UNRELEASED] yyyy-mm-dd
 
+
+## [0.3.1] 2025-04-09
+
 ### Fixed
 
 - Table Markdown issue
@@ -44,7 +47,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
-[UNRELEASED]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...HEAD
+[UNRELEASED]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/releases/tag/v0.1.0
