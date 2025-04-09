@@ -30,6 +30,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Inclusion of outposts in `objectives_count` - wasn't correctly calculated
 
 
+## [UNRELEASED] yyyy-mm-dd
+
+### Added
+
+- War Level total score 
+
+
 ## [0.3.0] 2025-04-09
 
 ### Added

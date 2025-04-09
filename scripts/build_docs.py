@@ -54,6 +54,10 @@ _COLUMNS = {
         "display_heading": "towns<br>",
         "text-align": "right",
     },
+    "war_level_points": {
+        "display_heading": "war<br>level<br>points<br>",
+        "text-align": "right",
+    },
 }
 _INTRO_MARKDOWN = """---
 hide:
