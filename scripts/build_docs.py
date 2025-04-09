@@ -64,12 +64,12 @@ def main() -> None:
 
     map_infos = sorted(map_infos, key=alphasort)
 
-    table_header = "\n" + "|".join(_COLUMNS) + "|\n"
-    table_header += len(_COLUMNS) * "|---" + "|\n"
+    table_header = f"\n|{'|'.join(_COLUMNS)}|\n"
+    table_header += f"{len(_COLUMNS) * '|---'}|\n"
     table_data = ""
     for map_info in map_infos:
         for col in _COLUMNS:
-            table_data += "|" + handle_missing_value(getattr(map_info, col))
+            table_data += f"|{handle_missing_value(getattr(map_info, col))}"
         table_data += "|\n"
 
     markdown = _INTRO_MARKDOWN + table_header + table_data + _KNOWN_ISSUES_MARKDOWN
