@@ -7,6 +7,7 @@ to `OUTPUT_RELATIVE_DIR`.
 
 import json
 import logging
+from collections.abc import Sequence
 from pathlib import Path
 
 from cattrs import structure
@@ -16,7 +17,20 @@ from rich.progress import track
 from src.map_information import MapInformation
 from src.utils import load_config
 
-_COLUMNS = ["map_name", "climate", "towns_count", "objectives_count"]
+_COLUMNS = {
+    "map_name": {
+        "display_heading": "map",
+    },
+    "climate": {},
+    "towns_count": {
+        "display_heading": "towns",
+        "text-align": "right",
+    },
+    "objectives_count": {
+        "display_heading": "objectives",
+        "text-align": "right",
+    },
+}
 _INTRO_MARKDOWN = """
 # Compare missions in a sortable table
 
@@ -62,25 +76,43 @@ def main() -> None:
     log_msg = f"Loaded info for {len(map_infos)} maps."
     _LOGGER.info(log_msg)
 
-    map_infos = sorted(map_infos, key=alphasort)
-
-    table_header = f"\n|{'|'.join(_COLUMNS)}|\n"
-    table_header += f"{len(_COLUMNS) * '|---'}|\n"
-    table_data = ""
-    for map_info in map_infos:
-        for col in _COLUMNS:
-            table_data += f"|{handle_missing_value(getattr(map_info, col))}"
-        table_data += "|\n"
-
-    markdown = _INTRO_MARKDOWN + table_header + table_data + _KNOWN_ISSUES_MARKDOWN
-
     with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
-        fp.write(markdown)
+        fp.write(
+            _INTRO_MARKDOWN
+            + markdown_table(
+                map_infos=sorted(map_infos, key=alphasort), columns=_COLUMNS
+            )
+            + _KNOWN_ISSUES_MARKDOWN
+        )
 
 
 def alphasort(map_info: MapInformation) -> str:
     """Sort `MapInformation` instances."""
     return map_info.map_name.casefold()
+
+
+def markdown_table(
+    *, map_infos: Sequence[MapInformation], columns: dict[str, dict[str, str]]
+) -> str:
+    """Create Markdown table."""
+    th_values = [
+        properties.get("display_heading", col).capitalize()
+        for col, properties in columns.items()
+    ]
+    thead = f"\n| {' | '.join(th_values)} |\n"
+
+    tdivider = ""
+    for col_details in columns.values():
+        tdivider += "| ---"
+        tdivider += ":" if col_details.get("text-align") == "right" else " "
+    tdivider += "|\n"
+
+    tbody = ""
+    for map_info in map_infos:
+        td_values = [handle_missing_value(getattr(map_info, col)) for col in columns]
+        tbody += f"| {' | '.join(td_values)} |\n"
+
+    return thead + tdivider + tbody
 
 
 def handle_missing_value(val: int | str | None) -> str:

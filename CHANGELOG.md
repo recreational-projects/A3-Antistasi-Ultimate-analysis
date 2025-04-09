@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [UNRELEASED] yyyy-mm-dd
 
+### Added
+
+- Right align number columns
+- Custom column headings
+
 
 ## [0.3.1] 2025-04-09
 
