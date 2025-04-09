@@ -25,13 +25,13 @@ _INTRO_MARKDOWN = """
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site;
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md)
-- Objectives = airports, bases, sea/riverports, factories, outposts, resources
-
+- Objectives = airports, bases, sea/riverports, resources, factories, but *not* outposts
 """
 _KNOWN_ISSUES_MARKDOWN = """
 ## Known issues
 
 - Towns aren't counted if they aren't explicitly declared in the mission files.
+- Outposts aren't counted correctly, so are currently ignored
 """
 _LOGGER = logging.getLogger(__name__)
 
