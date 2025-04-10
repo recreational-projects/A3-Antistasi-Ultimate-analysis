@@ -22,12 +22,36 @@ _COLUMNS = {
         "display_heading": "map",
     },
     "climate": {},
-    "towns_count": {
-        "display_heading": "towns",
+    "airports_count": {
+        "display_heading": "airports",
         "text-align": "right",
     },
-    "objectives_count": {
-        "display_heading": "objectives",
+    "waterports_count": {
+        "display_heading": "sea/<br>riverports",
+        "text-align": "right",
+    },
+    "bases_count": {
+        "display_heading": "bases",
+        "text-align": "right",
+    },
+    "outposts_count": {
+        "display_heading": "outposts",
+        "text-align": "right",
+    },
+    "factories_count": {
+        "display_heading": "factories",
+        "text-align": "right",
+    },
+    "resources_count": {
+        "display_heading": "resources",
+        "text-align": "right",
+    },
+    "total_objectives_count": {
+        "display_heading": "total<br>objectives",
+        "text-align": "right",
+    },
+    "towns_count": {
+        "display_heading": "towns<br>",
         "text-align": "right",
     },
 }
@@ -43,13 +67,11 @@ hide:
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site;
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md)
-- Objectives = airports, bases, sea/riverports, resources, factories, but *not* outposts
 """
 _KNOWN_ISSUES_MARKDOWN = """
 ## Known issues
 
 - Towns aren't counted if they aren't explicitly declared in the mission files.
-- Outposts aren't counted correctly, so are currently ignored
 """
 _LOGGER = logging.getLogger(__name__)
 
@@ -103,7 +125,8 @@ def markdown_table(
         properties.get("display_heading", col).capitalize()
         for col, properties in columns.items()
     ]
-    thead = f"\n| {' | '.join(th_values)} |\n"
+    thead = f"\n| {' <br>| '.join(th_values)} |\n"
+    # <br> prevents sort indicator disrupting right-aligned text
 
     tdivider = ""
     for col_details in columns.values():
@@ -120,10 +143,12 @@ def markdown_table(
 
 
 def handle_missing_value(val: int | str | None) -> str:
-    """Show `?` instead of `0` if value is missing/unknown."""
-    if val is None or val == 0:
-        return ""
-    return str(val)
+    """
+    Display `` instead of `0` if value is `None`.
+
+    `None` is used to flag unknown/missing value, as opposed to calculated zero.
+    """
+    return "" if val is None else str(val)
 
 
 if __name__ == "__main__":
