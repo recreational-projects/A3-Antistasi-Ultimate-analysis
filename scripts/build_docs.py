@@ -75,7 +75,8 @@ hide:
 _KNOWN_ISSUES_MARKDOWN = """
 ## Known issues
 
-- Towns aren't counted if they aren't explicitly declared in the mission files.
+- Towns aren't counted (and total War Level points can't be calculated) if they aren't 
+  explicitly declared in the mission files.
 """
 _LOGGER = logging.getLogger(__name__)
 
