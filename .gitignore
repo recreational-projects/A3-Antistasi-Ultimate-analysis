@@ -174,3 +174,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Project specific
+#   Generated documentation:
+docs/
+!/docs/javascripts/
+#   Working data:
+data/
