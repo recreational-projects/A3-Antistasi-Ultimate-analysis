@@ -31,7 +31,11 @@ _COLUMNS = {
         "text-align": "right",
     },
 }
-_INTRO_MARKDOWN = """
+_INTRO_MARKDOWN = """---
+hide:
+  - navigation
+  - toc
+---
 # Compare missions in a sortable table
 
 - Generated from Antistasi Ultimate stable release v11.6.0
