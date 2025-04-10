@@ -69,9 +69,19 @@ class MapInformation:
         return len([m for m in self.markers if m.is_airport])
 
     @property
+    def waterports_count(self) -> int:
+        """Enumerate sea/river ports."""
+        return len([m for m in self.markers if m.is_waterport])
+
+    @property
     def bases_count(self) -> int:
         """Enumerate bases."""
         return len([m for m in self.markers if m.is_base])
+
+    @property
+    def outposts_count(self) -> int:
+        """Enumerate outposts."""
+        return len([m for m in self.markers if m.is_outpost])
 
     @property
     def factories_count(self) -> int:
@@ -84,19 +94,15 @@ class MapInformation:
         return len([m for m in self.markers if m.is_resource])
 
     @property
-    def waterports_count(self) -> int:
-        """Enumerate sea/river ports."""
-        return len([m for m in self.markers if m.is_waterport])
-
-    @property
-    def objectives_count(self) -> int:
-        """Enumerate objectives."""
+    def total_objectives_count(self) -> int:
+        """Count total objectives (not towns)."""
         return sum(
             (
                 self.airports_count,
+                self.waterports_count,
                 self.bases_count,
+                self.outposts_count,
                 self.factories_count,
                 self.resources_count,
-                self.waterports_count,
             )
         )

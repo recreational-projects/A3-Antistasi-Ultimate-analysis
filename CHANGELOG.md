@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Separate column for each objective type
+- Outposts column
 - Right align number columns
 - Custom column headings
 
