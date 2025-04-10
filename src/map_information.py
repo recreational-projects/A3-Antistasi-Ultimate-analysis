@@ -106,3 +106,21 @@ class MapInformation:
                 self.resources_count,
             )
         )
+
+    @property
+    def war_level_points(self) -> int | None:
+        """Count total war level points."""
+        if self.towns_count is None:
+            return None
+
+        return sum(
+            (
+                8 * self.airports_count,
+                6 * self.bases_count,
+                4 * self.waterports_count,
+                self.towns_count,
+                2 * self.outposts_count,
+                2 * self.resources_count,
+                2 * self.factories_count,
+            )
+        )
