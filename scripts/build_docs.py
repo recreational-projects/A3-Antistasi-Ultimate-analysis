@@ -7,7 +7,7 @@ to `OUTPUT_RELATIVE_DIR`.
 
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 
 from cattrs import structure
@@ -15,11 +15,11 @@ from rich.logging import RichHandler
 from rich.progress import track
 
 from src.map_information import MapInformation
-from src.static_data import STATIC_DATA
+from src.static_data.static_data import STATIC_DATA
 from src.utils import load_config
 
 _COLUMNS = {
-    "map_name": {
+    "display_name": {
         "display_heading": "map",
     },
     "climate": {},
@@ -110,6 +110,16 @@ def main() -> None:
     )
     _LOGGER.info(log_msg)
 
+    map_names_without_display_names = [
+        map_info.map_name for map_info in map_infos if not map_info.display_name
+    ]
+    if map_names_without_display_names:
+        log_msg = (
+            f"{len(map_names_without_display_names)} maps don't have a `display_name`: "
+            f"{pretty_iterable_of_str(map_names_without_display_names)}."
+        )
+        _LOGGER.warning(log_msg)
+
     map_names = {map_info.map_name for map_info in map_infos}
     unmatched_reference_maps = {
         map_name for map_name in STATIC_DATA if map_name not in map_names
@@ -120,13 +130,13 @@ def main() -> None:
     if unreferenced_maps:
         log_msg = (
             f"QC: {len(unreferenced_maps)} unreferenced maps: "
-            f"'{"', '".join(unreferenced_maps)}'."
+            f"{pretty_iterable_of_str(unreferenced_maps)}."
         )
         _LOGGER.warning(log_msg)
     if unmatched_reference_maps:
         log_msg = (
             f"QC: {len(unmatched_reference_maps)} unmatched reference maps:"
-            f"'{"', '".join(unmatched_reference_maps)}'."
+            f"{pretty_iterable_of_str(unmatched_reference_maps)}'."
         )
         _LOGGER.warning(log_msg)
 
@@ -160,7 +170,9 @@ def main() -> None:
 
 def alphasort(map_info: MapInformation) -> str:
     """Sort `MapInformation` instances."""
-    return map_info.map_name.casefold()
+    if map_info.display_name is None:
+        return map_info.map_name.casefold()
+    return map_info.display_name.casefold()
 
 
 def markdown_table(
@@ -195,6 +207,11 @@ def handle_missing_value(val: int | str | None) -> str:
     `None` is used to flag unknown/missing value, as opposed to calculated zero.
     """
     return "" if val is None else str(val)
+
+
+def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
+    """Return e.g. `'a', 'b', 'c'`."""
+    return f"'{"', '".join(iterable)}'"
 
 
 if __name__ == "__main__":
