@@ -70,6 +70,11 @@ class MapInformation:
         return MAP_INDEX.get(self.map_name, {}).get("display_name")
 
     @property
+    def download_url(self) -> str | None:
+        """Return URL if it exists in lookup."""
+        return MAP_INDEX.get(self.map_name, {}).get("url")
+
+    @property
     def airports_count(self) -> int:
         """Enumerate airports."""
         return len([m for m in self.markers if m.is_airport])
