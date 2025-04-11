@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [UNRELEASED] yyyy-mm-dd
+
+### Added
+
+- Data quality control: total outposts (and a few other data points) are checked against verified values
+
+### Fixed
+
+- Map `vt7` outposts and seaports weren't counted - marker collection and enumeration is now case-insensitive
+
+
 ## [0.4.0] 2025-04-10
 
 ### Added
@@ -65,6 +76,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[UNRELEASED]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.2.0...v0.3.0
