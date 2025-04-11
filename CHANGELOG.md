@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [UNRELEASED] - TBC
+
+### Added
+
+- Display friendly map names
+
+
 ## [0.5.0] - 2025-04-11
 
 ### Added
@@ -69,6 +76,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[UNRELEASED]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.5.0...HEAD
 [0.5.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.3.0...v0.3.1

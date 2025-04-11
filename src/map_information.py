@@ -9,6 +9,7 @@ from attrs import Factory, define
 from src.marker import Marker
 from src.parse.mapinfo_hpp_parser import get_map_info_data
 from src.parse.mission_sqm_parser import get_marker_nodes
+from src.static_data.map_index import MAP_INDEX
 from src.utils import map_name_from_path
 
 if TYPE_CHECKING:
@@ -62,6 +63,11 @@ class MapInformation:
             populations_=map_info["populations"],
             markers_=marker_nodes,
         )
+
+    @property
+    def display_name(self) -> str | None:
+        """Return full name if it exists in lookup."""
+        return MAP_INDEX.get(self.map_name, {}).get("display_name")
 
     @property
     def airports_count(self) -> int:
