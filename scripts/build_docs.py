@@ -15,6 +15,7 @@ from rich.logging import RichHandler
 from rich.progress import track
 
 from src.map_information import MapInformation
+from src.static_data import STATIC_DATA
 from src.utils import load_config
 
 _COLUMNS = {
@@ -75,7 +76,7 @@ hide:
 _KNOWN_ISSUES_MARKDOWN = """
 ## Known issues
 
-- Towns aren't counted (and total War Level points can't be calculated) if they aren't 
+- Towns aren't counted (and total War Level points can't be calculated) if they aren't
   explicitly declared in the mission files.
 """
 _LOGGER = logging.getLogger(__name__)
@@ -104,8 +105,48 @@ def main() -> None:
             map_info = structure(json.load(file), MapInformation)
             map_infos.append(map_info)
 
-    log_msg = f"Loaded info for {len(map_infos)} maps."
+    log_msg = (
+        f"Loaded info for {len(map_infos)} maps; {len(STATIC_DATA)} reference keys."
+    )
     _LOGGER.info(log_msg)
+
+    map_names = {map_info.map_name for map_info in map_infos}
+    unmatched_reference_maps = {
+        map_name for map_name in STATIC_DATA if map_name not in map_names
+    }
+    unreferenced_maps = {
+        map_name for map_name in map_names if map_name not in STATIC_DATA
+    }
+    if unreferenced_maps:
+        log_msg = (
+            f"QC: {len(unreferenced_maps)} unreferenced maps: "
+            f"'{"', '".join(unreferenced_maps)}'."
+        )
+        _LOGGER.warning(log_msg)
+    if unmatched_reference_maps:
+        log_msg = (
+            f"QC: {len(unmatched_reference_maps)} unmatched reference maps:"
+            f"'{"', '".join(unmatched_reference_maps)}'."
+        )
+        _LOGGER.warning(log_msg)
+
+    for map_info in map_infos:
+        map_info_reference_data = STATIC_DATA.get(map_info.map_name)
+        if map_info_reference_data:
+            for field in map_info_reference_data:
+                field_value = getattr(map_info, field)
+                reference_value = map_info_reference_data.get(field)
+                if reference_value is None:
+                    return
+                if field_value != reference_value:
+                    log_msg = (
+                        f"QC: {map_info.map_name} '{field}' mismatch: "
+                        f"{field_value} != {reference_value}"
+                    )
+                    _LOGGER.warning(log_msg)
+                else:
+                    log_msg = f"QC: {map_info.map_name} `{field}` OK."
+                    _LOGGER.debug(log_msg)
 
     with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
         fp.write(
