@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Data quality control: total outposts (and a few other data points) are checked against verified values
 
+### Fixed
+
+- Map `vt7` outposts and seaports weren't counted - marker collection and enumeration is now case-insensitive
+
 
 ## [0.4.0] 2025-04-10
 

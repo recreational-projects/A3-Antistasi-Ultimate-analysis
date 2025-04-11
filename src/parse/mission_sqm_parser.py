@@ -52,7 +52,8 @@ def _get_marker_nodes(node: JSONNode) -> list[JSONNode]:
         for e in _get_entities(node)
         if e.get("dataType") == "Marker"
         and any(
-            e["name"].startswith(string) for string in INCLUDE_MARKER_NAMES_STARTS_WITH
+            e["name"].lower().startswith(string)
+            for string in INCLUDE_MARKER_NAMES_STARTS_WITH
         )
     ]
 
