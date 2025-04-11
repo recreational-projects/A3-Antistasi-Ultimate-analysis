@@ -21,6 +21,7 @@ from src.utils import load_config
 _COLUMNS = {
     "display_name": {
         "display_heading": "map",
+        "link_cell_content": True,
     },
     "climate": {},
     "airports_count": {
@@ -176,7 +177,7 @@ def alphasort(map_info: MapInformation) -> str:
 
 
 def markdown_table(
-    *, map_infos: Sequence[MapInformation], columns: dict[str, dict[str, str]]
+    *, map_infos: Sequence[MapInformation], columns: dict[str, dict[str, str | bool]]
 ) -> str:
     """Create Markdown table."""
     th_values = [
@@ -194,8 +195,13 @@ def markdown_table(
 
     tbody = ""
     for map_info in map_infos:
-        td_values = [handle_missing_value(getattr(map_info, col)) for col in columns]
-        tbody += f"| {' | '.join(td_values)} |\n"
+        for col, details in columns.items():
+            td_value = handle_missing_value(getattr(map_info, col))
+            if details.get("link_cell_content"):
+                td_value = f"[{td_value}]({map_info.download_url})"
+
+            tbody += f"| {td_value} "
+        tbody += "|\n"
 
     return thead + tdivider + tbody
 
