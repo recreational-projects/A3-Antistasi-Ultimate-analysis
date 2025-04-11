@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [0.5.0] 2025-04-11
+## [0.5.0] - 2025-04-11
 
 ### Added
 
@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Map `vt7` outposts and seaports weren't counted - marker collection and enumeration is now case-insensitive
 
 
-## [0.4.0] 2025-04-10
+## [0.4.0] - 2025-04-10
 
 ### Added
 
@@ -30,7 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Don't show site navigation or TOC
 
 
-## [0.3.1] 2025-04-09
+## [0.3.1] - 2025-04-09
 
 ### Fixed
 
@@ -41,14 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Inclusion of outposts in `objectives_count` - wasn't correctly calculated
 
 
-## [UNRELEASED] yyyy-mm-dd
-
-### Added
-
-- War Level total score 
-
-
-## [0.3.0] 2025-04-09
+## [0.3.0] - 2025-04-09
 
 ### Added
 
