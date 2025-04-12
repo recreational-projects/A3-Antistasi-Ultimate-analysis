@@ -14,3 +14,11 @@ def load_config(path: Path) -> dict[str, str]:
 def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
     """Return e.g. `'a', 'b', 'c'`."""
     return f"'{"', '".join(iterable)}'"
+
+
+def project_version() -> str | None:
+    """Get project version from `pyproject.toml`."""
+    filepath = Path(__file__).resolve().parent / "../pyproject.toml"
+    with filepath.open("rb") as fp:
+        version = tomllib.load(fp).get("project", {}).get("version")
+        return str(version)

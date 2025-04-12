@@ -11,7 +11,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Exclude Stratis from table
 - Replace Total war level points column with ratio
-- Reorder columns, use footnotes
+- Reorder table columns, improve headings
+- Use footnotes
+- Site version
+- Auto dark mode
+- Auto-hide site header
+- Custom site icon
 - CI: lint, format, type checking
 
 ### Fixed
