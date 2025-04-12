@@ -119,14 +119,19 @@ def main() -> None:
         )
         _LOGGER.warning(log_msg)
 
-    with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
-        fp.write(
-            _INTRO_MARKDOWN
-            + markdown_table(
-                map_infos=sorted(map_infos, key=sort_maps_by_name), columns=_COLUMNS
-            )
-            + _KNOWN_ISSUES_MARKDOWN
+    markdown = (
+        _INTRO_MARKDOWN
+        + markdown_total_maps(map_infos)
+        + markdown_table(
+            map_infos=sorted(map_infos, key=sort_maps_by_name), columns=_COLUMNS
         )
+        + _KNOWN_ISSUES_MARKDOWN
+    )
+    log_msg = "Generated Markdown."
+    _LOGGER.info(log_msg)
+
+    with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
+        fp.write(markdown)
 
     log_msg = f"Markdown saved to {doc_file_path}."
     _LOGGER.info(log_msg)
@@ -221,6 +226,11 @@ def handle_missing_value(val: int | str | None) -> str:
     `None` is used to flag unknown/missing value, as opposed to calculated zero.
     """
     return "" if val is None else str(val)
+
+
+def markdown_total_maps(map_infos: Sequence[MapInformation]) -> str:
+    """Create Markdown total maps line."""
+    return f"- {len(map_infos)} maps including season variants\n"
 
 
 if __name__ == "__main__":
