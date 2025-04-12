@@ -101,6 +101,14 @@ def main() -> None:
         )
         _LOGGER.warning(log_msg)
 
+    maps_without_urls = {m.map_name for m in map_infos if not m.download_url}
+    if maps_without_urls:
+        log_msg = (
+            f"{len(maps_without_urls)} maps don't have a `download_url`: "
+            f"{pretty_iterable_of_str(maps_without_urls)}."
+        )
+        _LOGGER.warning(log_msg)
+
     markdown = (
         INTRO_MARKDOWN
         + markdown_total_maps(map_infos)
@@ -192,7 +200,7 @@ def markdown_table(
     for map_info in map_infos:
         for col, details in columns.items():
             td_value = handle_missing_value(getattr(map_info, col))
-            if details.get("link_cell_content"):
+            if details.get("link_cell_content") and map_info.download_url:
                 td_value = f"[{td_value}]({map_info.download_url})"
 
             tbody += f"| {td_value} "
