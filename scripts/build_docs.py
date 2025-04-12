@@ -14,6 +14,7 @@ from cattrs import structure
 from rich.logging import RichHandler
 from rich.progress import track
 
+from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
 from src.map_information import MapInformation
 from src.static_data.verification_data import VERIFICATION_DATA
 from src.utils import load_config
@@ -49,7 +50,7 @@ _COLUMNS = {
         "text-align": "right",
     },
     "total_objectives_count": {
-        "display_heading": "total<br>objectives",
+        "display_heading": "total<br>military<br>objectives",
         "text-align": "right",
     },
     "towns_count": {
@@ -57,29 +58,10 @@ _COLUMNS = {
         "text-align": "right",
     },
     "war_level_points": {
-        "display_heading": "war<br>level<br>points<br>",
+        "display_heading": "total<br>war level<br>points<br>",
         "text-align": "right",
     },
 }
-_INTRO_MARKDOWN = """---
-hide:
-  - navigation
-  - toc
----
-# Compare missions in a sortable table
-
-- Generated from Antistasi Ultimate stable release v11.6.0
-  [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
-- [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
-  for this site;
-  [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md)
-"""
-_KNOWN_ISSUES_MARKDOWN = """
-## Known issues
-
-- Towns aren't counted (and total War Level points can't be calculated) if they aren't
-  explicitly declared in the mission files.
-"""
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -120,12 +102,12 @@ def main() -> None:
         _LOGGER.warning(log_msg)
 
     markdown = (
-        _INTRO_MARKDOWN
+        INTRO_MARKDOWN
         + markdown_total_maps(map_infos)
         + markdown_table(
             map_infos=sorted(map_infos, key=sort_maps_by_name), columns=_COLUMNS
         )
-        + _KNOWN_ISSUES_MARKDOWN
+        + KNOWN_ISSUES_MARKDOWN
     )
     log_msg = "Generated Markdown."
     _LOGGER.info(log_msg)
@@ -167,13 +149,13 @@ def verify_data(
             field_value = getattr(map_info, field)
             if field_value != reference_value:
                 log_msg = (
-                    f"{map_info.map_name} '{field}' verification failure: "
+                    f"'{map_info.map_name}' '{field}' verification failure: "
                     f"{field_value} != {reference_value}"
                 )
                 _LOGGER.warning(log_msg)
             else:
-                log_msg = f"QC: {map_info.map_name} `{field}` OK."
-                _LOGGER.debug(log_msg)
+                log_msg = f"'{map_info.map_name}' `{field}` OK."
+                _LOGGER.info(log_msg)
 
 
 def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
