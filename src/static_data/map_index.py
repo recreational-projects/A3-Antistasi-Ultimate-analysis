@@ -14,7 +14,10 @@ MAP_INDEX = {
         "display_name": "Altis",
         "url": "https://store.steampowered.com/app/107410",
     },
-    "brf_sumava": {"display_name": "Šumava"},
+    "brf_sumava": {  # mod
+        "display_name": "Šumava",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994,",
+    },
     "blud_vidda": {  # mod  # TODO: verify in-game
         "display_name": r"Vidda \| legacy version",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647",
@@ -35,7 +38,10 @@ MAP_INDEX = {
         "display_name": "Chernarus (Winter)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
-    "chernarusredux": {"display_name": "Chernarus Redux"},
+    "chernarusredux": {  # mod
+        "display_name": "Chernarus Redux",
+        "url": "https://steamcommunity.com/workshop/filedetails/?id=1128256978",
+    },
     "cup_chernarus_A3": {  # mod: CUP Terrains - Maps 2.0
         "display_name": "Chernarus 2020",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169",
@@ -64,13 +70,16 @@ MAP_INDEX = {
         "display_name": "Green Sea",  # officially "Green Sea Terrain"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212",
     },
-    "Gulfcoast": {"display_name": "Gulfcoast Islands"},  # sic
+    "Gulfcoast": {  # mod
+        "display_name": "Gulfcoast Islands",  # sic
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1617004814",
+    },
     "iron_excelsior_Tobruk": {  # mod: IFA3 AIO
         "display_name": "Tobruk",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
     },
     "isladuala3": {  # mod
-        "display_name": "Isladuala3",
+        "display_name": "Isla Duala",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=714149065",
     },
     "Kapaulio": {  # mod
@@ -113,7 +122,7 @@ MAP_INDEX = {
         "display_name": "Madrigal",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=769440155",
     },
-    "Panthera3": {  # mod  # TODO: inc Winter?
+    "Panthera3": {  # mod
         "display_name": "Island Panthera",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=708278910",
     },
@@ -137,7 +146,10 @@ MAP_INDEX = {
         "display_name": "Ruha",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1368857262",
     },
-    "sara": {"display_name": "Sahrani"},
+    "sara": {  # mod: CUP Terrains - Maps
+        "display_name": "Sahrani",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
+    },
     "SefrouRamal": {  # Creator DLC: Western Sahara
         "display_name": "Sefrou-Ramal",
         "url": "https://store.steampowered.com/app/1681170",
@@ -158,8 +170,14 @@ MAP_INDEX = {
         "display_name": "Utah Beach",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3117898674",
     },
-    "Staszow": {"display_name": "Staszow"},
-    "StaszowWinter": {"display_name": "Staszow (Winter)"},
+    "Staszow": {  # mod: IFA3 AIO
+        "display_name": "Staszow",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
+    },
+    "StaszowWinter": {  # mod: IFA3 AIO
+        "display_name": "Staszow (Winter)",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
+    },
     "stozec": {  # Creator DLC: CSLA Iron Curtain
         "display_name": "Gabreta",
         "url": "https://store.steampowered.com/app/1294440",
@@ -168,7 +186,7 @@ MAP_INDEX = {
         "display_name": "Stratis",
         "url": "https://store.steampowered.com/app/107410",
     },
-    "stubbhult": {
+    "stubbhult": {  # mod
         "display_name": "Stubbhult",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3353189981",
     },
@@ -184,10 +202,22 @@ MAP_INDEX = {
         "display_name": "Anizay",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1537973181",
     },
-    "tem_chernarus": {"display_name": "Svartmarka (Summer)"},
-    "tem_chernarusw": {"display_name": "Svartmarka (Winter)"},
-    "tem_kujari": {"display_name": "Kujari"},
-    "Tembelan": {"display_name": "Tembelan Island"},
+    "tem_chernarus": {  # mod: Northern Fronts Terrains
+        "display_name": "Svartmarka (Summer)",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1630816076",
+    },
+    "tem_chernarusw": {  # mod: Northern Fronts Terrains
+        "display_name": "Svartmarka (Winter)",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1630816076",
+    },
+    "tem_kujari": {  # mod
+        "display_name": "Kujari",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1726494027",
+    },
+    "Tembelan": {  # mod
+        "display_name": "Tembelan Island",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296",
+    },
     "UMB_Colombia": {  # mod
         "display_name": "UMB Colombia",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2266710560",
@@ -200,7 +230,10 @@ MAP_INDEX = {
         "display_name": "Virolahti - Valtatie 7",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1926513010",
     },
-    "Winthera3": {"display_name": "Island Winthera"},
+    "Winthera3": {  # mod
+        "display_name": "Island Panthera (Winter)",  # aka "Island Winthera"
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=708278910",
+    },
     "WW2_Omaha_Beach": {  # mod
         "display_name": "Omaha Beach",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2993515557",

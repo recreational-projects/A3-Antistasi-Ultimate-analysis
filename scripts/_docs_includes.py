@@ -25,7 +25,7 @@ KNOWN_ISSUES_MARKDOWN = """
 - *Total War Level points* = 8 × *airports* + 6 × *bases* + 4 × *sea/riverports* +
   2 × *outposts* + 2 × *resources* + 2 × *factories* + *towns*. Thanks to Syrreal on
   AU Community Discord for pointing this out
-  
+
 ## Known issues and limitations
 
 - Towns aren't counted (and total War Level points can't be calculated) if they aren't
