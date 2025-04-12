@@ -1,11 +1,12 @@
 """
-Static data for QC.
+Used to verify generated data.
 
-From https://drive.google.com/drive/u/0/folders/1jSvzJnzeNXdaE93TISdEt_U3j3zf__Tl
-
+Derived from screen captures belonging to Antistasi Ultimate at:
+https://drive.google.com/drive/u/0/folders/1jSvzJnzeNXdaE93TISdEt_U3j3zf__Tl
+Used under licence: https://drive.google.com/file/d/1UrDAuN9-9us8Xb-AIFxLrvs6tzw2hbb5/view
 """
 
-STATIC_DATA = {
+VERIFICATION_DATA = {
     "Altis": {
         "resources_count": 12,
         "factories_count": 13,

@@ -15,7 +15,7 @@ from rich.logging import RichHandler
 from rich.progress import track
 
 from src.map_information import MapInformation
-from src.static_data.static_data import STATIC_DATA
+from src.static_data.verification_data import VERIFICATION_DATA
 from src.utils import load_config
 
 _COLUMNS = {
@@ -106,71 +106,83 @@ def main() -> None:
             map_info = structure(json.load(file), MapInformation)
             map_infos.append(map_info)
 
-    log_msg = (
-        f"Loaded info for {len(map_infos)} maps; {len(STATIC_DATA)} reference keys."
-    )
+    log_msg = f"Loaded info for {len(map_infos)} maps."
     _LOGGER.info(log_msg)
 
-    map_names_without_display_names = [
-        map_info.map_name for map_info in map_infos if not map_info.display_name
-    ]
-    if map_names_without_display_names:
+    verify_data(map_infos, VERIFICATION_DATA)
+
+    maps_without_display_names = {m.map_name for m in map_infos if not m.display_name}
+    if maps_without_display_names:
         log_msg = (
-            f"{len(map_names_without_display_names)} maps don't have a `display_name`: "
-            f"{pretty_iterable_of_str(map_names_without_display_names)}."
+            f"{len(maps_without_display_names)} maps don't have a `display_name`: "
+            f"{pretty_iterable_of_str(maps_without_display_names)}."
         )
         _LOGGER.warning(log_msg)
 
+    markdown = (
+        _INTRO_MARKDOWN
+        + markdown_total_maps(map_infos)
+        + markdown_table(
+            map_infos=sorted(map_infos, key=sort_maps_by_name), columns=_COLUMNS
+        )
+        + _KNOWN_ISSUES_MARKDOWN
+    )
+    log_msg = "Generated Markdown."
+    _LOGGER.info(log_msg)
+
+    with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
+        fp.write(markdown)
+
+    log_msg = f"Markdown saved to {doc_file_path}."
+    _LOGGER.info(log_msg)
+
+
+def verify_data(
+    map_infos: Iterable[MapInformation], verification_data: dict[str, dict[str, int]]
+) -> None:
+    """Verify generated data against reference data."""
     map_names = {map_info.map_name for map_info in map_infos}
-    unmatched_reference_maps = {
-        map_name for map_name in STATIC_DATA if map_name not in map_names
-    }
-    unreferenced_maps = {
-        map_name for map_name in map_names if map_name not in STATIC_DATA
-    }
-    if unreferenced_maps:
+    reference_map_names = verification_data.keys()
+    missing_reference_data = map_names - reference_map_names
+    unused_reference_data = reference_map_names - map_names
+
+    if missing_reference_data:
         log_msg = (
-            f"QC: {len(unreferenced_maps)} unreferenced maps: "
-            f"{pretty_iterable_of_str(unreferenced_maps)}."
+            f"No reference data to verify {len(missing_reference_data)} maps: "
+            f"{pretty_iterable_of_str(missing_reference_data)}."
         )
         _LOGGER.warning(log_msg)
-    if unmatched_reference_maps:
+
+    if unused_reference_data:
         log_msg = (
-            f"QC: {len(unmatched_reference_maps)} unmatched reference maps:"
-            f"{pretty_iterable_of_str(unmatched_reference_maps)}'."
+            f"Unexpected {len(unused_reference_data)} reference data:"
+            f"{pretty_iterable_of_str(unused_reference_data)}'."
         )
         _LOGGER.warning(log_msg)
 
     for map_info in map_infos:
-        map_info_reference_data = STATIC_DATA.get(map_info.map_name)
-        if map_info_reference_data:
-            for field in map_info_reference_data:
-                field_value = getattr(map_info, field)
-                reference_value = map_info_reference_data.get(field)
-                if reference_value is None:
-                    return
-                if field_value != reference_value:
-                    log_msg = (
-                        f"QC: {map_info.map_name} '{field}' mismatch: "
-                        f"{field_value} != {reference_value}"
-                    )
-                    _LOGGER.warning(log_msg)
-                else:
-                    log_msg = f"QC: {map_info.map_name} `{field}` OK."
-                    _LOGGER.debug(log_msg)
-
-    with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
-        fp.write(
-            _INTRO_MARKDOWN
-            + markdown_table(
-                map_infos=sorted(map_infos, key=alphasort), columns=_COLUMNS
-            )
-            + _KNOWN_ISSUES_MARKDOWN
-        )
+        reference_data = VERIFICATION_DATA.get(map_info.map_name, {})
+        for field in reference_data:
+            reference_value = reference_data.get(field)
+            field_value = getattr(map_info, field)
+            if field_value != reference_value:
+                log_msg = (
+                    f"{map_info.map_name} '{field}' verification failure: "
+                    f"{field_value} != {reference_value}"
+                )
+                _LOGGER.warning(log_msg)
+            else:
+                log_msg = f"QC: {map_info.map_name} `{field}` OK."
+                _LOGGER.debug(log_msg)
 
 
-def alphasort(map_info: MapInformation) -> str:
-    """Sort `MapInformation` instances."""
+def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
+    """Return e.g. `'a', 'b', 'c'`."""
+    return f"'{"', '".join(iterable)}'"
+
+
+def sort_maps_by_name(map_info: MapInformation) -> str:
+    """Sort order for `MapInformation` instances."""
     if map_info.display_name is None:
         return map_info.map_name.casefold()
     return map_info.display_name.casefold()
@@ -191,6 +203,7 @@ def markdown_table(
     for col_details in columns.values():
         tdivider += "| ---"
         tdivider += ":" if col_details.get("text-align") == "right" else " "
+
     tdivider += "|\n"
 
     tbody = ""
@@ -215,9 +228,9 @@ def handle_missing_value(val: int | str | None) -> str:
     return "" if val is None else str(val)
 
 
-def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
-    """Return e.g. `'a', 'b', 'c'`."""
-    return f"'{"', '".join(iterable)}'"
+def markdown_total_maps(map_infos: Sequence[MapInformation]) -> str:
+    """Create Markdown total maps line."""
+    return f"- {len(map_infos)} maps including season variants\n"
 
 
 if __name__ == "__main__":
