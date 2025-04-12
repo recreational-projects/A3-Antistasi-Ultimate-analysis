@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Display friendly map names and link to download location
+- Display map count
+
+### Improved
+
+- Log messages
 
 
 ## [0.5.0] - 2025-04-11

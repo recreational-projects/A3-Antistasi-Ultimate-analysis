@@ -167,13 +167,13 @@ def verify_data(
             field_value = getattr(map_info, field)
             if field_value != reference_value:
                 log_msg = (
-                    f"{map_info.map_name} '{field}' verification failure: "
+                    f"'{map_info.map_name}' '{field}' verification failure: "
                     f"{field_value} != {reference_value}"
                 )
                 _LOGGER.warning(log_msg)
             else:
-                log_msg = f"QC: {map_info.map_name} `{field}` OK."
-                _LOGGER.debug(log_msg)
+                log_msg = f"'{map_info.map_name}' `{field}` OK."
+                _LOGGER.info(log_msg)
 
 
 def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
