@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Fixed
 
-- Don't link map name if no URL
+- Missing friendly map names and links
 
 
 ## [0.6.0] - 2025-04-12
