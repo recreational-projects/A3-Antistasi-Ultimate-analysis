@@ -1,16 +1,24 @@
 """Generate the Markdown doc representing site content."""
 
 import logging
+import unicodedata
 from collections.abc import Sequence
 from pathlib import Path
 
 from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
+from src.geojson.feature import Feature
+from src.geojson.load import load_towns_from_dir
 from src.mission.file import load_missions_data
 from src.mission.mission import Mission
 from src.utils import load_config, pretty_iterable_of_str, project_version
-from static_data.au_mission_overrides import EXCLUDED_MISSIONS
+from static_data.au_mission_overrides import (
+    EXCLUDED_MISSIONS,
+    LOCATION_PREFIXES,
+    LOCATION_SUFFIXES,
+    LOCATION_TYPOS,
+)
 from static_data.in_game_data import IN_GAME_DATA
 from static_data.map_index import MAP_INDEX
 
@@ -92,6 +100,12 @@ def main() -> None:
         )
         _LOGGER.warning(log_msg)
 
+    gm_towns = load_towns_from_dir(
+        base_filepath / config["GRAD_MEH_DATA_RELATIVE_DIR"]
+    )
+    log_msg = f"Loaded towns from {len(gm_towns)} grad-meh data sets."
+    _LOGGER.info(log_msg)
+
     for mission in au_missions:
         map_name = mission.map_name
 
@@ -107,6 +121,12 @@ def main() -> None:
         else:
             verify_vs_in_game_data(au_mission=mission, data=IN_GAME_DATA[map_name])
 
+        if map_name not in gm_towns:
+            log_msg = f"'{map_name}': no grad-meh towns data"
+            _LOGGER.warning(log_msg)
+        else:
+            verify_and_enrich_vs_grad_meh_data(au_mission=mission, data=gm_towns)
+
     max_war_level_points = max(
         mission.war_level_points for mission in au_missions if mission.war_level_points
     )
@@ -115,7 +135,7 @@ def main() -> None:
         INTRO_MARKDOWN
         + markdown_total_missions(au_missions)
         + markdown_table(
-            missions=sorted(au_missions, key=sort_missions_by_name),
+            au_missions=sorted(au_missions, key=sort_missions_by_name),
             columns=_COLUMNS,
             max_war_level_points=max_war_level_points,
         )
@@ -157,7 +177,56 @@ def verify_vs_in_game_data(*, au_mission: Mission, data: dict[str, int]) -> None
             _LOGGER.warning(log_msg)
         else:
             log_msg = f"'{au_mission.map_name}': `{field}` matches in-game data."
-            _LOGGER.info(log_msg)
+            _LOGGER.debug(log_msg)
+
+
+def verify_and_enrich_vs_grad_meh_data(
+    *, au_mission: Mission, data: dict[str, list[Feature]]
+) -> None:
+    """Verify generated data against grad-meh data."""
+    gm_towns_ = {}
+    for kind, towns in data.items():
+        for town in towns:
+            gm_towns_[town.properties.get("name")] = kind
+
+    gm_towns_count = len(gm_towns_.keys())
+    log_msg = f"Towns in grad-meh data: {gm_towns_count}"
+    _LOGGER.info(log_msg)
+
+    if not au_mission.towns_count:
+        au_mission.towns = dict.fromkeys(gm_towns_.keys(), 0)
+        log_msg = "Used grad-meh towns."
+        _LOGGER.info(log_msg)
+
+    else:
+        difference = (
+            gm_towns_count - au_mission.towns_count - len(au_mission.disabled_towns)
+        )
+        if difference:
+            log_msg = f"MISMATCH OF {difference}."
+            _LOGGER.warning(log_msg)
+
+
+def normalise_town_name(name: str) -> str:
+    """Normalise town names to enable fuzzy matching."""
+    remove_chars = " .,_-'"
+
+    for k, v in LOCATION_TYPOS.items():
+        name = name.replace(k, v)
+    for prefix in LOCATION_PREFIXES:
+        name = name.removeprefix(prefix)
+    for suffix in LOCATION_SUFFIXES:
+        name = name.removesuffix(suffix)
+    for char in list(remove_chars):
+        name = name.replace(char, "")
+    return strip_accents(name).lower()
+
+
+def strip_accents(str_: str) -> str:
+    """Normalize accented chars."""
+    return "".join(
+        c for c in unicodedata.normalize("NFD", str_) if unicodedata.category(c) != "Mn"
+    )
 
 
 def sort_missions_by_name(mission: Mission) -> str:
@@ -169,7 +238,7 @@ def sort_missions_by_name(mission: Mission) -> str:
 
 def markdown_table(
     *,
-    missions: Sequence[Mission],
+    au_missions: Sequence[Mission],
     columns: dict[str, dict[str, str | bool]],
     max_war_level_points: int,
 ) -> str:
@@ -189,7 +258,7 @@ def markdown_table(
     tdivider += "|\n"
 
     tbody = ""
-    for mission in missions:
+    for mission in au_missions:
         for col in columns:
             td_value = ""
             if col == "map_name":

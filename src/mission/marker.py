@@ -57,7 +57,7 @@ class Marker:
     @property
     def is_outpost(self) -> bool:
         """
-        Return `True` if a outpost.
+        Return `True` if an outpost.
 
         Map `vt7` is the only known map to use "Outpost".
         """
