@@ -12,14 +12,13 @@ from pathlib import Path
 
 from cattrs import structure
 from rich.logging import RichHandler
-from rich.progress import track
 
 from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
-from src.map_information import MapInformation
+from src.mission.mission import Mission
 from src.static_data.verification_data import VERIFICATION_DATA
 from src.utils import load_config
 
-_COLUMNS = {
+_COLUMNS: dict[str, dict[str, str | bool]] = {
     "display_name": {
         "display_heading": "map",
         "link_cell_content": True,
@@ -62,6 +61,7 @@ _COLUMNS = {
         "text-align": "right",
     },
 }
+_CONFIG_FILEPATH = "config.toml"
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -73,27 +73,15 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    config = load_config()
     base_filepath = Path(__file__).resolve().parent
+    config = load_config(base_filepath / _CONFIG_FILEPATH)
     data_dir_path = base_filepath / config["DATA_RELATIVE_DIR"]
     doc_file_path = base_filepath / config["OUTPUT_RELATIVE_FILE"]
 
-    json_files = [p for p in list(data_dir_path.iterdir()) if p.suffix == ".json"]
-    log_msg = f"Found {len(json_files)} files in {data_dir_path}."
-    _LOGGER.info(log_msg)
+    missions = load_missions_data(data_dir_path)
+    verify_data(missions, VERIFICATION_DATA)
 
-    map_infos = []
-    for fp in track(json_files, description="Building docs..."):
-        with Path.open(fp, "r", encoding="utf-8") as file:
-            map_info = structure(json.load(file), MapInformation)
-            map_infos.append(map_info)
-
-    log_msg = f"Loaded info for {len(map_infos)} maps."
-    _LOGGER.info(log_msg)
-
-    verify_data(map_infos, VERIFICATION_DATA)
-
-    maps_without_display_names = {m.map_name for m in map_infos if not m.display_name}
+    maps_without_display_names = {m.map_name for m in missions if not m.display_name}
     if maps_without_display_names:
         log_msg = (
             f"{len(maps_without_display_names)} maps don't have a `display_name`: "
@@ -101,7 +89,7 @@ def main() -> None:
         )
         _LOGGER.warning(log_msg)
 
-    maps_without_urls = {m.map_name for m in map_infos if not m.download_url}
+    maps_without_urls = {m.map_name for m in missions if not m.download_url}
     if maps_without_urls:
         log_msg = (
             f"{len(maps_without_urls)} maps don't have a `download_url`: "
@@ -111,9 +99,9 @@ def main() -> None:
 
     markdown = (
         INTRO_MARKDOWN
-        + markdown_total_maps(map_infos)
+        + markdown_total_missions(missions)
         + markdown_table(
-            map_infos=sorted(map_infos, key=sort_maps_by_name), columns=_COLUMNS
+            missions=sorted(missions, key=sort_missions_by_name), columns=_COLUMNS
         )
         + KNOWN_ISSUES_MARKDOWN
     )
@@ -127,11 +115,28 @@ def main() -> None:
     _LOGGER.info(log_msg)
 
 
+def load_missions_data(path: Path) -> list[Mission]:
+    """Load `Missions` data from `path`."""
+    json_files = [p for p in list(path.iterdir()) if p.suffix == ".json"]
+    log_msg = f"Found {len(json_files)} files in {path}."
+    _LOGGER.info(log_msg)
+
+    missions = []
+    for fp in json_files:
+        with Path.open(fp, "r", encoding="utf-8") as file:
+            map_info = structure(json.load(file), Mission)
+            missions.append(map_info)
+
+    log_msg = f"Loaded data for {len(missions)} missions."
+    _LOGGER.info(log_msg)
+    return missions
+
+
 def verify_data(
-    map_infos: Iterable[MapInformation], verification_data: dict[str, dict[str, int]]
+    missions: Iterable[Mission], verification_data: dict[str, dict[str, int]]
 ) -> None:
     """Verify generated data against reference data."""
-    map_names = {map_info.map_name for map_info in map_infos}
+    map_names = {map_info.map_name for map_info in missions}
     reference_map_names = verification_data.keys()
     missing_reference_data = map_names - reference_map_names
     unused_reference_data = reference_map_names - map_names
@@ -150,19 +155,19 @@ def verify_data(
         )
         _LOGGER.warning(log_msg)
 
-    for map_info in map_infos:
-        reference_data = VERIFICATION_DATA.get(map_info.map_name, {})
+    for mission in missions:
+        reference_data = VERIFICATION_DATA.get(mission.map_name, {})
         for field in reference_data:
             reference_value = reference_data.get(field)
-            field_value = getattr(map_info, field)
+            field_value = getattr(mission, field)
             if field_value != reference_value:
                 log_msg = (
-                    f"'{map_info.map_name}' '{field}' verification failure: "
+                    f"'{mission.map_name}' '{field}' verification failure: "
                     f"{field_value} != {reference_value}"
                 )
                 _LOGGER.warning(log_msg)
             else:
-                log_msg = f"'{map_info.map_name}' `{field}` OK."
+                log_msg = f"'{mission.map_name}' `{field}` OK."
                 _LOGGER.info(log_msg)
 
 
@@ -171,19 +176,19 @@ def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
     return f"'{"', '".join(iterable)}'"
 
 
-def sort_maps_by_name(map_info: MapInformation) -> str:
-    """Sort order for `MapInformation` instances."""
+def sort_missions_by_name(map_info: Mission) -> str:
+    """Sort order for `Mission` instances."""
     if map_info.display_name is None:
         return map_info.map_name.casefold()
     return map_info.display_name.casefold()
 
 
 def markdown_table(
-    *, map_infos: Sequence[MapInformation], columns: dict[str, dict[str, str | bool]]
+    *, missions: Sequence[Mission], columns: dict[str, dict[str, str | bool]]
 ) -> str:
     """Create Markdown table."""
     th_values = [
-        properties.get("display_heading", col).capitalize()
+        str(properties.get("display_heading", col)).capitalize()
         for col, properties in columns.items()
     ]
     thead = f"\n| {' <br>| '.join(th_values)} |\n"
@@ -197,7 +202,7 @@ def markdown_table(
     tdivider += "|\n"
 
     tbody = ""
-    for map_info in map_infos:
+    for map_info in missions:
         for col, details in columns.items():
             td_value = handle_missing_value(getattr(map_info, col))
             if details.get("link_cell_content") and map_info.download_url:
@@ -218,9 +223,9 @@ def handle_missing_value(val: int | str | None) -> str:
     return "" if val is None else str(val)
 
 
-def markdown_total_maps(map_infos: Sequence[MapInformation]) -> str:
-    """Create Markdown total maps line."""
-    return f"- {len(map_infos)} maps including season variants\n"
+def markdown_total_missions(missions: Sequence[Mission]) -> str:
+    """Create Markdown total missions line."""
+    return f"- {len(missions)} maps including season variants\n"
 
 
 if __name__ == "__main__":

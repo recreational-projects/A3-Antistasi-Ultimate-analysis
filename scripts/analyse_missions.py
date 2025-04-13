@@ -8,9 +8,11 @@ from attrs import asdict
 from rich.logging import RichHandler
 from rich.progress import track
 
-from src.map_information import MapInformation
-from src.utils import load_config, maps_in_dir
+from src.mission.file import mission_dirs_in_dir
+from src.mission.mission import Mission
+from src.utils import load_config
 
+_CONFIG_FILEPATH = "config.toml"
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -22,17 +24,17 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    config = load_config()
     base_filepath = Path(__file__).resolve().parent
+    config = load_config(base_filepath / _CONFIG_FILEPATH)
     input_dir_path = base_filepath / config["INPUT_RELATIVE_DIR"]
     output_dir_path = base_filepath / config["DATA_RELATIVE_DIR"]
     output_dir_path.mkdir(parents=True, exist_ok=True)
 
-    all_map_dirs = maps_in_dir(input_dir_path)
+    all_map_dirs = mission_dirs_in_dir(input_dir_path)
     map_exports_count = 0
 
     for map_dir in track(all_map_dirs, description="Analysing maps..."):
-        map_info = MapInformation.from_files(map_dir)
+        map_info = Mission.from_files(map_dir)
 
         if map_info is None:
             log_msg = f"Couldn't get any data from {map_dir}."

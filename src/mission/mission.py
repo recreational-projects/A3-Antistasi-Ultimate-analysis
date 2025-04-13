@@ -1,4 +1,4 @@
-"""`MapInformation` class."""
+"""`Mission` class."""
 
 from __future__ import annotations
 
@@ -6,25 +6,25 @@ from typing import TYPE_CHECKING
 
 from attrs import Factory, define
 
-from src.marker import Marker
-from src.parse.mapinfo_hpp_parser import get_map_info_data
-from src.parse.mission_sqm_parser import get_marker_nodes
+from src.mission.file import map_name_from_mission_dir_path
+from src.mission.mapinfo_hpp_parser import get_map_info_data
+from src.mission.marker import Marker
+from src.mission.mission_sqm_parser import get_marker_nodes
 from src.static_data.map_index import MAP_INDEX
-from src.utils import map_name_from_path
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from src.parse.mission_sqm_parser import JSONNode
+    from src.mission.mission_sqm_parser import JSONNode
 
 _MAPINFO_FILENAME = "mapInfo.hpp"
 _MISSION_FILENAME = "mission.sqm"
 
 
 @define
-class MapInformation:
-    """Information about a map."""
+class Mission:
+    """Information about a mission."""
 
     map_name: str
     climate: str | None = None
@@ -40,7 +40,7 @@ class MapInformation:
         climate_: str | None,
         populations_: Sequence[tuple[str, int]],
         markers_: Sequence[JSONNode],
-    ) -> MapInformation:
+    ) -> Mission:
         """Construct instance from parsed data, ignoring anything not needed."""
         towns_count_ = None if not populations_ else len(populations_)
         return cls(
@@ -51,13 +51,13 @@ class MapInformation:
         )
 
     @classmethod
-    def from_files(cls, map_dir: Path) -> MapInformation:
+    def from_files(cls, map_dir: Path) -> Mission:
         """Attempt to return instance from a map directory."""
-        map_name = map_name_from_path(map_dir)
+        map_name = map_name_from_mission_dir_path(map_dir)
         marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
 
-        return MapInformation.from_data(
+        return Mission.from_data(
             map_name=map_name,
             climate_=map_info["climate"],
             populations_=map_info["populations"],
