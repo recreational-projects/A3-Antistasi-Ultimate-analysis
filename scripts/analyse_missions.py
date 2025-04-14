@@ -41,9 +41,10 @@ def main() -> None:
             _LOGGER.warning(log_msg)
 
         else:
-            export_filepath = output_dir_path / f"{map_dir.name}.json"
-
-            with Path.open(export_filepath, "w", encoding="utf-8") as file:
+            export_filename = f"{map_dir.name}.json"
+            with Path.open(
+                output_dir_path / export_filename, "w", encoding="utf-8"
+            ) as file:
                 json.dump(
                     asdict(map_info),
                     file,
@@ -52,7 +53,7 @@ def main() -> None:
                     sort_keys=True,
                 )
                 map_exports_count += 1
-                log_msg = f"Exported '{export_filepath}'."
+                log_msg = f"Exported '{export_filename}'."
                 _LOGGER.info(log_msg)
 
     log_msg = f"Exported data for {map_exports_count} maps."
