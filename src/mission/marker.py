@@ -1,19 +1,29 @@
 """`Marker` class."""
 
-from typing import Any, Self
+from typing import Any, ClassVar, Self
 
 from attrs import define
-
-from src.position import Position
 
 
 @define
 class Marker:
-    """Represents a map marker."""
+    """
+    Represents a map marker.
+
+    Implemented as a class for future-proofing.
+    """
+
+    INCLUDE_STARTS_WITH: ClassVar = {
+        # case-insensitive
+        "airport",
+        "factory",
+        "milbase",
+        "outpost",
+        "resource",
+        "seaport",
+    }
 
     name: str
-    type_: str
-    position: Position
 
     @classmethod
     def from_data(
@@ -23,8 +33,6 @@ class Marker:
         """Construct instance from data."""
         return cls(
             name=data["name"],
-            type_=data["type"],
-            position=Position.from_data(data["position"]),
         )
 
     @property

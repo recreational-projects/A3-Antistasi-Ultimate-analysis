@@ -6,7 +6,7 @@ from typing import Any
 
 import armaclass
 
-from src.constants import INCLUDE_MARKER_NAMES_STARTS_WITH
+from src.mission.marker import Marker
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def _get_marker_nodes(node: JSONNode) -> list[JSONNode]:
         if e.get("dataType") == "Marker"
         and any(
             e["name"].lower().startswith(string)
-            for string in INCLUDE_MARKER_NAMES_STARTS_WITH
+            for string in Marker.INCLUDE_STARTS_WITH
         )
     ]
 

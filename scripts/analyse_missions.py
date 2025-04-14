@@ -8,9 +8,11 @@ from attrs import asdict
 from rich.logging import RichHandler
 from rich.progress import track
 
-from src.map_information import MapInformation
-from src.utils import load_config, maps_in_dir
+from src.mission.file import mission_dirs_in_dir
+from src.mission.mission import Mission
+from src.utils import load_config
 
+_CONFIG_FILEPATH = "config.toml"
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -22,26 +24,27 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    config = load_config()
     base_filepath = Path(__file__).resolve().parent
+    config = load_config(base_filepath / _CONFIG_FILEPATH)
     input_dir_path = base_filepath / config["INPUT_RELATIVE_DIR"]
     output_dir_path = base_filepath / config["DATA_RELATIVE_DIR"]
     output_dir_path.mkdir(parents=True, exist_ok=True)
 
-    all_map_dirs = maps_in_dir(input_dir_path)
+    all_map_dirs = mission_dirs_in_dir(input_dir_path)
     map_exports_count = 0
 
     for map_dir in track(all_map_dirs, description="Analysing maps..."):
-        map_info = MapInformation.from_files(map_dir)
+        map_info = Mission.from_files(map_dir)
 
         if map_info is None:
             log_msg = f"Couldn't get any data from {map_dir}."
             _LOGGER.warning(log_msg)
 
         else:
-            export_filepath = output_dir_path / f"{map_dir.name}.json"
-
-            with Path.open(export_filepath, "w", encoding="utf-8") as file:
+            export_filename = f"{map_dir.name}.json"
+            with Path.open(
+                output_dir_path / export_filename, "w", encoding="utf-8"
+            ) as file:
                 json.dump(
                     asdict(map_info),
                     file,
@@ -50,7 +53,7 @@ def main() -> None:
                     sort_keys=True,
                 )
                 map_exports_count += 1
-                log_msg = f"Exported '{export_filepath}'."
+                log_msg = f"Exported '{export_filename}'."
                 _LOGGER.info(log_msg)
 
     log_msg = f"Exported data for {map_exports_count} maps."
