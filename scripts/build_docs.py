@@ -15,6 +15,7 @@ from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
 from src.mission.mission import Mission
+from src.static_data.au_mission_overrides import EXCLUDED_MISSIONS
 from src.static_data.in_game_data import IN_GAME_DATA
 from src.utils import load_config
 
@@ -117,8 +118,15 @@ def main() -> None:
 
 def load_missions_data(path: Path) -> list[Mission]:
     """Load `Missions` data from `path`."""
-    json_files = [p for p in list(path.iterdir()) if p.suffix == ".json"]
-    log_msg = f"Found {len(json_files)} files in {path}."
+    json_files = [
+        p
+        for p in list(path.iterdir())
+        if p.suffix == ".json" and p.stem not in EXCLUDED_MISSIONS
+    ]
+    log_msg = (
+        f"Found {len(json_files)} files in {path} "
+        f"ignoring {pretty_iterable_of_str(EXCLUDED_MISSIONS)}."
+    )
     _LOGGER.info(log_msg)
 
     missions = []
@@ -202,11 +210,11 @@ def markdown_table(
     tdivider += "|\n"
 
     tbody = ""
-    for map_info in missions:
+    for mission in missions:
         for col, details in columns.items():
-            td_value = handle_missing_value(getattr(map_info, col))
-            if details.get("link_cell_content") and map_info.download_url:
-                td_value = f"[{td_value}]({map_info.download_url})"
+            td_value = handle_missing_value(getattr(mission, col))
+            if details.get("link_cell_content") and mission.download_url:
+                td_value = f"[{td_value}]({mission.download_url})"
 
             tbody += f"| {td_value} "
         tbody += "|\n"
@@ -225,7 +233,9 @@ def handle_missing_value(val: int | str | None) -> str:
 
 def markdown_total_missions(missions: Sequence[Mission]) -> str:
     """Create Markdown total missions line."""
-    return f"- {len(missions)} maps including season variants\n"
+    return (
+        f"- {len(missions)} maps total including season variants, excluding Stratis\n"
+    )
 
 
 if __name__ == "__main__":

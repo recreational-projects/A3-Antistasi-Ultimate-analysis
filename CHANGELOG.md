@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [UNRELEASED] - TBC
 
+### Added
+
+- Exclude Stratis from table
+
 ## Fixed
 
 - Missing friendly map names and links
