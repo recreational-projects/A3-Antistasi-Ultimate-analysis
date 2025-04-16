@@ -15,7 +15,7 @@ from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
 from src.mission.mission import Mission
-from src.static_data.verification_data import VERIFICATION_DATA
+from src.static_data.in_game_data import IN_GAME_DATA
 from src.utils import load_config
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
@@ -79,7 +79,7 @@ def main() -> None:
     doc_file_path = base_filepath / config["OUTPUT_RELATIVE_FILE"]
 
     missions = load_missions_data(data_dir_path)
-    verify_data(missions, VERIFICATION_DATA)
+    verify_data(missions, IN_GAME_DATA)
 
     maps_without_display_names = {m.map_name for m in missions if not m.display_name}
     if maps_without_display_names:
@@ -156,7 +156,7 @@ def verify_data(
         _LOGGER.warning(log_msg)
 
     for mission in missions:
-        reference_data = VERIFICATION_DATA.get(mission.map_name, {})
+        reference_data = IN_GAME_DATA.get(mission.map_name, {})
         for field in reference_data:
             reference_value = reference_data.get(field)
             field_value = getattr(mission, field)
