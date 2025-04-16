@@ -11,7 +11,7 @@ from pathlib import Path
 
 from rich.logging import RichHandler
 
-from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
+from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
 from src.mission.file import load_missions_data
 from src.mission.mission import Mission
 from src.static_data.au_mission_overrides import EXCLUDED_MISSIONS
@@ -20,45 +20,44 @@ from src.static_data.map_index import MAP_INDEX
 from src.utils import load_config, pretty_iterable_of_str
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
-    "display_name": {
-        "display_heading": "map",
-        "link_cell_content": True,
+    "map_name": {
+        "display_heading": "Map",
     },
     "climate": {},
     "airports_count": {
-        "display_heading": "airports",
-        "text-align": "right",
-    },
-    "waterports_count": {
-        "display_heading": "sea/<br>riverports",
+        "display_heading": "Airports",
         "text-align": "right",
     },
     "bases_count": {
-        "display_heading": "bases",
+        "display_heading": "Bases",
+        "text-align": "right",
+    },
+    "waterports_count": {
+        "display_heading": "Sea/<br>riverports",
         "text-align": "right",
     },
     "outposts_count": {
-        "display_heading": "outposts",
+        "display_heading": "Outposts",
         "text-align": "right",
     },
     "factories_count": {
-        "display_heading": "factories",
+        "display_heading": "Factories",
         "text-align": "right",
     },
     "resources_count": {
-        "display_heading": "resources",
+        "display_heading": "Resources",
         "text-align": "right",
     },
     "total_objectives_count": {
-        "display_heading": "total<br>military<br>objectives",
+        "display_heading": "Total<br>military<br>objectives[^1]",
         "text-align": "right",
     },
     "towns_count": {
-        "display_heading": "towns<br>",
+        "display_heading": "Towns[^2]",
         "text-align": "right",
     },
-    "war_level_points": {
-        "display_heading": "total<br>war level<br>points<br>",
+    "war_level_points_ratio_dynamic": {
+        "display_heading": "Total<br>War Level<br>points[^3]<br>ratio<br>",
         "text-align": "right",
     },
 }
@@ -112,13 +111,19 @@ def main() -> None:
         else:
             verify_vs_in_game_data(au_mission=mission, data=IN_GAME_DATA[map_name])
 
+    max_war_level_points = max(
+        mission.war_level_points for mission in au_missions if mission.war_level_points
+    )
+
     markdown = (
         INTRO_MARKDOWN
         + markdown_total_missions(au_missions)
         + markdown_table(
-            missions=sorted(au_missions, key=sort_missions_by_name), columns=_COLUMNS
+            missions=sorted(au_missions, key=sort_missions_by_name),
+            columns=_COLUMNS,
+            max_war_level_points=max_war_level_points,
         )
-        + KNOWN_ISSUES_MARKDOWN
+        + OUTRO_MARKDOWN
     )
     log_msg = "Generated Markdown."
     _LOGGER.info(log_msg)
@@ -133,8 +138,8 @@ def main() -> None:
 
 def verify_vs_map_index(*, map_name: str, data: dict[str, str]) -> None:
     """Verify generated data against reference data."""
-    if not data.get("display_name"):
-        log_msg = f"'{map_name}': no `display_name` in index."
+    if not data.get("map_display_name"):
+        log_msg = f"'{map_name}': no `map_display_name` in index."
         _LOGGER.warning(log_msg)
 
     if not data.get("url"):
@@ -160,17 +165,20 @@ def verify_vs_in_game_data(*, au_mission: Mission, data: dict[str, int]) -> None
 
 def sort_missions_by_name(mission: Mission) -> str:
     """Sort order for `Mission`s table."""
-    if mission.display_name is None:
+    if mission.map_display_name is None:
         return mission.map_name.casefold()
-    return mission.display_name.casefold()
+    return mission.map_display_name.casefold()
 
 
 def markdown_table(
-    *, missions: Sequence[Mission], columns: dict[str, dict[str, str | bool]]
+    *,
+    missions: Sequence[Mission],
+    columns: dict[str, dict[str, str | bool]],
+    max_war_level_points: int,
 ) -> str:
     """Create Markdown table."""
     th_values = [
-        str(properties.get("display_heading", col)).capitalize()
+        str(properties.get("display_heading", col))
         for col, properties in columns.items()
     ]
     thead = f"\n| {' <br>| '.join(th_values)} |\n"
@@ -185,10 +193,19 @@ def markdown_table(
 
     tbody = ""
     for mission in missions:
-        for col, details in columns.items():
-            td_value = markdown_handle_missing_value(getattr(mission, col))
-            if details.get("link_cell_content") and mission.download_url:
-                td_value = f"[{td_value}]({mission.download_url})"
+        for col in columns:
+            td_value = ""
+            if col == "map_name":
+                td_value = str(mission.map_display_name)
+                if mission.download_url:
+                    td_value = f"[{td_value}]({mission.download_url})"
+
+            elif col == "war_level_points_ratio_dynamic":
+                ratio = mission.war_level_points_ratio(max_war_level_points)
+                if ratio:
+                    td_value = f"{ratio:.2f}"
+            else:
+                td_value = markdown_handle_missing_value(getattr(mission, col))
 
             tbody += f"| {td_value} "
         tbody += "|\n"

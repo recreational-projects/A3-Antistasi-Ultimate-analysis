@@ -13,22 +13,24 @@ hide:
   against in-game information
 """
 
-KNOWN_ISSUES_MARKDOWN = """
-## Notes
+OUTRO_MARKDOWN = """
+[^1]:
+    *Total military objectives* = sum(*airports*, *sea/riverports*, *bases*,
+    *outposts*, *factories*, *resources*)
+[^2]:
+    Known issue: towns aren't counted (and total War Level points can't be calculated)
+    if they aren't explicitly declared in the mission files.<br>
+    Missing towns counts will be added in future
+[^3]:
+    Ratio of mission's *total War Level Points* to the largest known value.<br>
+    *Total War Level points* = sum(8 × *airports*, 6 × *bases*, 4 × *sea/riverports*,
+    2 × *outposts*, 2 × *factories*, 2 × *resources*, *towns*) - thanks to Syrreal on
+    AU Community Discord for pointing this out
+
+## About this site
 
 - [Source code](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis)
   for this site;
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md);
   [raise a bug, question or feature request](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/issues)
-- *Total military objectives* = *airports* + *sea/riverports* + *bases* + *outposts* +
-  *factories* + *resources*
-- *Total War Level points* = 8 × *airports* + 6 × *bases* + 4 × *sea/riverports* +
-  2 × *outposts* + 2 × *resources* + 2 × *factories* + *towns*. Thanks to Syrreal on
-  AU Community Discord for pointing this out
-
-## Known issues and limitations
-
-- Towns aren't counted (and total War Level points can't be calculated) if they aren't
-  explicitly declared in the mission files. Data will be manually compiled and added
-  in future
 """

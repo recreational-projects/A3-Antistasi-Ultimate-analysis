@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Exclude Stratis from table
+- Replace Total war level points column with ratio
+- Reorder columns, use footnotes
 - CI: lint, format, type checking
 
 ### Fixed
