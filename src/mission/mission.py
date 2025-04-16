@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from attrs import Factory, define
@@ -13,13 +14,12 @@ from src.mission.mission_sqm_parser import get_marker_nodes
 from src.static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
-    from src.mission.mission_sqm_parser import JSONNode
 
 _MAPINFO_FILENAME = "mapInfo.hpp"
 _MISSION_FILENAME = "mission.sqm"
+_LOGGER = logging.getLogger(__name__)
 
 
 @define
@@ -34,34 +34,34 @@ class Mission:
     """Relevant subset of markers from `mission.sqm`."""
 
     @classmethod
-    def from_data(
-        cls,
-        map_name: str,
-        climate_: str | None,
-        populations_: Sequence[tuple[str, int]],
-        markers_: Sequence[JSONNode],
-    ) -> Mission:
-        """Construct instance from parsed data, ignoring anything not needed."""
-        towns_count_ = None if not populations_ else len(populations_)
-        return cls(
-            map_name=map_name,
-            climate=climate_,
-            towns_count=towns_count_,
-            markers=[Marker.from_data(m) for m in markers_],
-        )
-
-    @classmethod
     def from_files(cls, map_dir: Path) -> Mission:
         """Attempt to return instance from a map directory."""
         map_name = map_name_from_mission_dir_path(map_dir)
-        marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
+        populations = map_info["populations"]
+        town_names = None if not populations else [p[0] for p in populations]
+        if town_names:
+            unique_town_names = set()
+            duplicated = {
+                t
+                for t in town_names
+                if t in unique_town_names or unique_town_names.add(t)
+            }
+            if len(unique_town_names) != len(town_names):
+                log_msg = (
+                    f"'{map_name}': towns_count={len(town_names)} but "
+                    f"{len(unique_town_names)} unique.\n"
+                    f"{list(duplicated)} duplicated."
+                )
+                _LOGGER.warning(log_msg)
 
-        return Mission.from_data(
+        marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
+
+        return cls(
             map_name=map_name,
-            climate_=map_info["climate"],
-            populations_=map_info["populations"],
-            markers_=marker_nodes,
+            climate=map_info["climate"],
+            towns_count=None if not town_names else len(town_names),
+            markers=[Marker.from_data(m) for m in marker_nodes],
         )
 
     @property
