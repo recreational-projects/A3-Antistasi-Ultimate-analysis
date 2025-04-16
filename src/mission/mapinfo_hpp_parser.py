@@ -20,8 +20,8 @@ _LBRACE, _RBRACE, _SEMICOLON, _COMMA, _EQ = map(
 )
 _MAP_INFO_STRING = pp.dblQuotedString().setParseAction(pp.removeQuotes)
 
-MAPINFO_CLIMATE = pp.Suppress("climate") + _EQ + _MAP_INFO_STRING + _SEMICOLON
-MAPINFO_POPULATIONS = (
+CLIMATE = pp.Suppress("climate") + _EQ + _MAP_INFO_STRING + _SEMICOLON
+POPULATIONS = (
     pp.Suppress("population[]")
     + _EQ
     + _LBRACE
@@ -34,6 +34,14 @@ MAPINFO_POPULATIONS = (
     + _RBRACE
     + _SEMICOLON
 )
+DISABLED_TOWNS = (
+    pp.Suppress("disabledTowns[]")
+    + _EQ
+    + _LBRACE
+    + pp.DelimitedList(_MAP_INFO_STRING)
+    + _RBRACE
+    + _SEMICOLON
+)
 
 
 def get_map_info_data(filepath: Path) -> dict[str, Any]:
@@ -41,19 +49,27 @@ def get_map_info_data(filepath: Path) -> dict[str, Any]:
     with Path.open(filepath) as fp:
         map_info_file_data = fp.read()
 
+    climate = str(CLIMATE.search_string(map_info_file_data)[0][0])
     try:
-        climate = str(MAPINFO_CLIMATE.search_string(map_info_file_data)[0][0])
-    except IndexError:
-        climate = None
-    try:
-        populations_parse_result = MAPINFO_POPULATIONS.search_string(
+        populations_parse_result = POPULATIONS.search_string(
             map_info_file_data,
         )[0]
         populations = list(populations_parse_result)
     except IndexError:
         populations = []
+    try:
+        disabled_towns_parse_result = DISABLED_TOWNS.search_string(map_info_file_data)[
+            0
+        ]
+        disabled_towns = list(disabled_towns_parse_result)
+    except IndexError:
+        disabled_towns = []
 
     log_msg = f"Parsed `{filepath}`."
     _LOGGER.debug(log_msg)
 
-    return {"climate": climate, "populations": populations}
+    return {
+        "climate": climate,
+        "populations": populations,
+        "disabled_towns": disabled_towns,
+    }

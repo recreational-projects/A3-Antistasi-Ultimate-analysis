@@ -27,14 +27,20 @@ class Mission:
     """Information about a mission."""
 
     map_name: str
-    climate: str | None = None
-    towns_count: int | None = None
-    """Explicit `None` if no towns found."""
+    """Lower case. Derived from directory name. Assumed unique; used as primary key."""
+    climate: str
+    """From `mapinfo.hpp`."""
+    towns: dict[str, int]
+    """Towns in the mission. Derived from `populations` array in
+    `mapinfo.hpp`."""
+    disabled_towns: list[str]
+    """Towns not used in the mission. Derived from `disabledTowns` array in
+    `mapinfo.hpp`. NB: not necessarily relevant to the map!"""
     markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
     @classmethod
-    def from_files(cls, map_dir: Path) -> Mission:
+    def from_dir(cls, map_dir: Path) -> Mission:
         """Attempt to return instance from a map directory."""
         map_name = map_name_from_mission_dir_path(map_dir)
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
@@ -58,9 +64,10 @@ class Mission:
         marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
 
         return cls(
-            map_name=map_name,
+            map_name=map_name.lower(),
             climate=map_info["climate"],
-            towns_count=None if not town_names else len(town_names),
+            towns={p[0]: p[1] for p in map_info["populations"]},
+            disabled_towns=map_info["disabled_towns"],
             markers=[Marker.from_data(m) for m in marker_nodes],
         )
 
@@ -73,6 +80,13 @@ class Mission:
     def download_url(self) -> str | None:
         """Return URL if it exists in lookup."""
         return MAP_INDEX.get(self.map_name, {}).get("url")
+
+    @property
+    def towns_count(self) -> int | None:
+        """Enumerate towns."""
+        if not self.towns:
+            return None
+        return len(self.towns)
 
     @property
     def airports_count(self) -> int:
@@ -121,7 +135,7 @@ class Mission:
     @property
     def war_level_points(self) -> int | None:
         """Count total war level points."""
-        if self.towns_count is None:
+        if not self.towns:
             return None
 
         return sum(
@@ -129,7 +143,7 @@ class Mission:
                 8 * self.airports_count,
                 6 * self.bases_count,
                 4 * self.waterports_count,
-                self.towns_count,
+                len(self.towns),
                 2 * self.outposts_count,
                 2 * self.resources_count,
                 2 * self.factories_count,

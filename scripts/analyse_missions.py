@@ -34,7 +34,7 @@ def main() -> None:
     map_exports_count = 0
 
     for map_dir in track(all_map_dirs, description="Analysing maps..."):
-        map_info = Mission.from_files(map_dir)
+        map_info = Mission.from_dir(map_dir)
 
         if map_info is None:
             log_msg = f"Couldn't get any data from {map_dir}."
