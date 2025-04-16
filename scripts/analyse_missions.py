@@ -33,20 +33,20 @@ def main() -> None:
     all_map_dirs = mission_dirs_in_dir(input_dir_path)
     map_exports_count = 0
 
-    for map_dir in track(all_map_dirs, description="Analysing maps..."):
-        map_info = Mission.from_dir(map_dir)
+    for dir_ in track(all_map_dirs, description="Analysing missions..."):
+        mission = Mission.from_dir(dir_)
 
-        if map_info is None:
-            log_msg = f"Couldn't get any data from {map_dir}."
+        if mission is None:
+            log_msg = f"Couldn't get any data from {dir_}."
             _LOGGER.warning(log_msg)
 
         else:
-            export_filename = f"{map_dir.name}.json"
+            export_filename = f"{dir_.name}.json"
             with Path.open(
                 output_dir_path / export_filename, "w", encoding="utf-8"
             ) as file:
                 json.dump(
-                    asdict(map_info),
+                    asdict(mission),
                     file,
                     ensure_ascii=False,
                     indent=4,
@@ -56,7 +56,7 @@ def main() -> None:
                 log_msg = f"Exported '{export_filename}'."
                 _LOGGER.info(log_msg)
 
-    log_msg = f"Exported data for {map_exports_count} maps."
+    log_msg = f"Exported data for {map_exports_count} missions."
     _LOGGER.info(log_msg)
 
 

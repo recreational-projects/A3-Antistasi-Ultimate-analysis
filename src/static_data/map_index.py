@@ -4,7 +4,7 @@ Information about maps.
 Manually compiled.
 """
 
-MAP_INDEX = {
+MAP_INDEX: dict[str, dict[str, str]] = {
     # NB: keys must be lower-case.
     # Display names are as per Steam app/workshop titles/text except where noted.
     "abramia": {  # mod

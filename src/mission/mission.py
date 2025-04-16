@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING
 
 from attrs import Factory, define
 
-from src.mission.file import map_name_from_mission_dir_path
 from src.mission.mapinfo_hpp_parser import get_map_info_data
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
 from src.static_data.map_index import MAP_INDEX
+from src.utils import pretty_iterable_of_str
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,6 +20,15 @@ if TYPE_CHECKING:
 _MAPINFO_FILENAME = "mapInfo.hpp"
 _MISSION_FILENAME = "mission.sqm"
 _LOGGER = logging.getLogger(__name__)
+
+
+def map_name_from_mission_dir_path(path: Path) -> str:
+    """
+    Return map name from mission `path`.
+
+    e.g. `Antistasi_Altis.Altis` -> "Altis".
+    """
+    return path.suffix.lstrip(".")
 
 
 @define
@@ -58,7 +67,7 @@ class Mission:
                 log_msg = (
                     f"'{map_name}': towns_count={len(town_names)} but "
                     f"{len(unique_town_names)} unique.\n"
-                    f"{list(duplicated)} duplicated."
+                    f"{pretty_iterable_of_str(duplicated)} duplicated."
                 )
                 _LOGGER.warning(log_msg)
 
