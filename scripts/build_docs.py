@@ -5,19 +5,19 @@ Load all JSON files in `DATA_RELATIVE_DIR`; export Markdown
 to `OUTPUT_RELATIVE_DIR`.
 """
 
-import json
 import logging
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from pathlib import Path
 
-from cattrs import structure
 from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, KNOWN_ISSUES_MARKDOWN
+from src.mission.file import load_missions_data
 from src.mission.mission import Mission
 from src.static_data.au_mission_overrides import EXCLUDED_MISSIONS
 from src.static_data.in_game_data import IN_GAME_DATA
-from src.utils import load_config
+from src.static_data.map_index import MAP_INDEX
+from src.utils import load_config, pretty_iterable_of_str
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
     "display_name": {
@@ -76,39 +76,54 @@ def main() -> None:
     )
     base_filepath = Path(__file__).resolve().parent
     config = load_config(base_filepath / _CONFIG_FILEPATH)
-    data_dir_path = base_filepath / config["DATA_RELATIVE_DIR"]
-    doc_file_path = base_filepath / config["OUTPUT_RELATIVE_FILE"]
 
-    missions = load_missions_data(data_dir_path)
-    verify_data(missions, IN_GAME_DATA)
-
-    maps_without_display_names = {m.map_name for m in missions if not m.display_name}
-    if maps_without_display_names:
+    au_missions = load_missions_data(
+        base_filepath / config["DATA_RELATIVE_DIR"], excludes=EXCLUDED_MISSIONS
+    )
+    mission_map_names = {m.map_name for m in au_missions}
+    unused_map_index_names = MAP_INDEX.keys() - mission_map_names
+    if unused_map_index_names:
         log_msg = (
-            f"{len(maps_without_display_names)} maps don't have a `display_name`: "
-            f"{pretty_iterable_of_str(maps_without_display_names)}."
+            f"Unexpected {len(unused_map_index_names)} reference data:"
+            f"{pretty_iterable_of_str(list(unused_map_index_names))}'."
         )
         _LOGGER.warning(log_msg)
 
-    maps_without_urls = {m.map_name for m in missions if not m.download_url}
-    if maps_without_urls:
+    unused_in_game_map_names = IN_GAME_DATA.keys() - mission_map_names
+    if unused_in_game_map_names:
         log_msg = (
-            f"{len(maps_without_urls)} maps don't have a `download_url`: "
-            f"{pretty_iterable_of_str(maps_without_urls)}."
+            f"Unexpected {len(unused_in_game_map_names)} reference data:"
+            f"{pretty_iterable_of_str(list(unused_in_game_map_names))}'."
         )
         _LOGGER.warning(log_msg)
+
+    for mission in au_missions:
+        map_name = mission.map_name
+
+        if map_name not in MAP_INDEX:
+            log_msg = f"'{map_name}': not in map index."
+            _LOGGER.warning(log_msg)
+        else:
+            verify_vs_map_index(map_name=map_name, data=MAP_INDEX[map_name])
+
+        if map_name not in IN_GAME_DATA:
+            log_msg = f"'{map_name}': no in-game data."
+            _LOGGER.warning(log_msg)
+        else:
+            verify_vs_in_game_data(au_mission=mission, data=IN_GAME_DATA[map_name])
 
     markdown = (
         INTRO_MARKDOWN
-        + markdown_total_missions(missions)
+        + markdown_total_missions(au_missions)
         + markdown_table(
-            missions=sorted(missions, key=sort_missions_by_name), columns=_COLUMNS
+            missions=sorted(au_missions, key=sort_missions_by_name), columns=_COLUMNS
         )
         + KNOWN_ISSUES_MARKDOWN
     )
     log_msg = "Generated Markdown."
     _LOGGER.info(log_msg)
 
+    doc_file_path = base_filepath / config["OUTPUT_RELATIVE_FILE"]
     with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
         fp.write(markdown)
 
@@ -116,79 +131,38 @@ def main() -> None:
     _LOGGER.info(log_msg)
 
 
-def load_missions_data(path: Path) -> list[Mission]:
-    """Load `Missions` data from `path`."""
-    json_files = [
-        p
-        for p in list(path.iterdir())
-        if p.suffix == ".json" and p.stem not in EXCLUDED_MISSIONS
-    ]
-    log_msg = (
-        f"Found {len(json_files)} files in {path} "
-        f"ignoring {pretty_iterable_of_str(EXCLUDED_MISSIONS)}."
-    )
-    _LOGGER.info(log_msg)
-
-    missions = []
-    for fp in json_files:
-        with Path.open(fp, "r", encoding="utf-8") as file:
-            map_info = structure(json.load(file), Mission)
-            missions.append(map_info)
-
-    log_msg = f"Loaded data for {len(missions)} missions."
-    _LOGGER.info(log_msg)
-    return missions
-
-
-def verify_data(
-    missions: Iterable[Mission], verification_data: dict[str, dict[str, int]]
-) -> None:
+def verify_vs_map_index(*, map_name: str, data: dict[str, str]) -> None:
     """Verify generated data against reference data."""
-    map_names = {map_info.map_name for map_info in missions}
-    reference_map_names = verification_data.keys()
-    missing_reference_data = map_names - reference_map_names
-    unused_reference_data = reference_map_names - map_names
-
-    if missing_reference_data:
-        log_msg = (
-            f"No reference data to verify {len(missing_reference_data)} maps: "
-            f"{pretty_iterable_of_str(missing_reference_data)}."
-        )
+    if not data.get("display_name"):
+        log_msg = f"'{map_name}': no `display_name` in index."
         _LOGGER.warning(log_msg)
 
-    if unused_reference_data:
-        log_msg = (
-            f"Unexpected {len(unused_reference_data)} reference data:"
-            f"{pretty_iterable_of_str(unused_reference_data)}'."
-        )
+    if not data.get("url"):
+        log_msg = f"'{map_name}' no `url` in index."
         _LOGGER.warning(log_msg)
 
-    for mission in missions:
-        reference_data = IN_GAME_DATA.get(mission.map_name, {})
-        for field in reference_data:
-            reference_value = reference_data.get(field)
-            field_value = getattr(mission, field)
-            if field_value != reference_value:
-                log_msg = (
-                    f"'{mission.map_name}' '{field}' verification failure: "
-                    f"{field_value} != {reference_value}"
-                )
-                _LOGGER.warning(log_msg)
-            else:
-                log_msg = f"'{mission.map_name}' `{field}` OK."
-                _LOGGER.info(log_msg)
+
+def verify_vs_in_game_data(*, au_mission: Mission, data: dict[str, int]) -> None:
+    """Verify generated data against in-game reference data."""
+    for field in data:
+        field_value = getattr(au_mission, field)
+        reference_value = data.get(field)
+        if field_value != reference_value:
+            log_msg = (
+                f"'{au_mission.map_name}': '{field}' verification failure: "
+                f"{field_value} != {reference_value}."
+            )
+            _LOGGER.warning(log_msg)
+        else:
+            log_msg = f"'{au_mission.map_name}': `{field}` matches in-game data."
+            _LOGGER.info(log_msg)
 
 
-def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
-    """Return e.g. `'a', 'b', 'c'`."""
-    return f"'{"', '".join(iterable)}'"
-
-
-def sort_missions_by_name(map_info: Mission) -> str:
-    """Sort order for `Mission` instances."""
-    if map_info.display_name is None:
-        return map_info.map_name.casefold()
-    return map_info.display_name.casefold()
+def sort_missions_by_name(mission: Mission) -> str:
+    """Sort order for `Mission`s table."""
+    if mission.display_name is None:
+        return mission.map_name.casefold()
+    return mission.display_name.casefold()
 
 
 def markdown_table(
@@ -212,7 +186,7 @@ def markdown_table(
     tbody = ""
     for mission in missions:
         for col, details in columns.items():
-            td_value = handle_missing_value(getattr(mission, col))
+            td_value = markdown_handle_missing_value(getattr(mission, col))
             if details.get("link_cell_content") and mission.download_url:
                 td_value = f"[{td_value}]({mission.download_url})"
 
@@ -222,7 +196,7 @@ def markdown_table(
     return thead + tdivider + tbody
 
 
-def handle_missing_value(val: int | str | None) -> str:
+def markdown_handle_missing_value(val: int | str | None) -> str:
     """
     Display `` instead of `0` if value is `None`.
 
