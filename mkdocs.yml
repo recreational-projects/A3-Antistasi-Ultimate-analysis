@@ -1,8 +1,13 @@
 site_name: Antistasi Ultimate analysis
 site_url: https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/
+
 theme:
   name: material
+
 extra_javascript:
   - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
   - https://unpkg.com/tablesort@5.3.0/dist/sorts/tablesort.number.min.js
   - javascripts/tablesort.js
+
+markdown_extensions:
+  - footnotes

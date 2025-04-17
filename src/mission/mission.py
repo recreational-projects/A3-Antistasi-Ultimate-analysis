@@ -82,9 +82,9 @@ class Mission:
         )
 
     @property
-    def display_name(self) -> str | None:
+    def map_display_name(self) -> str | None:
         """Return full name if it exists in lookup."""
-        return MAP_INDEX.get(self.map_name, {}).get("display_name")
+        return MAP_INDEX.get(self.map_name, {}).get("map_display_name")
 
     @property
     def download_url(self) -> str | None:
@@ -159,3 +159,14 @@ class Mission:
                 2 * self.factories_count,
             )
         )
+
+    def war_level_points_ratio(self, max_value: int) -> float | None:
+        """Fraction of `max_value`."""
+        if not self.war_level_points:
+            return None
+
+        ratio = self.war_level_points / max_value
+        if ratio > 1:
+            err_msg = f"War Level Points ratio {ratio} > 1."
+            raise ValueError(err_msg)
+        return ratio
