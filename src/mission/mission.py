@@ -51,7 +51,8 @@ class Mission:
             duplicated = {
                 t
                 for t in town_names
-                if t in unique_town_names or unique_town_names.add(t)
+                # TODO: fix type issue
+                if t in unique_town_names or unique_town_names.add(t)  # type: ignore[func-returns-value]
             }
             if len(unique_town_names) != len(town_names):
                 log_msg = (

@@ -1,0 +1,42 @@
+name: Python 3.12 application with uv on Ubuntu
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install uv - latest if not defined in `pyproject.toml`
+      uses: astral-sh/setup-uv@v5
+
+    - name: Setup Python
+      # Faster than using uv, as it caches Python on GitHub runner
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install project
+      run: uv sync --dev
+
+    - name: Lint with ruff
+      # by default: exit with error if rule violations
+      run: uv run ruff check --output-format=github
+
+    - name: Lint format with ruff
+      # by default: exit with error if rule violations
+      run: uv run ruff format
+
+    - name: Type check with mypy
+      run: uv run mypy .
