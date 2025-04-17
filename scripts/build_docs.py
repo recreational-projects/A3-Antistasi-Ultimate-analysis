@@ -17,7 +17,7 @@ from src.mission.mission import Mission
 from src.static_data.au_mission_overrides import EXCLUDED_MISSIONS
 from src.static_data.in_game_data import IN_GAME_DATA
 from src.static_data.map_index import MAP_INDEX
-from src.utils import load_config, pretty_iterable_of_str
+from src.utils import load_config, pretty_iterable_of_str, project_version
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {
@@ -124,6 +124,7 @@ def main() -> None:
             max_war_level_points=max_war_level_points,
         )
         + OUTRO_MARKDOWN
+        + markdown_version()
     )
     log_msg = "Generated Markdown."
     _LOGGER.info(log_msg)
@@ -227,6 +228,16 @@ def markdown_total_missions(missions: Sequence[Mission]) -> str:
     return (
         f"- {len(missions)} maps total including season variants, excluding Stratis\n"
     )
+
+
+def markdown_version() -> str:
+    """
+    Create Markdown project version line.
+
+    Version from `pyproject.toml`.
+    """
+    version = project_version()
+    return f"\n- Version {version}\n"
 
 
 if __name__ == "__main__":
