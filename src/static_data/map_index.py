@@ -51,7 +51,7 @@ MAP_INDEX: dict[str, dict[str, str]] = {
         "map_display_name": "Livonia",
         "url": "https://store.steampowered.com/app/1021790",
     },
-    "Esseker": {  # mod
+    "esseker": {  # mod
         "map_display_name": "New Esseker",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2712204589",
     },

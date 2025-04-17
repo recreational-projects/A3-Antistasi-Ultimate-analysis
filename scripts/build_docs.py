@@ -83,7 +83,7 @@ def main() -> None:
     unused_map_index_names = MAP_INDEX.keys() - mission_map_names
     if unused_map_index_names:
         log_msg = (
-            f"Unexpected {len(unused_map_index_names)} reference data:"
+            f"Unexpected {len(unused_map_index_names)} map index data:"
             f"{pretty_iterable_of_str(list(unused_map_index_names))}'."
         )
         _LOGGER.warning(log_msg)
