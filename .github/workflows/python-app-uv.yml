@@ -37,3 +37,6 @@ jobs:
     - name: Lint format with ruff
       # by default: exit with error if rule violations
       run: uv run ruff format
+
+    - name: Type check with mypy
+      run: uv run mypy .
