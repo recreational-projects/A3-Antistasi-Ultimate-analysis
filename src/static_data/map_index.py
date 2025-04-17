@@ -17,10 +17,10 @@ MAP_INDEX = {
     },
     "brf_sumava": {  # mod
         "display_name": "Šumava",
-        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994,",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
     },
-    "blud_vidda": {  # mod  # TODO: verify in-game
-        "display_name": r"Vidda \| legacy version",
+    "blud_vidda": {  # mod
+        "display_name": "Vidda",  # a.k.a. r"Vidda \| legacy version"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647",
     },
     "cam_lao_nam": {  # creator DLC: S.O.G. Prairie Fire
@@ -51,7 +51,7 @@ MAP_INDEX = {
         "display_name": "Livonia",
         "url": "https://store.steampowered.com/app/1021790",
     },
-    "esseker": {  # mod TODO: Verify in-game
+    "Esseker": {  # mod
         "display_name": "New Esseker",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2712204589",
     },
@@ -92,7 +92,7 @@ MAP_INDEX = {
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=421620913",
     },
     "lingor3": {  # mod
-        "display_name": "Lingor Island",  # TODO: Dingor also?
+        "display_name": "Lingor Island",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=718649903",
     },
     "lythium": {  # mod
