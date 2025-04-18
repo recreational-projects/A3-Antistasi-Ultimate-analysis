@@ -1,4 +1,4 @@
-"""Parse all maps in `INPUT_RELATIVE_DIR` and export JSON to `OUTPUT_RELATIVE_DIR`."""
+"""Analyse missions in source code and export intermediate data."""
 
 import json
 import logging
@@ -26,14 +26,14 @@ def main() -> None:
     )
     base_filepath = Path(__file__).resolve().parent
     config = load_config(base_filepath / _CONFIG_FILEPATH)
-    input_dir_path = base_filepath / config["INPUT_RELATIVE_DIR"]
-    output_dir_path = base_filepath / config["DATA_RELATIVE_DIR"]
-    output_dir_path.mkdir(parents=True, exist_ok=True)
 
-    all_map_dirs = mission_dirs_in_dir(input_dir_path)
+    mission_dirs = mission_dirs_in_dir(base_filepath / config["AU_SOURCE_DIR_RELATIVE"])
     map_exports_count = 0
 
-    for dir_ in track(all_map_dirs, description="Analysing missions..."):
+    output_dir_path = base_filepath / config["INTERMEDIATE_DATA_DIR_RELATIVE"]
+    output_dir_path.mkdir(parents=True, exist_ok=True)
+
+    for dir_ in track(mission_dirs, description="Analysing missions..."):
         mission = Mission.from_dir(dir_)
 
         if mission is None:

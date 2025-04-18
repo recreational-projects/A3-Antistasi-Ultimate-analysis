@@ -1,9 +1,4 @@
-"""
-Generate the Markdown doc representing site content.
-
-Load all JSON files in `DATA_RELATIVE_DIR`; export Markdown
-to `OUTPUT_RELATIVE_FILE`.
-"""
+"""Generate the Markdown doc representing site content."""
 
 import logging
 from collections.abc import Sequence
@@ -77,7 +72,8 @@ def main() -> None:
     config = load_config(base_filepath / _CONFIG_FILEPATH)
 
     au_missions = load_missions_data(
-        base_filepath / config["DATA_RELATIVE_DIR"], excludes=EXCLUDED_MISSIONS
+        base_filepath / config["INTERMEDIATE_DATA_DIR_RELATIVE"],
+        excludes=EXCLUDED_MISSIONS,
     )
     mission_map_names = {m.map_name for m in au_missions}
     unused_map_index_names = MAP_INDEX.keys() - mission_map_names
@@ -129,7 +125,7 @@ def main() -> None:
     log_msg = "Generated Markdown."
     _LOGGER.info(log_msg)
 
-    doc_file_path = base_filepath / config["OUTPUT_RELATIVE_FILE"]
+    doc_file_path = base_filepath / config["MARKDOWN_OUTPUT_FILE_RELATIVE"]
     with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
         fp.write(markdown)
 
