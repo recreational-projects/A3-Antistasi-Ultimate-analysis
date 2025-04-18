@@ -14,10 +14,10 @@ from rich.logging import RichHandler
 from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
 from src.mission.file import load_missions_data
 from src.mission.mission import Mission
-from src.static_data.au_mission_overrides import EXCLUDED_MISSIONS
-from src.static_data.in_game_data import IN_GAME_DATA
-from src.static_data.map_index import MAP_INDEX
 from src.utils import load_config, pretty_iterable_of_str, project_version
+from static_data.au_mission_overrides import EXCLUDED_MISSIONS
+from static_data.in_game_data import IN_GAME_DATA
+from static_data.map_index import MAP_INDEX
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {

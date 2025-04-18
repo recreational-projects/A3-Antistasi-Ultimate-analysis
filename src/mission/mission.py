@@ -10,8 +10,8 @@ from attrs import Factory, define
 from src.mission.mapinfo_hpp_parser import get_map_info_data
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
-from src.static_data.map_index import MAP_INDEX
 from src.utils import pretty_iterable_of_str
+from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from pathlib import Path

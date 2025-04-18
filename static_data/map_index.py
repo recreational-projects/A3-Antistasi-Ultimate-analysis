@@ -15,13 +15,13 @@ MAP_INDEX: dict[str, dict[str, str]] = {
         "map_display_name": "Altis",
         "url": "https://store.steampowered.com/app/107410",
     },
-    "brf_sumava": {  # mod
-        "map_display_name": "Šumava",
-        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
-    },
     "blud_vidda": {  # mod
         "map_display_name": "Vidda",  # a.k.a. r"Vidda \| legacy version"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647",
+    },
+    "brf_sumava": {  # mod
+        "map_display_name": "Šumava",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
     },
     "cam_lao_nam": {  # creator DLC: S.O.G. Prairie Fire
         "map_display_name": "Cam Lao Nam",
