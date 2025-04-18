@@ -2,7 +2,7 @@
 Generate the Markdown doc representing site content.
 
 Load all JSON files in `DATA_RELATIVE_DIR`; export Markdown
-to `OUTPUT_RELATIVE_DIR`.
+to `OUTPUT_RELATIVE_FILE`.
 """
 
 import logging

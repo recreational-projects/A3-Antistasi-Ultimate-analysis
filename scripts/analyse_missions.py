@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def main() -> None:
-    """Parse all maps."""
+    """Parse all missions."""
     logging.basicConfig(
         level="INFO",
         format="%(message)s",
