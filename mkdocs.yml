@@ -3,6 +3,7 @@ site_url: https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis
 
 theme:
   name: material
+  custom_dir: docs-overrides
   icon:
     logo: material/map-search
   features:
@@ -35,3 +36,7 @@ extra_javascript:
 
 markdown_extensions:
   - footnotes
+
+extra:
+  analytics:
+    provider: custom
