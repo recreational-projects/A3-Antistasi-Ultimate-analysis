@@ -44,7 +44,7 @@ class Mission:
     """From `mapinfo.hpp`."""
     towns: dict[str, int]
     """Towns defined in the mission. Derived from `populations` array in
-    `mapinfo.hpp`."""
+    `mapinfo.hpp`, but duplicates and any in `disabled_towns` are removed."""
     disabled_towns: list[str]
     """Towns not used in the mission. Derived from `disabledTowns` array in
     `mapinfo.hpp`. NB: not necessarily relevant to the map!"""
@@ -61,7 +61,10 @@ class Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(map_dir).lower()
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
-        populations_ = map_info["populations"]
+        disabled_towns_ = map_info["disabled_towns"]
+        populations_ = [
+            p for p in map_info["populations"] if p[0] not in disabled_towns_
+        ]
         town_names_ = None if not populations_ else [p[0] for p in populations_]
         if town_names_:
             unique_town_names = set()
