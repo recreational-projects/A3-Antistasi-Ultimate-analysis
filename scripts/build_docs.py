@@ -16,7 +16,9 @@ _COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {
         "display_heading": "Map",
     },
-    "climate": {},
+    "climate": {
+        "display_heading": "Climate",
+    },
     "airports_count": {
         "display_heading": "Airports",
         "text-align": "right",
