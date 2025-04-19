@@ -45,3 +45,12 @@ reference data and generate a single Markdown file in `/docs`
 ### Generate static site from Markdown
 
 #TODO
+
+## License
+
+`/static_data/` contains data derived from Antistasi Ultimate assets and from 
+other parties. See individual files for  licensing information.
+
+Otherwise, the [MIT licence](/LICENSE) applies - the same as
+[Antistasi Ultimate source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
+

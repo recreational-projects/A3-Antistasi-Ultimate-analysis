@@ -3,7 +3,10 @@ Used to verify generated data.
 
 Derived from screen captures belonging to Antistasi Ultimate at:
 https://drive.google.com/drive/u/0/folders/1jSvzJnzeNXdaE93TISdEt_U3j3zf__Tl
-Used under licence: https://drive.google.com/file/d/1UrDAuN9-9us8Xb-AIFxLrvs6tzw2hbb5/view
+
+LICENSE:
+
+Used under license: https://drive.google.com/file/d/1UrDAuN9-9us8Xb-AIFxLrvs6tzw2hbb5/view
 """
 
 IN_GAME_DATA: dict[str, dict[str, int]] = {
