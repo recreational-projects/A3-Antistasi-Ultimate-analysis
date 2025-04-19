@@ -10,7 +10,6 @@ dependencies = [
     { name = "armaclass" },
     { name = "attrs" },
     { name = "cattrs" },
-    { name = "mdutils" },
     { name = "pyparsing" },
     { name = "rich" },
 ]
@@ -28,7 +27,6 @@ requires-dist = [
     { name = "armaclass", specifier = "==0.2.2" },
     { name = "attrs", specifier = "==25.3.0" },
     { name = "cattrs", specifier = ">=24.1.3" },
-    { name = "mdutils", specifier = ">=1.6.0" },
     { name = "pyparsing", specifier = "==3.2.3" },
     { name = "rich", specifier = "==14.0.0" },
 ]
@@ -267,12 +265,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec9
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979 },
 ]
-
-[[package]]
-name = "mdutils"
-version = "1.6.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b1/ec/6240f147530a2c8d362ed3f2f7985aca92cda68c25ffc2fc216504b17148/mdutils-1.6.0.tar.gz", hash = "sha256:647f3cf00df39fee6c57fa6738dc1160fce1788276b5530c87d43a70cdefdaf1", size = 22881 }
 
 [[package]]
 name = "mergedeep"
