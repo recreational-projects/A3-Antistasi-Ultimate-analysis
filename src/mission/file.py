@@ -6,7 +6,7 @@ from collections.abc import Iterable
 from operator import attrgetter
 from pathlib import Path
 
-from cattrs import structure
+from cattrs import ClassValidationError, structure
 
 from src.mission.mission import Mission, map_name_from_mission_dir_path
 from src.utils import pretty_iterable_of_str
@@ -38,10 +38,7 @@ def mission_dirs_in_dir(path: Path) -> list[Path]:
         List of `Path`s.
 
     """
-    dirs = [p for p in list(path.iterdir()) if path_looks_like_mission_dir(p)]
-    log_msg = f"Found {len(dirs)} candidate missions in {path}."
-    _LOGGER.info(log_msg)
-    return dirs
+    return [p for p in (path.iterdir()) if path_looks_like_mission_dir(p)]
 
 
 def load_missions_data(path: Path, excludes: Iterable[str]) -> list[Mission]:
@@ -60,7 +57,11 @@ def load_missions_data(path: Path, excludes: Iterable[str]) -> list[Mission]:
     missions = []
     for fp in json_files:
         with Path.open(fp, "r", encoding="utf-8") as file:
-            mission = structure(json.load(file), Mission)
+            try:
+                mission = structure(json.load(file), Mission)
+            except ClassValidationError as err:
+                err_msg = f"Error creating `Mission` from JSON: {fp}."
+                raise ValueError(err_msg) from err
             missions.append(mission)
 
     log_msg = f"Loaded data for {len(missions)} missions."

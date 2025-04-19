@@ -9,10 +9,8 @@ from rich.logging import RichHandler
 from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
 from src.mission.file import load_missions_data
 from src.mission.mission import Mission
-from src.utils import load_config, pretty_iterable_of_str, project_version
+from src.utils import load_config, project_version
 from static_data.au_mission_overrides import EXCLUDED_MISSIONS
-from static_data.in_game_data import IN_GAME_DATA
-from static_data.map_index import MAP_INDEX
 
 _COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {
@@ -75,38 +73,6 @@ def main() -> None:
         base_filepath / config["INTERMEDIATE_DATA_DIR_RELATIVE"],
         excludes=EXCLUDED_MISSIONS,
     )
-    mission_map_names = {m.map_name for m in au_missions}
-    unused_map_index_names = MAP_INDEX.keys() - mission_map_names
-    if unused_map_index_names:
-        log_msg = (
-            f"Unexpected {len(unused_map_index_names)} map index data:"
-            f"{pretty_iterable_of_str(list(unused_map_index_names))}'."
-        )
-        _LOGGER.warning(log_msg)
-
-    unused_in_game_map_names = IN_GAME_DATA.keys() - mission_map_names
-    if unused_in_game_map_names:
-        log_msg = (
-            f"Unexpected {len(unused_in_game_map_names)} reference data:"
-            f"{pretty_iterable_of_str(list(unused_in_game_map_names))}'."
-        )
-        _LOGGER.warning(log_msg)
-
-    for mission in au_missions:
-        map_name = mission.map_name
-
-        if map_name not in MAP_INDEX:
-            log_msg = f"'{map_name}': not in map index."
-            _LOGGER.warning(log_msg)
-        else:
-            verify_vs_map_index(map_name=map_name, data=MAP_INDEX[map_name])
-
-        if map_name not in IN_GAME_DATA:
-            log_msg = f"'{map_name}': no in-game data."
-            _LOGGER.warning(log_msg)
-        else:
-            verify_vs_in_game_data(au_mission=mission, data=IN_GAME_DATA[map_name])
-
     max_war_level_points = max(
         mission.war_level_points for mission in au_missions if mission.war_level_points
     )
@@ -131,33 +97,6 @@ def main() -> None:
 
     log_msg = f"Markdown saved to {doc_file_path}."
     _LOGGER.info(log_msg)
-
-
-def verify_vs_map_index(*, map_name: str, data: dict[str, str]) -> None:
-    """Verify generated data against reference data."""
-    if not data.get("map_display_name"):
-        log_msg = f"'{map_name}': no `map_display_name` in index."
-        _LOGGER.warning(log_msg)
-
-    if not data.get("url"):
-        log_msg = f"'{map_name}' no `url` in index."
-        _LOGGER.warning(log_msg)
-
-
-def verify_vs_in_game_data(*, au_mission: Mission, data: dict[str, int]) -> None:
-    """Verify generated data against in-game reference data."""
-    for field in data:
-        field_value = getattr(au_mission, field)
-        reference_value = data.get(field)
-        if field_value != reference_value:
-            log_msg = (
-                f"'{au_mission.map_name}': '{field}' verification failure: "
-                f"{field_value} != {reference_value}."
-            )
-            _LOGGER.warning(log_msg)
-        else:
-            log_msg = f"'{au_mission.map_name}': `{field}` matches in-game data."
-            _LOGGER.info(log_msg)
 
 
 def sort_missions_by_name(mission: Mission) -> str:
@@ -194,8 +133,8 @@ def markdown_table(
             td_value = ""
             if col == "map_name":
                 td_value = str(mission.map_display_name)
-                if mission.download_url:
-                    td_value = f"[{td_value}]({mission.download_url})"
+                if mission.map_url:
+                    td_value = f"[{td_value}]({mission.map_url})"
 
             elif col == "war_level_points_ratio_dynamic":
                 ratio = mission.war_level_points_ratio(max_war_level_points)
