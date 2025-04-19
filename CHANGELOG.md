@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - [Simple Analytics](https://www.simpleanalytics.com/)
 
+### Fixed
+
+- Disabled towns were still counted
+
 
 ## [0.7.1] - 2025-04-17
 

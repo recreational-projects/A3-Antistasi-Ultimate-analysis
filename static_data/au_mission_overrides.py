@@ -2,6 +2,6 @@
 
 EXCLUDED_MISSIONS: set[str] = {
     # Excluded from final data table
-    # Mission filename stem
+    # Mission dir name
     "Antistasi_Stratis.Stratis",
 }

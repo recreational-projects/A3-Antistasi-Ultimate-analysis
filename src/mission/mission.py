@@ -11,7 +11,6 @@ from src.mission.mapinfo_hpp_parser import get_map_info_data
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
 from src.utils import pretty_iterable_of_str
-from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -37,35 +36,47 @@ class Mission:
 
     map_name: str
     """Lower case. Derived from directory name. Assumed unique; used as primary key."""
+    map_display_name: str | None
+    """From static reference data. `None` if not available."""
+    map_url: str | None
+    """From static reference data. `None` if not available."""
     climate: str
     """From `mapinfo.hpp`."""
     towns: dict[str, int]
-    """Towns in the mission. Derived from `populations` array in
-    `mapinfo.hpp`."""
+    """Towns defined in the mission. Derived from `populations` array in
+    `mapinfo.hpp`, but duplicates and any in `disabled_towns` are removed."""
     disabled_towns: list[str]
     """Towns not used in the mission. Derived from `disabledTowns` array in
     `mapinfo.hpp`. NB: not necessarily relevant to the map!"""
-    markers: list[Marker] = Factory(list)
+    military_objective_markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
     @classmethod
-    def from_dir(cls, map_dir: Path) -> Mission:
-        """Attempt to return instance from a map directory."""
-        map_name = map_name_from_mission_dir_path(map_dir)
+    def from_data(
+        cls,
+        *,
+        map_dir: Path,
+        map_index: dict[str, dict[str, str]],
+    ) -> Mission:
+        """Return instance from source data."""
+        map_name = map_name_from_mission_dir_path(map_dir).lower()
         map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
-        populations = map_info["populations"]
-        town_names = None if not populations else [p[0] for p in populations]
-        if town_names:
+        disabled_towns_ = map_info["disabled_towns"]
+        populations_ = [
+            p for p in map_info["populations"] if p[0] not in disabled_towns_
+        ]
+        town_names_ = None if not populations_ else [p[0] for p in populations_]
+        if town_names_:
             unique_town_names = set()
             duplicated = {
                 t
-                for t in town_names
+                for t in town_names_
                 # TODO: fix type issue
                 if t in unique_town_names or unique_town_names.add(t)  # type: ignore[func-returns-value]
             }
-            if len(unique_town_names) != len(town_names):
+            if len(unique_town_names) != len(town_names_):
                 log_msg = (
-                    f"'{map_name}': towns_count={len(town_names)} but "
+                    f"'{map_name}': towns_count={len(town_names_)} but "
                     f"{len(unique_town_names)} unique.\n"
                     f"{pretty_iterable_of_str(duplicated)} duplicated."
                 )
@@ -73,23 +84,50 @@ class Mission:
 
         marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
 
+        map_display_name, map_url = None, None
+        map_lookup = map_index.get(map_name)
+        if not map_lookup:
+            log_msg = f"'{map_name}': not in map index."
+            _LOGGER.warning(log_msg)
+        else:
+            map_display_name = map_lookup.get("display_name")
+            map_url = map_lookup.get("url")
+        if not map_display_name:
+            log_msg = f"'{map_name}': no `map_display_name` in index."
+            _LOGGER.warning(log_msg)
+        if not map_url:
+            log_msg = f"'{map_name}' no `url` in index."
+            _LOGGER.warning(log_msg)
+
         return cls(
-            map_name=map_name.lower(),
+            map_name=map_name,
+            map_display_name=map_display_name,
+            map_url=map_url,
             climate=map_info["climate"],
-            towns={p[0]: p[1] for p in map_info["populations"]},
+            towns={p[0]: p[1] for p in populations_},
             disabled_towns=map_info["disabled_towns"],
-            markers=[Marker.from_data(m) for m in marker_nodes],
+            military_objective_markers=[Marker.from_data(m) for m in marker_nodes],
         )
 
-    @property
-    def map_display_name(self) -> str | None:
-        """Return full name if it exists in lookup."""
-        return MAP_INDEX.get(self.map_name, {}).get("map_display_name")
-
-    @property
-    def download_url(self) -> str | None:
-        """Return URL if it exists in lookup."""
-        return MAP_INDEX.get(self.map_name, {}).get("url")
+    def verify_vs_in_game_data(self, data: dict[str, dict[str, int]]) -> None:
+        """Verify against in-game data."""
+        in_game_lookup = data.get(self.map_name)
+        if not in_game_lookup:
+            log_msg = f"'{self.map_name}': no in-game data."
+            _LOGGER.warning(log_msg)
+        else:
+            for field in in_game_lookup:
+                field_value = getattr(self, field)
+                reference_value = in_game_lookup.get(field)
+                if field_value != reference_value:
+                    log_msg = (
+                        f"'{self.map_name}': '{field}': "
+                        f"{field_value} != reference value: {reference_value}."
+                    )
+                    _LOGGER.warning(log_msg)
+                else:
+                    log_msg = f"'{self.map_name}': `{field}` matches in-game data."
+                    _LOGGER.debug(log_msg)
 
     @property
     def towns_count(self) -> int | None:
@@ -100,33 +138,33 @@ class Mission:
 
     @property
     def airports_count(self) -> int:
-        """Enumerate airports."""
-        return len([m for m in self.markers if m.is_airport])
+        """Enumerate airports from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_airport])
 
     @property
     def waterports_count(self) -> int:
-        """Enumerate sea/river ports."""
-        return len([m for m in self.markers if m.is_waterport])
+        """Enumerate sea/river ports from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_waterport])
 
     @property
     def bases_count(self) -> int:
-        """Enumerate bases."""
-        return len([m for m in self.markers if m.is_base])
+        """Enumerate bases from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_base])
 
     @property
     def outposts_count(self) -> int:
-        """Enumerate outposts."""
-        return len([m for m in self.markers if m.is_outpost])
+        """Enumerate outposts from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_outpost])
 
     @property
     def factories_count(self) -> int:
-        """Enumerate factories."""
-        return len([m for m in self.markers if m.is_factory])
+        """Enumerate factories from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_factory])
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources."""
-        return len([m for m in self.markers if m.is_resource])
+        """Enumerate resources from `self.markers`."""
+        return len([m for m in self.military_objective_markers if m.is_resource])
 
     @property
     def total_objectives_count(self) -> int:
@@ -153,10 +191,10 @@ class Mission:
                 8 * self.airports_count,
                 6 * self.bases_count,
                 4 * self.waterports_count,
-                len(self.towns),
                 2 * self.outposts_count,
                 2 * self.resources_count,
                 2 * self.factories_count,
+                len(self.towns),
             )
         )
 

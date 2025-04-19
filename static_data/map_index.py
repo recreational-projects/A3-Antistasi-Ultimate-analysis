@@ -8,239 +8,239 @@ MAP_INDEX: dict[str, dict[str, str]] = {
     # NB: keys must be lower-case.
     # Display names are as per Steam app/workshop titles/text except where noted.
     "abramia": {  # mod
-        "map_display_name": "Isla Abramia",
+        "display_name": "Isla Abramia",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=648775794",
     },
     "altis": {  # base game
-        "map_display_name": "Altis",
+        "display_name": "Altis",
         "url": "https://store.steampowered.com/app/107410",
     },
     "blud_vidda": {  # mod
-        "map_display_name": "Vidda",  # a.k.a. r"Vidda \| legacy version"
+        "display_name": "Vidda",  # a.k.a. r"Vidda \| legacy version"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647",
     },
     "brf_sumava": {  # mod
-        "map_display_name": "Šumava",
+        "display_name": "Šumava",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
     },
     "cam_lao_nam": {  # creator DLC: S.O.G. Prairie Fire
-        "map_display_name": "Cam Lao Nam",
+        "display_name": "Cam Lao Nam",
         "url": "https://store.steampowered.com/app/1227700",
     },
     "chernarus": {  # mod: CUP Terrains - Maps
-        "map_display_name": "Chernarus (Autumn)",
+        "display_name": "Chernarus (Autumn)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
     "chernarus_summer": {  # mod: CUP Terrains - Maps
-        "map_display_name": "Chernarus (Summer)",
+        "display_name": "Chernarus (Summer)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
     "chernarus_winter": {  # mod: CUP Terrains - Maps
-        "map_display_name": "Chernarus (Winter)",
+        "display_name": "Chernarus (Winter)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
     "chernarusredux": {  # mod
-        "map_display_name": "Chernarus Redux",
+        "display_name": "Chernarus Redux",
         "url": "https://steamcommunity.com/workshop/filedetails/?id=1128256978",
     },
     "cup_chernarus_a3": {  # mod: CUP Terrains - Maps 2.0
-        "map_display_name": "Chernarus 2020",
+        "display_name": "Chernarus 2020",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169",
     },
     "enoch": {  # DLC: Contact
-        "map_display_name": "Livonia",
+        "display_name": "Livonia",
         "url": "https://store.steampowered.com/app/1021790",
     },
     "esseker": {  # mod
-        "map_display_name": "New Esseker",
+        "display_name": "New Esseker",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2712204589",
     },
     "fapovo": {  # mod
-        "map_display_name": "Fapovo",
+        "display_name": "Fapovo",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1910457930",
     },
     "gm_weferlingen_summer": {  # CDLC: Global Mobilization - Cold War Germany
-        "map_display_name": "Weferlingen (Summer)",
+        "display_name": "Weferlingen (Summer)",
         "url": "https://store.steampowered.com/app/1042220",
     },
     "gm_weferlingen_winter": {  # CDLC: Global Mobilization - Cold War Germany
-        "map_display_name": "Weferlingen (Winter)",
+        "display_name": "Weferlingen (Winter)",
         "url": "https://store.steampowered.com/app/1042220",
     },
     "green_sea": {  # mod
-        "map_display_name": "Green Sea",  # officially "Green Sea Terrain"
+        "display_name": "Green Sea",  # officially "Green Sea Terrain"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212",
     },
     "gulfcoast": {  # mod
-        "map_display_name": "Gulfcoast Islands",  # sic
+        "display_name": "Gulfcoast Islands",  # sic
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1617004814",
     },
     "iron_excelsior_tobruk": {  # mod: IFA3 AIO
-        "map_display_name": "Tobruk",
+        "display_name": "Tobruk",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
     },
     "isladuala3": {  # mod
-        "map_display_name": "Isla Duala",
+        "display_name": "Isla Duala",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=714149065",
     },
     "kapaulio": {  # mod
-        "map_display_name": "Saint Kapaulio",
+        "display_name": "Saint Kapaulio",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=939686262",
     },
     "kunduz": {  # mod
-        "map_display_name": "Kunduz, Afghanistan",
+        "display_name": "Kunduz, Afghanistan",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=421620913",
     },
     "lingor3": {  # mod
-        "map_display_name": "Lingor Island",
+        "display_name": "Lingor Island",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=718649903",
     },
     "lythium": {  # mod
-        "map_display_name": "Lythium",
+        "display_name": "Lythium",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=909547724",
     },
     "malden": {  # free DLC
-        "map_display_name": "Malden 2035",
+        "display_name": "Malden 2035",
         "url": "https://store.steampowered.com/app/639600",
     },
     "mehland": {  # mod
-        "map_display_name": "Mehland",
+        "display_name": "Mehland",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3317364155",
     },
     "namalsk": {  # mod
-        "map_display_name": "Namalsk [R]",  # aka Namalsk Revamped
+        "display_name": "Namalsk [R]",  # aka Namalsk Revamped
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3013966707",
     },
     "napf": {  # mod
-        "map_display_name": "Napf Island A3",
+        "display_name": "Napf Island A3",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364",
     },
     "napfwinter": {  # mod
-        "map_display_name": "Napf Island A3 (Winter)",
+        "display_name": "Napf Island A3 (Winter)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364",
     },
     "optre_madrigal": {  # mod: Operation TREBUCHET
-        "map_display_name": "Madrigal",
+        "display_name": "Madrigal",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=769440155",
     },
     "panthera3": {  # mod
-        "map_display_name": "Island Panthera",
+        "display_name": "Island Panthera",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=708278910",
     },
     "pja310": {  # mod
-        "map_display_name": "G.O.S Al Rayak",
+        "display_name": "G.O.S Al Rayak",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=648172507",
     },
     "psyfx_pht": {  # mod: Unsung
-        "map_display_name": "Phuoc Tuy",
+        "display_name": "Phuoc Tuy",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=943001311",
     },
     "pulau": {  # mod
-        "map_display_name": "Pulau",
+        "display_name": "Pulau",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1423583812",
     },
     "rhspkl": {  # mod
-        "map_display_name": "Prei Khmaoch Luong",  # aka RHSPKL
+        "display_name": "Prei Khmaoch Luong",  # aka RHSPKL
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1978754337",
     },
     "ruha": {  # mod
-        "map_display_name": "Ruha",
+        "display_name": "Ruha",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1368857262",
     },
     "sara": {  # mod: CUP Terrains - Maps
-        "map_display_name": "Sahrani",
+        "display_name": "Sahrani",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
     "sefrouramal": {  # Creator DLC: Western Sahara
-        "map_display_name": "Sefrou-Ramal",
+        "display_name": "Sefrou-Ramal",
         "url": "https://store.steampowered.com/app/1681170",
     },
     "sehreno": {  # mod
-        "map_display_name": "Sehreno",
+        "display_name": "Sehreno",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2876540929",
     },
     "spe_mortain": {  # Creator DLC: Spearhead 1994
-        "map_display_name": "Mortain",
+        "display_name": "Mortain",
         "url": "https://store.steampowered.com/app/1175380",
     },
     "spe_normandy": {  # Creator DLC: Spearhead 1994
-        "map_display_name": "Normandy",
+        "display_name": "Normandy",
         "url": "https://store.steampowered.com/app/1175380",
     },
     "spex_utah_beach": {  # requires Creator DLC: Spearhead 1944
-        "map_display_name": "Utah Beach",
+        "display_name": "Utah Beach",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3117898674",
     },
     "staszow": {  # mod: IFA3 AIO
-        "map_display_name": "Staszow",
+        "display_name": "Staszow",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
     },
     "staszowwinter": {  # mod: IFA3 AIO
-        "map_display_name": "Staszow (Winter)",
+        "display_name": "Staszow (Winter)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937",
     },
     "stozec": {  # Creator DLC: CSLA Iron Curtain
-        "map_display_name": "Gabreta",
+        "display_name": "Gabreta",
         "url": "https://store.steampowered.com/app/1294440",
     },
     "stratis": {  # base game
-        "map_display_name": "Stratis",
+        "display_name": "Stratis",
         "url": "https://store.steampowered.com/app/107410",
     },
     "stubbhult": {  # mod
-        "map_display_name": "Stubbhult",
+        "display_name": "Stubbhult",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3353189981",
     },
     "takistan": {  # mod: CUP Terrains - Maps
-        "map_display_name": "Takistan",
+        "display_name": "Takistan",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=583544987",
     },
     "tanoa": {  # DLC: Apex
-        "map_display_name": "Tanoa",
+        "display_name": "Tanoa",
         "url": "https://store.steampowered.com/app/395180",
     },
     "tem_anizay": {  # mod
-        "map_display_name": "Anizay",
+        "display_name": "Anizay",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1537973181",
     },
     "tem_chernarus": {  # mod: Northern Fronts Terrains
-        "map_display_name": "Svartmarka (Summer)",
+        "display_name": "Svartmarka (Summer)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1630816076",
     },
     "tem_chernarusw": {  # mod: Northern Fronts Terrains
-        "map_display_name": "Svartmarka (Winter)",
+        "display_name": "Svartmarka (Winter)",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1630816076",
     },
     "tem_kujari": {  # mod
-        "map_display_name": "Kujari",
+        "display_name": "Kujari",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1726494027",
     },
     "tembelan": {  # mod
-        "map_display_name": "Tembelan Island",
+        "display_name": "Tembelan Island",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296",
     },
     "umb_colombia": {  # mod
-        "map_display_name": "UMB Colombia",
+        "display_name": "UMB Colombia",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2266710560",
     },
     "vn_khe_sanh": {  # CDLC: SOG Prairie Fire
-        "map_display_name": "Khe Sanh",
+        "display_name": "Khe Sanh",
         "url": "https://store.steampowered.com/app/1227700",
     },
     "vt7": {  # mod
-        "map_display_name": "Virolahti - Valtatie 7",
+        "display_name": "Virolahti - Valtatie 7",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1926513010",
     },
     "winthera3": {  # mod
-        "map_display_name": "Island Panthera (Winter)",  # aka "Island Winthera"
+        "display_name": "Island Panthera (Winter)",  # aka "Island Winthera"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=708278910",
     },
     "ww2_omaha_beach": {  # mod
-        "map_display_name": "Omaha Beach",
+        "display_name": "Omaha Beach",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2993515557",
     },
     "yulakia": {  # mod
-        "map_display_name": "Yulakia",
+        "display_name": "Yulakia",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2950257727",
     },
 }
