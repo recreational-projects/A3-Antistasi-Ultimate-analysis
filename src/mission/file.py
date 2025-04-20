@@ -24,7 +24,7 @@ def path_looks_like_mission_dir(path: Path) -> bool:
         return False
 
     map_name = map_name_from_mission_dir_path(path)
-    return map_name == path.stem[-len(map_name) :]
+    return map_name == path.stem[-len(map_name) :].lower()
 
 
 def mission_dirs_in_dir(path: Path) -> list[Path]:

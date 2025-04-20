@@ -103,9 +103,7 @@ def main() -> None:
 
 def sort_missions_by_name(mission: Mission) -> int:
     """Sort order for `Mission`s table."""
-    if mission.war_level_points is None:
-        return 0
-    return mission.war_level_points
+    return 0 if mission.war_level_points is None else mission.war_level_points
 
 
 def markdown_table(

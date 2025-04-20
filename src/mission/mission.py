@@ -27,7 +27,7 @@ def map_name_from_mission_dir_path(path: Path) -> str:
 
     e.g. `Antistasi_Altis.Altis` -> "Altis".
     """
-    return path.suffix.lstrip(".")
+    return path.suffix.lstrip(".").lower()
 
 
 @define
@@ -79,17 +79,17 @@ class Mission:
     def from_data(
         cls,
         *,
-        map_dir: Path,
+        mission_dir: Path,
         map_index: dict[str, dict[str, str]],
     ) -> Mission:
         """Return instance from source data."""
-        map_name = map_name_from_mission_dir_path(map_dir).lower()
-        map_info = get_map_info_data(map_dir / _MAPINFO_FILENAME)
+        map_name = map_name_from_mission_dir_path(mission_dir)
+        map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
         disabled_towns_ = map_info["disabled_towns"]
         populations_ = [
             p for p in map_info["populations"] if p[0] not in disabled_towns_
         ]
-        town_names_ = None if not populations_ else [p[0] for p in populations_]
+        town_names_ = [p[0] for p in populations_] if populations_ else None
         if town_names_:
             unique_town_names = set()
             duplicated = {
@@ -106,7 +106,7 @@ class Mission:
                 )
                 _LOGGER.warning(log_msg)
 
-        marker_nodes = get_marker_nodes(map_dir / _MISSION_FILENAME)
+        marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
 
         map_display_name, map_url = None, None
         map_lookup = map_index.get(map_name)

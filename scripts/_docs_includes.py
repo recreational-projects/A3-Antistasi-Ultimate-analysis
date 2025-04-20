@@ -8,7 +8,7 @@ hide:
 - This site aims to compare missions from the
   [Antistasi Ultimate](https://antistasiultimate.com/Home/) mod for
   [Arma 3](https://arma3.com/)
-- Data is generated from Antistasi Ultimate stable release v11.6.0
+- Data is auto-generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified
   against in-game information
 """
