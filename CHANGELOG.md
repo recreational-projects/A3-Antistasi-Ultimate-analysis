@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - All remaining towns counts - derived from grad_meh locations extracts 
-
+- Sort by War Level points initially
 
 ## [0.8.0] - 2025-04-19
 

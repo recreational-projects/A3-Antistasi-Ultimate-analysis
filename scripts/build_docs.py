@@ -83,7 +83,7 @@ def main() -> None:
         INTRO_MARKDOWN
         + markdown_total_missions(au_missions)
         + markdown_table(
-            missions=sorted(au_missions, key=sort_missions_by_name),
+            missions=sorted(au_missions, key=sort_missions_by_name, reverse=True),
             columns=_COLUMNS,
             max_war_level_points=max_war_level_points,
         )
@@ -101,11 +101,11 @@ def main() -> None:
     _LOGGER.info(log_msg)
 
 
-def sort_missions_by_name(mission: Mission) -> str:
+def sort_missions_by_name(mission: Mission) -> int:
     """Sort order for `Mission`s table."""
-    if mission.map_display_name is None:
-        return mission.map_name.casefold()
-    return mission.map_display_name.casefold()
+    if mission.war_level_points is None:
+        return 0
+    return mission.war_level_points
 
 
 def markdown_table(
