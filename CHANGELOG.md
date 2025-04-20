@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [UNRELEASED] - TBC
+
+### Fixed
+
+- When towns are not defined in the mission and were pulled from grad_meh data,
+  disabled towns were sometimes counted - affected Anizay, Malden 2035, Napf
+  Island A3, Napf Island A3 (Winter)
+
+
 ## [0.9.0] - 2025-04-20
 
 ### Added
@@ -12,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - All remaining towns counts except Sefrou-Ramal, derived from grad_meh
   locations extracts 
 - Sort by War Level points initially
+
 
 ## [0.8.0] - 2025-04-19
 
