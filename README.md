@@ -15,11 +15,8 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 
 ### Pre-requisites 
 
-- Clone or download Antistasi Ultimate source code repo
-- Use [grad_meh](https://github.com/gruppe-adler/grad_meh) to produce locations data for missions that don't explicitly
-  define towns 
 - Clone or download this repo
-- Edit `/scripts/config.toml` to point to the two data sources 
+- Edit `scripts/config.toml` to point to the two data sources 
 - Set up a Python environment 
 
 ### Analyse missions and export data
@@ -27,19 +24,20 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 Run Python script:
 
 ```shell
-python /scripts/analyse_missions.py
+python scripts/analyse_missions.py
 ```
 or equivalent to generate data from each AU mission, compare with reference data and
-export JSON files to `/data/`.
+export JSON files to `data/`.
 
-- Analyses `/mission.sqm` using [Armaclass](https://github.com/overfl0/Armaclass)
-  library and `mapInfo.hpp` using a custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
+- Analyses the mission's `mission.sqm` using
+  [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a
+- custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
 - Gets each mission's friendly map name and download URL from
-  `/static_data/map_index.py`
-- Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available and the
-  mission doesn't explicitly define the towns used 
+  `static_data/map_index.py`
+- Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
+  and the mission doesn't explicitly define the towns used 
 - Verifies the number of objectives (not towns) against information derived from
-  Antistasi Ultimate's in-game screenshots from `/static_data/in_game_data.py`
+  Antistasi Ultimate's in-game screenshots from `static_data/in_game_data.py`
 - Logs info and warnings
 
 ### Generate Markdown from data
@@ -47,9 +45,9 @@ export JSON files to `/data/`.
 Run Python script
 
 ```shell
-python /scripts/build_docs.py
+python scripts/build_docs.py
 ```
-or equivalent to load intermediate data and generate a single Markdown file in `/docs/`.
+or equivalent to load intermediate data and generate a single Markdown file in `docs/`.
 
 - Logs info and warnings
 
@@ -60,7 +58,7 @@ or equivalent to load intermediate data and generate a single Markdown file in `
 
 ## License
 
-`/static_data/` contains data derived from Antistasi Ultimate assets and from 
+`static_data/` contains data derived from Antistasi Ultimate assets and from 
 other parties. See individual files for  licensing information.
 
 Otherwise, the [MIT licence](/LICENSE) applies - the same as
