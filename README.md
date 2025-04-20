@@ -18,8 +18,7 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 - Clone or download this repo
 - Set up a Python environment 
 - Clone or download Antistasi Ultimate source code repo
-- Optional: use [grad_meh](https://github.com/gruppe-adler/grad_meh) to get extra
-  data on towns in each map
+- Optional: use [grad_meh](https://github.com/gruppe-adler/grad_meh) to get locations fill in towns for mission
 - Edit `/scripts/config.toml` to point to these two data sources 
 
 ### Analyse missions and export data
@@ -32,8 +31,8 @@ compare with reference data and export JSON files to `data/`.
   [pyparsing](https://github.com/pyparsing/pyparsing) parser
 - Gets each mission's friendly map name and download URL from
   `/static_data/map_index.py`
-- Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if the
-  missions doesn't explicitly define the towns used 
+- Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available and the
+  mission doesn't explicitly define the towns used 
 - Verifies the number of objectives (not towns) against information derived from
   Antistasi Ultimate's in-game screenshots from `/static_data/in_game_data.py`
 - Logs info and warnings
