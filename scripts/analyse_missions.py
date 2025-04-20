@@ -8,6 +8,7 @@ from attrs import asdict
 from rich.logging import RichHandler
 from rich.progress import track
 
+from src.geojson.load import load_towns_from_dir
 from src.mission.file import mission_dirs_in_dir
 from src.mission.mission import Mission
 from src.utils import load_config, pretty_iterable_of_str
@@ -53,6 +54,31 @@ def main() -> None:
         map_names.add(mission.map_name)
 
         mission.verify_vs_in_game_data(IN_GAME_DATA)
+
+        gm_towns_path = (
+            base_filepath
+            / config["GRAD_MEH_DATA_DIR_RELATIVE"]
+            / mission.map_name
+            / "geojson"
+            / "locations"
+        )
+        gm_towns = None
+        if not gm_towns_path.is_dir():
+            log_msg = f"'{mission.map_name}': No grad-meh locations data."
+            _LOGGER.warning(log_msg)
+        else:
+            gm_towns = load_towns_from_dir(gm_towns_path)
+
+        if not mission.towns:
+            log_msg = f"'{mission.map_name}': No towns defined in mission."
+            if not gm_towns:
+                log_msg += " No towns available from grad-meh data."
+                _LOGGER.warning(log_msg)
+            else:
+                mission.towns = {town.properties["name"]: None for town in gm_towns}
+                log_msg += " Using towns from grad-meh data."
+                _LOGGER.info(log_msg)
+
         export_filename = f"{dir_.name}.json"
         with Path.open(
             output_dir_path / export_filename, "w", encoding="utf-8"
