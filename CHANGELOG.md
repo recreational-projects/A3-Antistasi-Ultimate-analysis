@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [UNRELEASED] - TBC
+## [0.9.0] - 2025-04-20
 
 ### Added
 
-- All remaining towns counts - derived from grad_meh locations extracts 
+- All remaining towns counts except Sefrou-Ramal, derived from grad_meh
+  locations extracts 
 - Sort by War Level points initially
 
 ## [0.8.0] - 2025-04-19
@@ -125,6 +126,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[0.9.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.6.0...v0.7.0
