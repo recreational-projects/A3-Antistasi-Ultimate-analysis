@@ -18,17 +18,20 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 - Clone or download this repo
 - Set up a Python environment 
 - Clone or download Antistasi Ultimate source code repo
-- Optional: use [grad_meh](https://github.com/gruppe-adler/grad_meh) to get locations fill in towns for mission
+- Optional: use [grad_meh](https://github.com/gruppe-adler/grad_meh) to get locations
 - Edit `/scripts/config.toml` to point to these two data sources 
 
 ### Analyse missions and export data
 
-Run Python script `/scripts/analyse_missions.py` to generate data from each AU mission,
-compare with reference data and export JSON files to `data/`.
+Run Python script:
+
+```shell
+/scripts/analyse_missions.py
+```
+to generate data from each AU mission, compare with reference data and export JSON files to `data/`.
 
 - Analyses `/mission.sqm` using [Armaclass](https://github.com/overfl0/Armaclass)
-  library and `mapInfo.hpp` using a custom 
-  [pyparsing](https://github.com/pyparsing/pyparsing) parser
+  library and `mapInfo.hpp` using a custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
 - Gets each mission's friendly map name and download URL from
   `/static_data/map_index.py`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available and the
@@ -39,7 +42,12 @@ compare with reference data and export JSON files to `data/`.
 
 ### Generate Markdown from data
 
-Run Python script `/scripts/build_docs.py` to load intermediate data and generate a
+Run Python script
+
+```shell
+/scripts/build_docs.py
+```
+to load intermediate data and generate a
 single Markdown file in `/docs/`.
 
 - Logs info and warnings
@@ -47,6 +55,7 @@ single Markdown file in `/docs/`.
 ### Generate static site from Markdown
 
 #TODO
+
 
 ## License
 
