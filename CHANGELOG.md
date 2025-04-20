@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [UNRELEASED] - TBC
+
+### Added
+
+- All remaining towns counts - derived from grad_meh locations extracts 
+
+
 ## [0.8.0] - 2025-04-19
 
 ### Added
 
-- [Simple Analytics](https://www.simpleanalytics.com/)
+- [Simple Analytics](https://www.simpleanalytics.com/) (non-tracking)
 
 ### Fixed
 

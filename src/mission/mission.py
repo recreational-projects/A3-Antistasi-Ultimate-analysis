@@ -35,19 +35,43 @@ class Mission:
     """Information about a mission."""
 
     map_name: str
-    """Lower case. Derived from directory name. Assumed unique; used as primary key."""
+    """
+    Derived from directory name and normalised to lower case.
+
+    Assumed unique; used as primary key."""
+
     map_display_name: str | None
-    """From static reference data. `None` if not available."""
+    """
+    Full name of map, generally as it appears in Steam app/workshop titles/text.
+
+    From static reference data. `None` if not available."""
+
     map_url: str | None
-    """From static reference data. `None` if not available."""
+    """
+    URL at which the map can be downloaded.
+
+    From static reference data. `None` if not available."""
+
     climate: str
     """From `mapinfo.hpp`."""
-    towns: dict[str, int]
-    """Towns defined in the mission. Derived from `populations` array in
-    `mapinfo.hpp`, but duplicates and any in `disabled_towns` are removed."""
+
+    towns: dict[str, int | None]
+    """Towns in the mission, with population if known.
+
+    If the mission defines a `populations` array in `mapinfo.hpp`, it will be used to
+    derive town names and population values, removing duplicates and any
+    in `disabled_towns`.
+
+    Otherwise, town names will be derived from grad-meh data if available, but this
+    won't include population values, which will be set to `None`.
+    """
+
     disabled_towns: list[str]
-    """Towns not used in the mission. Derived from `disabledTowns` array in
-    `mapinfo.hpp`. NB: not necessarily relevant to the map!"""
+    """Towns defined in the mission as not used.
+
+    Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
+    to the map!"""
+
     military_objective_markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
