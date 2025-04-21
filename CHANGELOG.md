@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [UNRELEASED] - TBC
+## [0.9.1] - 2025-04-21
 
 ### Fixed
 
@@ -136,6 +136,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[0.9.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.7.0...v0.7.1
