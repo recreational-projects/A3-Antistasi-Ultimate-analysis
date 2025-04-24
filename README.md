@@ -15,6 +15,9 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 
 ### Pre-requisites 
 
+- Clone or download Antistasi Ultimate source code repo
+- Use [grad_meh](https://github.com/gruppe-adler/grad_meh) to produce locations data
+  for missions that don't explicitly define towns 
 - Clone or download this repo
 - Edit `scripts/config.toml` to point to the two data sources 
 - Set up a Python environment 
