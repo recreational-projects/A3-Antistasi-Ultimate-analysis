@@ -2,12 +2,12 @@
 
 import logging
 from collections.abc import Sequence
+from logging import INFO
 from pathlib import Path
 
 from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
-from src.mission.file import load_missions_data
 from src.mission.mission import Mission
 from src.utils import load_config, project_version
 from static_data.au_mission_overrides import EXCLUDED_MISSIONS
@@ -56,7 +56,7 @@ _COLUMNS: dict[str, dict[str, str | bool]] = {
         "text-align": "right",
     },
 }
-_CONFIG_FILEPATH = "config.toml"
+_CONFIG_FILENAME = "config.toml"
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -68,13 +68,8 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    base_filepath = Path(__file__).resolve().parent
-    config = load_config(base_filepath / _CONFIG_FILEPATH)
 
-    au_missions = load_missions_data(
-        base_filepath / config["INTERMEDIATE_DATA_DIR_RELATIVE"],
-        excludes=EXCLUDED_MISSIONS,
-    )
+    au_missions = Mission.missions_from_json(DATA_DIRPATH, excludes=EXCLUDED_MISSIONS)
     max_war_level_points = max(
         mission.war_level_points for mission in au_missions if mission.war_level_points
     )
@@ -90,15 +85,17 @@ def main() -> None:
         + OUTRO_MARKDOWN
         + markdown_version()
     )
-    log_msg = "Generated Markdown."
-    _LOGGER.info(log_msg)
+    log(INFO, "Generated Markdown.")
 
-    doc_file_path = base_filepath / config["MARKDOWN_OUTPUT_FILE_RELATIVE"]
-    with Path.open(doc_file_path, "w", encoding="utf-8") as fp:
+    with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
         fp.write(markdown)
 
-    log_msg = f"Markdown saved to {doc_file_path}."
-    _LOGGER.info(log_msg)
+    log(INFO, f"Markdown saved to {DOC_FILEPATH}.")
+
+
+def log(level: int, message: str) -> None:
+    """Wrap log messages."""
+    _LOGGER.log(level, message)
 
 
 def sort_missions_by_name(mission: Mission) -> int:
@@ -176,4 +173,8 @@ def markdown_version() -> str:
 
 
 if __name__ == "__main__":
+    _BASE_PATH = Path(__file__).resolve().parent
+    _CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
+    DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+    DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
     main()
