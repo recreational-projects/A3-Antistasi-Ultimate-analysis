@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - TBC
 
+### Added
+
+- Completed in-game military zones data, so this is now verified for all missions.
+
 ### Fixed
 
 - URL to AU website was out of date
