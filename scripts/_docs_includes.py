@@ -6,7 +6,7 @@ hide:
 # Compare missions in a sortable table
 
 - This site aims to compare missions from the
-  [Antistasi Ultimate](https://antistasiultimate.com/Home/) mod for
+  [Antistasi Ultimate](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
 - Data is auto-generated from Antistasi Ultimate stable release v11.6.0
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified

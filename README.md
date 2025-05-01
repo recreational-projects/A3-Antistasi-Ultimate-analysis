@@ -3,7 +3,7 @@
 Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/
 
 - Aims to compare missions from the
-  [Antistasi Ultimate mod](https://antistasiultimate.com/Home/) for
+  [Antistasi Ultimate mod](https://antistasiultimate.com/) for
   [Arma 3](https://arma3.com/)
 - Information is generated from
   [Antistasi Ultimate source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
