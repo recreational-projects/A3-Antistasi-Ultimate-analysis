@@ -18,6 +18,8 @@ OUTRO_MARKDOWN = """
     *Total military objectives* = sum(*airports*, *sea/riverports*, *bases*,
     *outposts*, *factories*, *resources*)
 [^2]:
+    Known issue: towns aren't counted (and total War Level points can't be calculated)
+    if they aren't explicitly declared in the mission files.<br>
     Missing towns counts will be added in future
 [^3]:
     Ratio of mission's *total War Level Points* to the largest known value.<br>
