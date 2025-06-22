@@ -22,7 +22,7 @@ IN_GAME_DATA: dict[str, dict[str, int]] = {
         "total_objectives_count": 92,
     },
     "blud_vidda": {"total_objectives_count": 39},  # image filename (37) is incorrect
-    "brf_sumava": {"total_objectives_count": 30},
+    "brf_sumava": {"total_objectives_count": 48},  # image (30) is outdated
     "cam_lao_nam": {"total_objectives_count": 75},
     "chernarus": {"total_objectives_count": 44},
     "chernarus_summer": {"total_objectives_count": 44},

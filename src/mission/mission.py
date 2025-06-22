@@ -337,9 +337,10 @@ class Mission:
                 reference_value = in_game_lookup.get(field)
                 if field_value != reference_value:
                     _log(
-                        WARNING,
-                        f"'{self.map_name}': '{field}': "
-                        f"{field_value} != reference value: {reference_value}.",
+                        ERROR,
+                        f"'{self.map_name}': military zone verification issue: "
+                        f"{field}': {field_value} != "
+                        f"reference value: {reference_value}.",
                     )
                 else:
                     _log(DEBUG, f"'{self.map_name}': `{field}` matches in-game data.")
