@@ -5,11 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## UNRELEASED - TBC
+
+### Added
+
+- Log error when mission fails military zone count verification
+
+### Changed
+
+- Update military zone count reference value for Sumava in AU v11.7.0
+
+
 ## [0.10.0] - 2025-06-22
 
 ### Added
 
-- Updated for AU v11.7.0 (adds Kunduz River map)
+- Updated for AU v11.7.0 (adds Kunduz River map, changes Šumava)
 - `scripts/analyse_missions.py`: improve logging when map not in indices
 
 
@@ -155,7 +166,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
-[0.10.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.2...v0.10.2
+[0.10.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.8.0...v0.9.0
