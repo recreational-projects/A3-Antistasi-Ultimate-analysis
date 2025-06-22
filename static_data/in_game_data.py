@@ -44,6 +44,7 @@ IN_GAME_DATA: dict[str, dict[str, int]] = {
     "isladuala3": {"total_objectives_count": 61},  # not in AU data
     "kapaulio": {"total_objectives_count": 99},
     "kunduz": {"total_objectives_count": 17},
+    "kunduz_valley": {"total_objectives_count": 40},
     "lingor3": {"total_objectives_count": 48},  # image filename (49) is incorrect
     "lythium": {"total_objectives_count": 38},
     "malden": {"total_objectives_count": 32},

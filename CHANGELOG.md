@@ -5,11 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## [0.9.2] - 20205-05-03
+## UNRELEASED - TBC
 
 ### Added
 
-- Completed in-game military zones data, so this is now verified for all missions.
+- Updated for AU v11.7.0 (adds Kunduz River map)
+- `scripts/analyse_missions.py`: improve logging when map not in indices
+
+
+## [0.9.2] - 2025-05-03
+
+### Added
+
+- Completed in-game military zones data, so this is now verified for all missions
 
 ### Fixed
 
