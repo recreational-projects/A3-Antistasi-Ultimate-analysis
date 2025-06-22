@@ -117,16 +117,17 @@ class Mission:
         marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
 
         map_display_name, map_url = None, None
-        map_lookup = map_index.get(map_name)
-        if not map_lookup:
-            _log(WARNING, f"'{map_name}': not in map index.")
+        if map_name not in map_index:
+            _log(ERROR, f"'{map_name}': map index issue: key '{map_name}' not found.")
         else:
+            map_lookup = map_index[map_name]
             map_display_name = map_lookup.get("display_name")
             map_url = map_lookup.get("url")
+
         if not map_display_name:
-            _log(WARNING, f"'{map_name}': no `map_display_name` in index.")
+            _log(ERROR, f"'{map_name}': map index issue: no `map_display_name`.")
         if not map_url:
-            _log(WARNING, f"'{map_name}' no `url` in index.")
+            _log(ERROR, f"'{map_name}': map index issue: no `url`.")
 
         return cls(
             map_name=map_name,
@@ -313,9 +314,22 @@ class Mission:
 
     def verify_pois_vs_in_game_data(self, data: dict[str, dict[str, int]]) -> None:
         """Verify against in-game data."""
+        map_name = self.map_name
+
+        if map_name not in data:
+            _log(
+                ERROR,
+                f"'{map_name}': military zone verification issue: "
+                f"key '{map_name}' not found.",
+            )
+
         in_game_lookup = data.get(self.map_name)
         if not in_game_lookup:
-            _log(WARNING, f"'{self.map_name}': no in-game data.")
+            _log(
+                ERROR,
+                f"'{self.map_name}': military zone verification issue: "
+                "No data, so zone counts can't be verified.",
+            )
 
         else:
             for field in in_game_lookup:
