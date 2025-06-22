@@ -2,11 +2,13 @@
 Information about maps.
 
 Manually compiled.
+
+This should have an entry for every Antistasi Utimate mission.
 """
 
 MAP_INDEX: dict[str, dict[str, str]] = {
-    # NB: keys must be lower-case.
-    # Display names are as per Steam app/workshop titles/text except where noted.
+    # key: `map_name`, derived from directory name and normalised to lower case.
+    #   `display_name` as per Steam app/workshop titles/text except where noted.
     "abramia": {  # mod
         "display_name": "Isla Abramia",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=648775794",
@@ -90,6 +92,10 @@ MAP_INDEX: dict[str, dict[str, str]] = {
     "kunduz": {  # mod
         "display_name": "Kunduz, Afghanistan",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=421620913",
+    },
+    "kunduz_valley": {  # mod
+        "display_name": "Kunduz River",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3078351739",
     },
     "lingor3": {  # mod
         "display_name": "Lingor Island",
