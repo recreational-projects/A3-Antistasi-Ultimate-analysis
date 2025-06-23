@@ -57,7 +57,6 @@ _COLUMNS: dict[str, dict[str, str | bool]] = {
     },
 }
 _CONFIG_FILENAME = "config.toml"
-_LOGGER = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -68,6 +67,7 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
+    log(INFO, f"{PROJECT_VERSION = }")
 
     au_missions = Mission.missions_from_json(DATA_DIRPATH, excludes=EXCLUDED_MISSIONS)
     max_war_level_points = max(
@@ -163,13 +163,8 @@ def markdown_total_missions(missions: Sequence[Mission]) -> str:
 
 
 def markdown_version() -> str:
-    """
-    Create Markdown project version line.
-
-    Version from `pyproject.toml`.
-    """
-    version = project_version()
-    return f"\n- Version {version}\n"
+    """Create Markdown project version line."""
+    return f"\n- Version {PROJECT_VERSION}\n"
 
 
 if __name__ == "__main__":
@@ -177,4 +172,6 @@ if __name__ == "__main__":
     _CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
     DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
     DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
+    PROJECT_VERSION = project_version()
+    _LOGGER = logging.getLogger(__name__)
     main()

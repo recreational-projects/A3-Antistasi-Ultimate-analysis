@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Log error when mission fails military zone count verification
+- `scripts/build_docs.py`: log project version
 
 ### Changed
 
