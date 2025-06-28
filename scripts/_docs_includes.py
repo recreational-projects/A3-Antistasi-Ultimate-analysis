@@ -15,7 +15,7 @@ hide:
 
 OUTRO_MARKDOWN = """
 [^1]:
-    *Total military objectives* = sum(*airports*, *sea/riverports*, *bases*,
+    *Total military zones* = sum(*airports*, *sea/riverports*, *bases*,
     *outposts*, *factories*, *resources*)
 [^2]:
     Known issue: towns aren't counted (and total War Level points can't be calculated)

@@ -39,7 +39,7 @@ export JSON files to `data/`.
   `static_data/map_index.py`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
   and the mission doesn't explicitly define the towns used 
-- Verifies the number of objectives (not towns) against information derived from
+- Verifies the number of military zones (not towns) against information derived from
   Antistasi Ultimate's in-game screenshots from `static_data/in_game_data.py`
 - Logs info and warnings
 
