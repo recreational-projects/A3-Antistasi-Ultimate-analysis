@@ -30,7 +30,7 @@ Run Python script:
 python scripts/analyse_missions.py
 ```
 or equivalent to generate data from each AU mission, compare with reference data and
-export JSON files to `data/`.
+export temporary JSON files to `data/`.
 
 - Analyses the mission's `mission.sqm` using
   [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a

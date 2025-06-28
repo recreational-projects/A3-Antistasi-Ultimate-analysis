@@ -142,37 +142,38 @@ class Mission:
     def validate_towns_vs_grad_meh_data(self, gm_locations_dir: Path) -> None:
         """TO DO."""
         map_name = self.map_name
-        towns_count = self.towns_count
         gm_towns = self._get_gm_towns(gm_locations_dir)
 
         if not self.towns and not gm_towns:
             _log(
                 ERROR,
-                f"'{map_name}': no towns defined in mission or in grad_meh data.",
+                f"'{map_name}': no towns defined in mission or retrieved "
+                f"from map locations data.",
             )
         elif not self.towns and gm_towns:
             self.towns = dict.fromkeys(gm_towns)
             _log(
                 INFO,
-                f"'{map_name}': no towns defined in mission; {towns_count} from map.",
+                f"'{map_name}': no towns defined in mission; used {self.towns_count} "
+                f"from map locations data.",
             )
         elif self.towns and not gm_towns:
             _log(
                 INFO,
-                f"'{map_name}': {towns_count} towns defined in mission; "
-                f"no grad-meh data.",
+                f"'{map_name}': {self.towns_count} towns defined in mission; "
+                f"no map locations data.",
             )
         elif len(self.towns) != len(gm_towns):
             _log(
                 WARNING,
-                f"'{map_name}': {towns_count} towns defined in mission; "
-                f"doesn't match {len(gm_towns)} in grad-meh data.",
+                f"'{map_name}': used {self.towns_count} towns defined in mission; "
+                f"doesn't match {len(gm_towns)} in map locations data.",
             )
         else:
             _log(
                 INFO,
-                f"'{map_name}': {towns_count} towns defined in mission; "
-                f"matches grad-meh data.",
+                f"'{map_name}': {self.towns_count} towns defined in mission; "
+                f"matches map locations data.",
             )
 
     def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:

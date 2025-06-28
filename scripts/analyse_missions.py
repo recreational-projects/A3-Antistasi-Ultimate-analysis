@@ -75,7 +75,7 @@ def log(level: int, message: str) -> None:
 def process_mission(mission_dir: Path) -> str:
     """Analyse a single mission and export intermediate data."""
     mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
-    log(INFO, f"Loaded mission '{mission_dir.name}'.")
+    log(INFO, f"'{mission_dir.name}': loaded mission.")
 
     mission.verify_pois_vs_in_game_data(IN_GAME_DATA)
     mission.validate_towns_vs_grad_meh_data(

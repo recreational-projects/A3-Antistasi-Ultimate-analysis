@@ -16,7 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Update military zone count reference value for Sumava in AU v11.7.0 (doesn't
   affect output)
-- Change 'objectives' -> 'military zones' in code, data and output 
+- Change 'objectives' -> 'military zones' in code, data and output
+- `scripts/analyse_missions.py`: fix and improve log messages
 
 
 ## [0.10.0] - 2025-06-22
