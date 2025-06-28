@@ -79,7 +79,7 @@ class Mission:
     Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
     to the map!"""
 
-    military_objective_markers: list[Marker] = Factory(list)
+    military_zone_markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
     @classmethod
@@ -136,7 +136,7 @@ class Mission:
             climate=map_info["climate"],
             towns={p[0]: p[1] for p in sorted(populations_)},
             disabled_towns=map_info["disabled_towns"],
-            military_objective_markers=[Marker.from_data(m) for m in marker_nodes],
+            military_zone_markers=[Marker.from_data(m) for m in marker_nodes],
         )
 
     def validate_towns_vs_grad_meh_data(self, gm_locations_dir: Path) -> None:
@@ -242,36 +242,36 @@ class Mission:
     @property
     def airports_count(self) -> int:
         """Enumerate airports from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_airport])
+        return len([m for m in self.military_zone_markers if m.is_airport])
 
     @property
     def waterports_count(self) -> int:
         """Enumerate sea/river ports from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_waterport])
+        return len([m for m in self.military_zone_markers if m.is_waterport])
 
     @property
     def bases_count(self) -> int:
         """Enumerate bases from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_base])
+        return len([m for m in self.military_zone_markers if m.is_base])
 
     @property
     def outposts_count(self) -> int:
         """Enumerate outposts from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_outpost])
+        return len([m for m in self.military_zone_markers if m.is_outpost])
 
     @property
     def factories_count(self) -> int:
         """Enumerate factories from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_factory])
+        return len([m for m in self.military_zone_markers if m.is_factory])
 
     @property
     def resources_count(self) -> int:
         """Enumerate resources from `self.markers`."""
-        return len([m for m in self.military_objective_markers if m.is_resource])
+        return len([m for m in self.military_zone_markers if m.is_resource])
 
     @property
-    def total_objectives_count(self) -> int:
-        """Count total objectives (not towns)."""
+    def total_military_zones_count(self) -> int:
+        """Count total military zones (not towns)."""
         return sum(
             (
                 self.airports_count,

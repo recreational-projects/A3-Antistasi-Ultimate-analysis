@@ -43,8 +43,8 @@ _COLUMNS: dict[str, dict[str, str | bool]] = {
         "display_heading": "Resources",
         "text-align": "right",
     },
-    "total_objectives_count": {
-        "display_heading": "Total<br>military<br>objectives[^1]",
+    "total_military_zones_count": {
+        "display_heading": "Total<br>military<br>zones[^1]",
         "text-align": "right",
     },
     "towns_count": {
