@@ -8,6 +8,7 @@ theme:
     logo: material/map-search
   features:
     - header.autohide
+  font: false
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
