@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("https://fonts.googleapis.com/css?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+}
+
+.md-typeset__table{
+    font-family: "Roboto Condensed", sans-serif;
+}
