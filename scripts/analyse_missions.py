@@ -1,28 +1,22 @@
 """Analyse missions in source code and export intermediate data."""
 
 import logging
-from logging import INFO, WARNING
 from pathlib import Path
 
 from rich.logging import RichHandler
 from rich.progress import track
 
+from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
 from src.mission.utils import mission_dirs_in_dir
-from src.utils import load_config, pretty_iterable_of_str
-from static_data import in_game_data
-from static_data.au_mission_overrides import (
-    EXCLUDED_MISSIONS,
-)
+from src.utils import pretty_iterable_of_str
+from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
 LOGGER = logging.getLogger(__name__)
-_CONFIG_FILENAME = "config.toml"
-_BASE_PATH = Path(__file__).resolve().parent
-_CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
-MISSIONS_BASE_DIRPATH = _BASE_PATH / _CONFIG["AU_SOURCE_DIR_RELATIVE"]
-GM_LOCATIONS_BASE_DIRPATH = _BASE_PATH / _CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
-OUTPUT_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+MISSIONS_BASE_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"]
+GM_LOCATIONS_BASE_DIRPATH = BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
+OUTPUT_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
 
 def main() -> None:
@@ -36,13 +30,13 @@ def main() -> None:
     mission_dirs = sorted(
         d
         for d in mission_dirs_in_dir(MISSIONS_BASE_DIRPATH)
-        if d.name not in EXCLUDED_MISSIONS
+        if d.name not in au_mission_overrides.EXCLUDED_MISSIONS
     )
-    log(
-        INFO,
-        f"Ignoring {pretty_iterable_of_str(EXCLUDED_MISSIONS)}. "
-        f"Found {len(mission_dirs)} candidate missions in {MISSIONS_BASE_DIRPATH}.",
+    log_msg = (
+        f"Ignoring {pretty_iterable_of_str(au_mission_overrides.EXCLUDED_MISSIONS)}. "
+        f"Found {len(mission_dirs)} candidate missions in {MISSIONS_BASE_DIRPATH}."
     )
+    LOGGER.info(log_msg)
 
     OUTPUT_DIRPATH.mkdir(parents=True, exist_ok=True)
 
@@ -51,38 +45,34 @@ def main() -> None:
         map_name = process_mission(mission_dir)
         analysed_map_names.add(map_name)
 
-    log(
-        INFO,
-        f"Exported data for {len(analysed_map_names)} missions to '{OUTPUT_DIRPATH}'.",
+    log_msg = (
+        f"Exported data for {len(analysed_map_names)} missions to '{OUTPUT_DIRPATH}'."
     )
+    LOGGER.info(log_msg)
     unused_map_index_names = MAP_INDEX.keys() - analysed_map_names
     if unused_map_index_names:
-        log(
-            WARNING,
+        log_msg = (
             f"{len(unused_map_index_names)} unused map index key(s): "
-            f"{pretty_iterable_of_str(list(unused_map_index_names))}.",
+            f"{pretty_iterable_of_str(list(unused_map_index_names))}."
         )
+        LOGGER.warning(log_msg)
 
     unused_in_game_map_names = (
         in_game_data.MILITARY_ZONES_COUNT.keys() - analysed_map_names
     )
     if unused_in_game_map_names:
-        log(
-            WARNING,
+        log_msg = (
             f"{len(unused_in_game_map_names)} unused in-game data key(s): "
-            f"{pretty_iterable_of_str(list(unused_in_game_map_names))}.",
+            f"{pretty_iterable_of_str(list(unused_in_game_map_names))}."
         )
-
-
-def log(level: int, message: str) -> None:
-    """Wrap log messages."""
-    LOGGER.log(level, message)
+        LOGGER.warning(log_msg)
 
 
 def process_mission(mission_dir: Path) -> str:
     """Analyse a single mission and export intermediate data."""
     mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
-    log(INFO, f"'{mission_dir.name}': loaded mission.")
+    log_msg = f"'{mission_dir.name}': loaded mission."
+    LOGGER.info(log_msg)
 
     mission.validate_pois(in_game_data.MILITARY_ZONES_COUNT)
     mission.validate_towns(

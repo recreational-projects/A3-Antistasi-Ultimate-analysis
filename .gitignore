@@ -180,4 +180,4 @@ cython_debug/
 docs/
 !/docs/javascripts/
 #   Working data:
-data/
+working_data/

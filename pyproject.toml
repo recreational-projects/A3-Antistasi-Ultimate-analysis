@@ -8,17 +8,18 @@ dependencies = [
     "armaclass>=0.2.2",
     "attrs>=25.3.0",
     "cattrs>=25.1.1",
+    "mkdocs-material>=9.6.15",
     "msgspec>=0.19.0",
     "pyparsing>=3.2.3",
     "rich>=14.0.0",
+
 ]
 
 [dependency-groups]
 dev = [
-    "mkdocs-material>=9.6.15",
-    "mypy>=1.17.0",
-    "pytest>=8.4.1",
-    "ruff>=0.12.4",
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "ruff>=0.14.10",
 ]
 
 [tool.mypy]
@@ -63,6 +64,6 @@ extend-safe-fixes = [
     "S101",     # Use of assert detected
     "SLF001",   # Private member accessed
 ]
-"scripts/_docs_includes.py" = [
+"scripts/docs_includes.py" = [
    "RUF001",    # String contains ambiguous Unicode character - `×`
 ]

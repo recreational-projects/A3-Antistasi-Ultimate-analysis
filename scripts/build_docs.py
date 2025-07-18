@@ -2,111 +2,69 @@
 
 import logging
 from collections.abc import Sequence
-from logging import INFO
 from pathlib import Path
 
 from rich.logging import RichHandler
 
-from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
+from scripts import docs_includes
+from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
-from src.utils import load_config, project_version
-from static_data.au_mission_overrides import EXCLUDED_MISSIONS
+from src.utils import project_version
+from static_data import au_mission_overrides
 
 LOGGER = logging.getLogger(__name__)
-_CONFIG_FILENAME = "config.toml"
-_BASE_PATH = Path(__file__).resolve().parent
-_CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
-DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
+DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
-COLUMNS: dict[str, dict[str, str | bool]] = {
-    "map_name": {
-        "display_heading": "Map",
-    },
-    "climate": {
-        "display_heading": "Climate",
-    },
-    "airports_count": {
-        "display_heading": "Airports",
-        "text-align": "right",
-    },
-    "bases_count": {
-        "display_heading": "Bases",
-        "text-align": "right",
-    },
-    "waterports_count": {
-        "display_heading": "Sea/<br>riverports",
-        "text-align": "right",
-    },
-    "outposts_count": {
-        "display_heading": "Outposts",
-        "text-align": "right",
-    },
-    "factories_count": {
-        "display_heading": "Factories",
-        "text-align": "right",
-    },
-    "resources_count": {
-        "display_heading": "Resources",
-        "text-align": "right",
-    },
-    "total_military_zones_count": {
-        "display_heading": "Total<br>military<br>zones[^1]",
-        "text-align": "right",
-    },
-    "towns_count": {
-        "display_heading": "Towns",
-        "text-align": "right",
-    },
-    "war_level_points_ratio_dynamic": {
-        "display_heading": "Total<br>War Level<br>points[^2]<br>ratio<br>",
-        "text-align": "right",
-    },
-}
-
-
-def main() -> None:
-    """Generate the Markdown doc representing site content."""
-    logging.basicConfig(
-        level="INFO",
-        format="%(message)s",
-        datefmt="[%X]",
-        handlers=[RichHandler()],
-    )
-    log(INFO, f"{PROJECT_VERSION = }")
-
-    au_missions = Mission.missions_from_json(DATA_DIRPATH, excludes=EXCLUDED_MISSIONS)
-    max_war_level_points = max(
-        mission.war_level_points for mission in au_missions if mission.war_level_points
-    )
-
-    markdown = (
-        INTRO_MARKDOWN
-        + markdown_total_missions(au_missions)
-        + markdown_table(
-            missions=sorted(au_missions, key=sort_missions_by_name, reverse=True),
-            columns=COLUMNS,
-            max_war_level_points=max_war_level_points,
-        )
-        + OUTRO_MARKDOWN
-        + markdown_version()
-    )
-    log(INFO, "Generated Markdown.")
-
-    with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
-        fp.write(markdown)
-
-    log(INFO, f"Markdown saved to {DOC_FILEPATH}.")
-
-
-def log(level: int, message: str) -> None:
-    """Wrap log messages."""
-    LOGGER.log(level, message)
 
 
 def sort_missions_by_name(mission: Mission) -> int:
     """Sort order for `Mission`s table."""
     return 0 if mission.war_level_points is None else mission.war_level_points
+
+
+def markdown_total_missions(missions: Sequence[Mission]) -> str:
+    """Create Markdown total missions line."""
+    return (
+        f"- {len(missions)} maps total including season variants, excluding Stratis\n"
+    )
+
+
+def markdown_handle_missing_value(val: int | str | None) -> str:
+    """
+    Display `` instead of `0` if value is `None`.
+
+    `None` is used to flag unknown/missing value, as opposed to calculated zero.
+    """
+    return "" if val is None else str(val)
+
+
+def markdown_table_row(
+    *,
+    mission: Mission,
+    columns: dict[str, dict[str, str | bool]],
+    max_war_level_points: int,
+) -> str:
+    """Create Markdown table row."""
+    tr = ""
+    for col in columns:
+        td_value = ""
+        if col == "map_name":
+            td_value = str(mission.map_display_name)
+            if mission.map_url:
+                td_value = f"[{td_value}]({mission.map_url})"
+
+        elif col == "war_level_points_ratio_dynamic":
+            ratio = mission.war_level_points_ratio(max_war_level_points)
+            if ratio:
+                td_value = f"{ratio:.2f}"
+        else:
+            td_value = markdown_handle_missing_value(getattr(mission, col))
+
+        tr += f"| {td_value} "
+
+    tr += "|\n"
+    return tr
 
 
 def markdown_table(
@@ -122,55 +80,63 @@ def markdown_table(
     ]
     thead = f"\n| {' <br>| '.join(th_values)} |\n"
     # <br> prevents sort indicator disrupting right-aligned text
-
     tdivider = ""
     for col_details in columns.values():
         tdivider += "| ---"
         tdivider += ":" if col_details.get("text-align") == "right" else " "
 
     tdivider += "|\n"
-
-    tbody = ""
-    for mission in missions:
-        for col in columns:
-            td_value = ""
-            if col == "map_name":
-                td_value = str(mission.map_display_name)
-                if mission.map_url:
-                    td_value = f"[{td_value}]({mission.map_url})"
-
-            elif col == "war_level_points_ratio_dynamic":
-                ratio = mission.war_level_points_ratio(max_war_level_points)
-                if ratio:
-                    td_value = f"{ratio:.2f}"
-            else:
-                td_value = markdown_handle_missing_value(getattr(mission, col))
-
-            tbody += f"| {td_value} "
-        tbody += "|\n"
-
-    return thead + tdivider + tbody
-
-
-def markdown_handle_missing_value(val: int | str | None) -> str:
-    """
-    Display `` instead of `0` if value is `None`.
-
-    `None` is used to flag unknown/missing value, as opposed to calculated zero.
-    """
-    return "" if val is None else str(val)
-
-
-def markdown_total_missions(missions: Sequence[Mission]) -> str:
-    """Create Markdown total missions line."""
-    return (
-        f"- {len(missions)} maps total including season variants, excluding Stratis\n"
-    )
+    trs = [
+        markdown_table_row(
+            mission=m,
+            columns=columns,
+            max_war_level_points=max_war_level_points,
+        )
+        for m in missions
+    ]
+    return thead + tdivider + "".join(trs) + "\n"
 
 
 def markdown_version() -> str:
     """Create Markdown project version line."""
     return f"\n- Version {PROJECT_VERSION}\n"
+
+
+def main() -> None:
+    """Generate the Markdown doc representing site content."""
+    logging.basicConfig(
+        level="INFO",
+        format="%(message)s",
+        datefmt="[%X]",
+        handlers=[RichHandler()],
+    )
+    log_msg = f"{PROJECT_VERSION = }"
+    LOGGER.info(log_msg)
+
+    missions = Mission.missions_from_json(
+        DATA_DIRPATH, excludes=au_mission_overrides.EXCLUDED_MISSIONS
+    )
+    max_war_level_points = max(
+        m.war_level_points for m in missions if m.war_level_points
+    )
+    markdown_content = [
+        docs_includes.INTRO_MARKDOWN,
+        markdown_total_missions(missions),
+        markdown_table(
+            missions=sorted(missions, key=sort_missions_by_name, reverse=True),
+            columns=docs_includes.COLUMNS,
+            max_war_level_points=max_war_level_points,
+        ),
+        docs_includes.OUTRO_MARKDOWN,
+        markdown_version(),
+    ]
+    LOGGER.info("Generated Markdown.")
+
+    with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
+        fp.write("".join(markdown_content))
+
+    log_msg = f"Markdown saved to {DOC_FILEPATH}."
+    LOGGER.info(log_msg)
 
 
 if __name__ == "__main__":

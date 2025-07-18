@@ -8,7 +8,7 @@ import msgspec
 
 from src.geojson.feature import Feature
 
-_LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def load_towns_from_dir(path: Path) -> list[Feature]:
@@ -58,7 +58,7 @@ def load_features_from_file(path: Path) -> list[Feature]:
 
     if not features:
         log_msg = f"No valid GeoJSON features in `{path.name}`."
-        _LOGGER.warning(log_msg)
+        LOGGER.warning(log_msg)
         return []
 
     return features

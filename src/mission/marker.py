@@ -3,15 +3,12 @@
 from typing import Any, ClassVar, Self
 
 from attrs import define
+from cattrs import structure
 
 
 @define
 class Marker:
-    """
-    Represents a map marker.
-
-    Implemented as a class for future-proofing.
-    """
+    """Represents a map marker."""
 
     INCLUDE_STARTS_WITH: ClassVar = {
         # case-insensitive
@@ -31,9 +28,7 @@ class Marker:
         data: dict[str, Any],
     ) -> Self:
         """Construct instance from data."""
-        return cls(
-            name=data["name"],
-        )
+        return structure(data, cls)
 
     @property
     def is_airport(self) -> bool:
