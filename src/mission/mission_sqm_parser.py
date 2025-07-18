@@ -8,7 +8,7 @@ import armaclass
 
 from src.mission.marker import Marker
 
-_LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 type JSONNode = dict[str, Any]
 
@@ -23,13 +23,13 @@ def get_marker_nodes(
     try:
         mission = armaclass.parse(data)
         log_msg = f"Parsed `...{filepath}."
-        _LOGGER.debug(log_msg)
+        LOGGER.debug(log_msg)
         nodes = collect_marker_nodes(mission["Mission"])
 
     except armaclass.ParseError:
         nodes = []
         log_msg = f"Couldn't parse `...{filepath}` - may be binarized."
-        _LOGGER.warning(log_msg)
+        LOGGER.warning(log_msg)
 
     return nodes
 

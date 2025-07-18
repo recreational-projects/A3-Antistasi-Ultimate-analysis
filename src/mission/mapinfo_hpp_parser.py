@@ -12,7 +12,7 @@ from typing import Any
 import pyparsing as pp
 from pyparsing import common as ppc
 
-_LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 _LBRACE, _RBRACE, _SEMICOLON, _COMMA, _EQ = map(
     pp.Suppress,
@@ -66,7 +66,7 @@ def get_map_info_data(filepath: Path) -> dict[str, Any]:
         disabled_towns = []
 
     log_msg = f"Parsed `{filepath}`."
-    _LOGGER.debug(log_msg)
+    LOGGER.debug(log_msg)
 
     return {
         "climate": climate,

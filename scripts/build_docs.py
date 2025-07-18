@@ -2,22 +2,19 @@
 
 import logging
 from collections.abc import Sequence
-from logging import INFO
 from pathlib import Path
 
 from rich.logging import RichHandler
 
 from scripts._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
+from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
-from src.utils import load_config, project_version
+from src.utils import project_version
 from static_data.au_mission_overrides import EXCLUDED_MISSIONS
 
 LOGGER = logging.getLogger(__name__)
-_CONFIG_FILENAME = "config.toml"
-_BASE_PATH = Path(__file__).resolve().parent
-_CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
-DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
+DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {
@@ -73,7 +70,8 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    log(INFO, f"{PROJECT_VERSION = }")
+    log_msg = f"{PROJECT_VERSION = }"
+    LOGGER.info(log_msg)
 
     au_missions = Mission.missions_from_json(DATA_DIRPATH, excludes=EXCLUDED_MISSIONS)
     max_war_level_points = max(
@@ -91,17 +89,13 @@ def main() -> None:
         + OUTRO_MARKDOWN
         + markdown_version()
     )
-    log(INFO, "Generated Markdown.")
+    LOGGER.info("Generated Markdown.")
 
     with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
         fp.write(markdown)
 
-    log(INFO, f"Markdown saved to {DOC_FILEPATH}.")
-
-
-def log(level: int, message: str) -> None:
-    """Wrap log messages."""
-    LOGGER.log(level, message)
+    log_msg = f"Markdown saved to {DOC_FILEPATH}."
+    LOGGER.info(log_msg)
 
 
 def sort_missions_by_name(mission: Mission) -> int:
