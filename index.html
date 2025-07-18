@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -391,9 +391,9 @@
 <th style="text-align: right;">Outposts <br></th>
 <th style="text-align: right;">Factories <br></th>
 <th style="text-align: right;">Resources <br></th>
-<th style="text-align: right;">Total<br>military<br>objectives<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> <br></th>
-<th style="text-align: right;">Towns<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> <br></th>
-<th style="text-align: right;">Total<br>War Level<br>points<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup><br>ratio<br></th>
+<th style="text-align: right;">Total<br>military<br>zones<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> <br></th>
+<th style="text-align: right;">Towns <br></th>
+<th style="text-align: right;">Total<br>War Level<br>points<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup><br>ratio<br></th>
 </tr>
 </thead>
 <tbody>
@@ -1113,6 +1113,19 @@
 <td style="text-align: right;">0.25</td>
 </tr>
 <tr>
+<td><a href="https://store.steampowered.com/app/1681170">Sefrou-Ramal</a></td>
+<td>arid</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr>
 <td><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2993515557">Omaha Beach</a></td>
 <td>temperate</td>
 <td style="text-align: right;">2</td>
@@ -1151,19 +1164,6 @@
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">0.19</td>
 </tr>
-<tr>
-<td><a href="https://store.steampowered.com/app/1681170">Sefrou-Ramal</a></td>
-<td>arid</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">21</td>
-<td style="text-align: right;"></td>
-<td style="text-align: right;"></td>
-</tr>
 </tbody>
 </table>
 <h2 id="about-this-site">About this site</h2>
@@ -1175,26 +1175,21 @@
   <a href="https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/issues">raise a bug, question or feature request</a></p>
 </li>
 <li>
-<p>Version 0.10.0</p>
+<p>Version 0.11.0</p>
 </li>
 </ul>
 <div class="footnote">
 <hr />
 <ol>
 <li id="fn:1">
-<p><em>Total military objectives</em> = sum(<em>airports</em>, <em>sea/riverports</em>, <em>bases</em>,
+<p><em>Total military zones</em> = sum(<em>airports</em>, <em>sea/riverports</em>, <em>bases</em>,
 <em>outposts</em>, <em>factories</em>, <em>resources</em>)&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>Known issue: towns aren't counted (and total War Level points can't be calculated)
-if they aren't explicitly declared in the mission files.<br>
-Missing towns counts will be added in future&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-<li id="fn:3">
 <p>Ratio of mission's <em>total War Level Points</em> to the largest known value.<br>
 <em>Total War Level points</em> = sum(8 × <em>airports</em>, 6 × <em>bases</em>, 4 × <em>sea/riverports</em>,
-2 × <em>outposts</em>, 2 × <em>factories</em>, 2 × <em>resources</em>, <em>towns</em>) - thanks to Syrreal on
-AU Community Discord for pointing this out&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+2 × <em>outposts</em>, 2 × <em>factories</em>, 2 × <em>resources</em>, 1 × <em>towns</em>) - thanks to Syrreal
+on AU Community Discord for pointing this out&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -1256,7 +1251,7 @@ AU Community Discord for pointing this out&#160;<a class="footnote-backref" href
       <script id="__config" type="application/json">{"base": ".", "features": ["header.autohide"], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
       
