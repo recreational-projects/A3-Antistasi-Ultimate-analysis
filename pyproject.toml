@@ -15,10 +15,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mkdocs-material>=9.6.14",
-    "mypy>=1.16.1",
+    "mkdocs-material>=9.6.15",
+    "mypy>=1.17.0",
     "pytest>=8.4.1",
-    "ruff~=0.12.1",
+    "ruff>=0.12.4",
 ]
 
 [tool.mypy]

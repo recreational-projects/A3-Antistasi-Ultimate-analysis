@@ -1,15 +1,9 @@
-"""
-Used to verify generated data.
+"""Used to verify/fill gaps in  generated data."""
 
-Derived from screen captures belonging to Antistasi Ultimate at:
-https://drive.google.com/drive/u/0/folders/1jSvzJnzeNXdaE93TISdEt_U3j3zf__Tl
-
-LICENSE:
-
-Used under license: https://drive.google.com/file/d/1UrDAuN9-9us8Xb-AIFxLrvs6tzw2hbb5/view
-"""
-
-IN_GAME_DATA: dict[str, dict[str, int]] = {
+MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
+    # Derived from screen captures belonging to Antistasi Ultimate at:
+    # https://drive.google.com/drive/u/0/folders/1jSvzJnzeNXdaE93TISdEt_U3j3zf__Tl
+    # Used under license: https://drive.google.com/file/d/1UrDAuN9-9us8Xb-AIFxLrvs6tzw2hbb5/view
     # NB: keys must be lower-case.
     "abramia": {"total_military_zones_count": 30},
     "altis": {
@@ -92,4 +86,9 @@ IN_GAME_DATA: dict[str, dict[str, int]] = {
     "winthera3": {"total_military_zones_count": 33},
     "ww2_omaha_beach": {"total_military_zones_count": 18},
     "yulakia": {"total_military_zones_count": 69},
+}
+
+TOWNS_COUNT: dict[str, int] = {
+    # NB: keys must be lower-case.
+    "sefrouramal": 14,  # manually counted in-game
 }

@@ -23,6 +23,7 @@ from src.mission.utils import (
     normalise_town_name,
 )
 from src.utils import pretty_iterable_of_str
+from static_data import in_game_data
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -82,164 +83,6 @@ class Mission:
     military_zone_markers: list[Marker] = Factory(list)
     """Relevant subset of markers from `mission.sqm`."""
 
-    @classmethod
-    def from_data(
-        cls,
-        *,
-        mission_dir: Path,
-        map_index: dict[str, dict[str, str]],
-    ) -> Mission:
-        """Return instance from source data."""
-        map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
-        populations_ = [
-            # may include duplicates
-            p
-            for p in map_info["populations"]
-            if p[0] not in map_info["disabled_towns"]
-        ]
-        if populations_:
-            unique_town_names = set()
-            duplicated = {
-                p[0]
-                for p in populations_
-                # TODO: fix type issue
-                if p[0] in unique_town_names or unique_town_names.add(p[0])  # type: ignore[func-returns-value]
-            }
-            if len(unique_town_names) != len(populations_):
-                _log(
-                    WARNING,
-                    f"'{map_name}': towns_count={len(populations_)} but "
-                    f"{len(unique_town_names)} unique.\n"
-                    f"{pretty_iterable_of_str(duplicated)} duplicated.",
-                )
-
-        marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
-
-        map_display_name, map_url = None, None
-        if map_name not in map_index:
-            _log(ERROR, f"'{map_name}': map index issue: key '{map_name}' not found.")
-        else:
-            map_lookup = map_index[map_name]
-            map_display_name = map_lookup.get("display_name")
-            map_url = map_lookup.get("url")
-
-        if not map_display_name:
-            _log(ERROR, f"'{map_name}': map index issue: no `map_display_name`.")
-        if not map_url:
-            _log(ERROR, f"'{map_name}': map index issue: no `url`.")
-
-        return cls(
-            map_name=map_name,
-            map_display_name=map_display_name,
-            map_url=map_url,
-            climate=map_info["climate"],
-            towns={p[0]: p[1] for p in sorted(populations_)},
-            disabled_towns=map_info["disabled_towns"],
-            military_zone_markers=[Marker.from_data(m) for m in marker_nodes],
-        )
-
-    def validate_towns_vs_grad_meh_data(self, gm_locations_dir: Path) -> None:
-        """TO DO."""
-        map_name = self.map_name
-        gm_towns = self._get_gm_towns(gm_locations_dir)
-
-        if not self.towns and not gm_towns:
-            _log(
-                ERROR,
-                f"'{map_name}': no towns defined in mission or retrieved "
-                f"from map locations data.",
-            )
-        elif not self.towns and gm_towns:
-            self.towns = dict.fromkeys(gm_towns)
-            _log(
-                INFO,
-                f"'{map_name}': no towns defined in mission; used {self.towns_count} "
-                f"from map locations data.",
-            )
-        elif self.towns and not gm_towns:
-            _log(
-                INFO,
-                f"'{map_name}': {self.towns_count} towns defined in mission; "
-                f"no map locations data.",
-            )
-        elif len(self.towns) != len(gm_towns):
-            _log(
-                WARNING,
-                f"'{map_name}': used {self.towns_count} towns defined in mission; "
-                f"doesn't match {len(gm_towns)} in map locations data.",
-            )
-        else:
-            _log(
-                INFO,
-                f"'{map_name}': {self.towns_count} towns defined in mission; "
-                f"matches map locations data.",
-            )
-
-    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
-        """
-        Return town names from grad_meh data.
-
-        Discards any defined as disabled in mission.
-        """
-        disabled_towns_lookup = {
-            normalise_mission_town_name(t): t for t in self.disabled_towns
-        }
-        gm_towns_lookup = {}
-
-        if not gm_locations_dir.is_dir():
-            _log(WARNING, f"'{self.map_name}': no grad-meh locations data.")
-        else:
-            _gm_towns = load_towns_from_dir(gm_locations_dir)
-            gm_towns_lookup = {
-                normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
-            }
-
-        gm_towns = set()
-        matched_keys = set()
-        for k, v in gm_towns_lookup.items():
-            if k in disabled_towns_lookup:
-                matched_keys.add(k)
-                _log(DEBUG, f"Didn't add disabled: '{k}' ('{v}').")
-            else:
-                gm_towns.add(v)
-        return gm_towns
-
-    @classmethod
-    def missions_from_json(cls, path: Path, excludes: Iterable[str]) -> list[Mission]:
-        """Load previously-exported `Missions` data from `path`."""
-        json_files = [
-            p
-            for p in list(path.iterdir())
-            if p.suffix == ".json" and p.stem not in excludes
-        ]
-        _log(
-            INFO,
-            f"Found {len(json_files)} files in {path} "
-            f"ignoring {pretty_iterable_of_str(excludes)}.",
-        )
-
-        missions = []
-        for fp in json_files:
-            with Path.open(fp, "r", encoding="utf-8") as file:
-                try:
-                    mission = structure(json.load(file), Mission)
-                except ClassValidationError as err:
-                    err_msg = f"Error creating `Mission` from JSON: {fp}."
-                    raise ValueError(err_msg) from err
-                missions.append(mission)
-
-        _log(INFO, f"Loaded data for {len(missions)} missions.")
-        return sorted(missions, key=attrgetter("map_name"))
-
-    @property
-    def towns_count(self) -> int | None:
-        """Enumerate towns."""
-        if not self.towns:
-            return None
-        return len(self.towns)
-
     @property
     def airports_count(self) -> int:
         """Enumerate airports from `self.markers`."""
@@ -285,6 +128,13 @@ class Mission:
         )
 
     @property
+    def towns_count(self) -> int | None:
+        """Enumerate towns."""
+        if not self.towns:
+            return None
+        return len(self.towns)
+
+    @property
     def war_level_points(self) -> int | None:
         """Count total war level points."""
         if not self.towns:
@@ -313,8 +163,174 @@ class Mission:
             raise ValueError(err_msg)
         return ratio
 
-    def verify_pois_vs_in_game_data(self, data: dict[str, dict[str, int]]) -> None:
-        """Verify against in-game data."""
+    @classmethod
+    def from_data(
+        cls,
+        *,
+        mission_dir: Path,
+        map_index: dict[str, dict[str, str]],
+    ) -> Mission:
+        """Return instance from source data."""
+        map_name = map_name_from_mission_dir_path(mission_dir)
+        map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
+        populations_ = [
+            # may include duplicates
+            p
+            for p in map_info["populations"]
+            if p[0] not in map_info["disabled_towns"]
+        ]
+        towns = {p[0]: p[1] for p in sorted(populations_)}
+        towns_count = len(towns)
+
+        if towns_count == 0:
+            if map_name in in_game_data.TOWNS_COUNT:
+                towns_count = in_game_data.TOWNS_COUNT[map_name]
+
+            unique_town_names = set()
+            duplicated = {
+                p[0]
+                for p in populations_
+                # TODO: fix type issue
+                if p[0] in unique_town_names or unique_town_names.add(p[0])  # type: ignore[func-returns-value]
+            }
+            if len(unique_town_names) != len(populations_):
+                _log(
+                    WARNING,
+                    f"'{map_name}': towns_count={len(populations_)} but "
+                    f"{len(unique_town_names)} unique.\n"
+                    f"{pretty_iterable_of_str(duplicated)} duplicated.",
+                )
+
+        marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
+
+        map_display_name, map_url = None, None
+        if map_name not in map_index:
+            _log(ERROR, f"'{map_name}': map index issue: key '{map_name}' not found.")
+        else:
+            map_lookup = map_index[map_name]
+            map_display_name = map_lookup.get("display_name")
+            map_url = map_lookup.get("url")
+
+        if not map_display_name:
+            _log(ERROR, f"'{map_name}': map index issue: no `map_display_name`.")
+        if not map_url:
+            _log(ERROR, f"'{map_name}': map index issue: no `url`.")
+
+        return cls(
+            map_name=map_name,
+            map_display_name=map_display_name,
+            map_url=map_url,
+            climate=map_info["climate"],
+            towns=towns,
+            disabled_towns=map_info["disabled_towns"],
+            military_zone_markers=[Marker.from_data(m) for m in marker_nodes],
+        )
+
+    @classmethod
+    def missions_from_json(cls, path: Path, excludes: Iterable[str]) -> list[Mission]:
+        """Load previously-exported `Missions` data from `path`."""
+        json_files = [
+            p
+            for p in list(path.iterdir())
+            if p.suffix == ".json" and p.stem not in excludes
+        ]
+        _log(
+            INFO,
+            f"Found {len(json_files)} files in {path} "
+            f"ignoring {pretty_iterable_of_str(excludes)}.",
+        )
+
+        missions = []
+        for fp in json_files:
+            with Path.open(fp, "r", encoding="utf-8") as file:
+                try:
+                    mission = structure(json.load(file), Mission)
+                except ClassValidationError as err:
+                    err_msg = f"Error creating `Mission` from JSON: {fp}."
+                    raise ValueError(err_msg) from err
+                missions.append(mission)
+
+        _log(INFO, f"Loaded data for {len(missions)} missions.")
+        return sorted(missions, key=attrgetter("map_name"))
+
+    def validate_towns(self, gm_locations_dir: Path) -> None:
+        """Check against map locations and in-game data."""
+        map_name = self.map_name
+        gm_towns = self._get_gm_towns(gm_locations_dir)
+        in_game_towns_count = in_game_data.TOWNS_COUNT.get(map_name)
+
+        if self.towns and gm_towns:
+            if self.towns_count == len(gm_towns):
+                _log(
+                    INFO,
+                    f"'{map_name}': used {self.towns_count} towns defined in mission; "
+                    f"matches map locations data.",
+                )
+            else:
+                _log(
+                    WARNING,
+                    f"'{map_name}': used {self.towns_count} towns defined in mission; "
+                    f"doesn't match {len(gm_towns)} in map locations data.",
+                )
+        elif self.towns:
+            _log(
+                INFO,
+                f"'{map_name}': {self.towns_count} towns defined in mission; "
+                f"no map locations data.",
+            )
+        elif gm_towns:
+            self.towns = dict.fromkeys(gm_towns)
+            _log(
+                INFO,
+                f"'{map_name}': 0 towns defined in mission; used {self.towns_count} "
+                f"from map locations data.",
+            )
+        elif in_game_towns_count:
+            self.towns = {f"UNKNOWN_{i}": 0 for i in range(in_game_towns_count)}
+            _log(
+                WARNING,
+                f"'{map_name}': 0 towns defined in mission or map locations data; "
+                f"used {self.towns_count} towns from in-game data.",
+            )
+        else:
+            _log(
+                ERROR,
+                f"'{map_name}': 0 towns defined in mission, retrieved "
+                f"from map locations data or in-game data.",
+            )
+
+    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
+        """
+        Return town names from grad_meh data.
+
+        Discards any defined as disabled in mission.
+        """
+        disabled_towns_lookup = {
+            normalise_mission_town_name(t): t for t in self.disabled_towns
+        }
+        gm_towns_lookup = {}
+
+        if not gm_locations_dir.is_dir():
+            _log(WARNING, f"'{self.map_name}': no grad-meh locations data.")
+        else:
+            _gm_towns = load_towns_from_dir(gm_locations_dir)
+            gm_towns_lookup = {
+                normalise_town_name(t.properties["name"]): t.properties["name"]
+                for t in _gm_towns
+            }
+
+        gm_towns = set()
+        matched_keys = set()
+        for k, v in gm_towns_lookup.items():
+            if k in disabled_towns_lookup:
+                matched_keys.add(k)
+                _log(DEBUG, f"Didn't add disabled: '{k}' ('{v}').")
+            else:
+                gm_towns.add(v)
+        return gm_towns
+
+    def validate_pois(self, data: dict[str, dict[str, int]]) -> None:
+        """Check against in-game data."""
         map_name = self.map_name
 
         if map_name not in data:

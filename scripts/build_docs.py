@@ -12,7 +12,14 @@ from src.mission.mission import Mission
 from src.utils import load_config, project_version
 from static_data.au_mission_overrides import EXCLUDED_MISSIONS
 
-_COLUMNS: dict[str, dict[str, str | bool]] = {
+LOGGER = logging.getLogger(__name__)
+_CONFIG_FILENAME = "config.toml"
+_BASE_PATH = Path(__file__).resolve().parent
+_CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
+DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
+PROJECT_VERSION = project_version()
+COLUMNS: dict[str, dict[str, str | bool]] = {
     "map_name": {
         "display_heading": "Map",
     },
@@ -48,15 +55,14 @@ _COLUMNS: dict[str, dict[str, str | bool]] = {
         "text-align": "right",
     },
     "towns_count": {
-        "display_heading": "Towns[^2]",
+        "display_heading": "Towns",
         "text-align": "right",
     },
     "war_level_points_ratio_dynamic": {
-        "display_heading": "Total<br>War Level<br>points[^3]<br>ratio<br>",
+        "display_heading": "Total<br>War Level<br>points[^2]<br>ratio<br>",
         "text-align": "right",
     },
 }
-_CONFIG_FILENAME = "config.toml"
 
 
 def main() -> None:
@@ -79,7 +85,7 @@ def main() -> None:
         + markdown_total_missions(au_missions)
         + markdown_table(
             missions=sorted(au_missions, key=sort_missions_by_name, reverse=True),
-            columns=_COLUMNS,
+            columns=COLUMNS,
             max_war_level_points=max_war_level_points,
         )
         + OUTRO_MARKDOWN
@@ -95,7 +101,7 @@ def main() -> None:
 
 def log(level: int, message: str) -> None:
     """Wrap log messages."""
-    _LOGGER.log(level, message)
+    LOGGER.log(level, message)
 
 
 def sort_missions_by_name(mission: Mission) -> int:
@@ -168,10 +174,4 @@ def markdown_version() -> str:
 
 
 if __name__ == "__main__":
-    _BASE_PATH = Path(__file__).resolve().parent
-    _CONFIG = load_config(_BASE_PATH / _CONFIG_FILENAME)
-    DATA_DIRPATH = _BASE_PATH / _CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-    DOC_FILEPATH = _BASE_PATH / _CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
-    PROJECT_VERSION = project_version()
-    _LOGGER = logging.getLogger(__name__)
     main()
