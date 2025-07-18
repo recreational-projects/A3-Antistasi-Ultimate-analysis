@@ -5,16 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## UNRELEASED - TBC
+## [0.11.0] - 2025-07-18
 
 ### Added
 
+- Completed towns counts and therefore all data for all missions
 - Log error when mission fails military zone count verification
 - `scripts/build_docs.py`: log project version
 
 ### Changed
 
-- Update military zone count reference value for Sumava in AU v11.7.0 (doesn't
+- Update military zone count reference value for Šumava in AU v11.7.0 (doesn't
   affect output)
 - Change 'objectives' -> 'military zones' in code, data and output
 - `scripts/analyse_missions.py`: fix and improve log messages
@@ -170,6 +171,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[0.11.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.0...v0.9.1
