@@ -12,7 +12,7 @@ from src.types_ import JSONNode
 class Marker:
     """Represents a map marker."""
 
-    INCLUDE_STARTS_WITH: ClassVar = {
+    INCLUDE_NAME_STARTS_WITH: ClassVar = {
         # case-insensitive
         "airport",
         "factory",
