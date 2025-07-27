@@ -30,7 +30,8 @@ def _process_mission(mission_dir: Path) -> str:
     mission.validate_and_correct_towns(
         GRAD_MEH_DIRPATH / mission.map_name / "geojson" / "locations"
     )
-    mission.export(DATA_DIRPATH)
+    mission.export_data(DATA_DIRPATH)
+    mission.export_plot(DATA_DIRPATH)
     return mission.map_name
 
 

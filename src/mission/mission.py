@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+import matplotlib.pyplot as plt
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
@@ -14,6 +15,7 @@ from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
+from src.mission.plot import finalise_plot, plot_markers, setup_plot
 from src.mission.utils import (
     map_name_from_mission_dir_path,
     normalise_mission_town_name,
@@ -231,7 +233,7 @@ class Mission:
             resources=military_zone_markers["resource"],
         )
 
-    def export(self, dir_: Path) -> None:
+    def export_data(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
@@ -369,3 +371,24 @@ class Mission:
                 else:
                     log_msg = f"'{self.map_name}': `{field}` matches in-game data."
                     LOGGER.debug(log_msg)
+
+    def export_plot(self, dir_: Path) -> None:
+        """Export mission map plot."""
+        ax = setup_plot()
+        series = {
+            "A": self.airports,
+            "B": self.bases,
+            "S": self.waterports,
+            "R": self.resources,
+            "F": self.factories,
+            "O": self.outposts,
+        }
+        for key, value in series.items():
+            plot_markers(axes=ax, map_markers=value, marker=f"${key}$")
+
+        finalise_plot(ax)
+        export_filename = f"{self.map_name}.png"
+        plt.savefig(dir_ / export_filename)
+        plt.close()
+        log_msg = f"'{self.map_name}': exported '{export_filename}'."
+        LOGGER.info(log_msg)
