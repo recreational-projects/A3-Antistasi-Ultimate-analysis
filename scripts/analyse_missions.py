@@ -78,7 +78,9 @@ def process_mission(mission_dir: Path) -> str:
     mission.validate_towns(
         GM_LOCATIONS_BASE_DIRPATH / mission.map_name / "geojson" / "locations"
     )
-    mission.export(OUTPUT_DIRPATH)
+    mission.export_data(OUTPUT_DIRPATH)
+    mission.export_plot(OUTPUT_DIRPATH)
+
     return mission.map_name
 
 

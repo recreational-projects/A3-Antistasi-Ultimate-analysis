@@ -8,6 +8,7 @@ from operator import attrgetter
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import matplotlib.pyplot as plt
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
@@ -15,6 +16,7 @@ from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import get_map_info_data
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
+from src.mission.plot import finalise_plot, plot_markers, setup_plot
 from src.mission.utils import (
     map_name_from_mission_dir_path,
     normalise_mission_town_name,
@@ -77,34 +79,64 @@ class Mission:
     """Relevant subset of markers from `mission.sqm`."""
 
     @property
+    def airports(self) -> list[Marker]:
+        """Airports from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_airport]
+
+    @property
+    def waterports(self) -> list[Marker]:
+        """Sea/river ports from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_waterport]
+
+    @property
+    def bases(self) -> list[Marker]:
+        """Bases from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_base]
+
+    @property
+    def outposts(self) -> list[Marker]:
+        """Outposts from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_outpost]
+
+    @property
+    def factories(self) -> list[Marker]:
+        """Factories from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_factory]
+
+    @property
+    def resources(self) -> list[Marker]:
+        """Resources from `self.markers`."""
+        return [m for m in self.military_zone_markers if m.is_resource]
+
+    @property
     def airports_count(self) -> int:
-        """Enumerate airports from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_airport])
+        """Enumerate airports."""
+        return len(self.airports)
 
     @property
     def waterports_count(self) -> int:
-        """Enumerate sea/river ports from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_waterport])
+        """Enumerate sea/river ports."""
+        return len(self.waterports)
 
     @property
     def bases_count(self) -> int:
-        """Enumerate bases from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_base])
+        """Enumerate bases."""
+        return len(self.bases)
 
     @property
     def outposts_count(self) -> int:
-        """Enumerate outposts from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_outpost])
+        """Enumerate outposts."""
+        return len(self.outposts)
 
     @property
     def factories_count(self) -> int:
-        """Enumerate factories from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_factory])
+        """Enumerate factories."""
+        return len(self.factories)
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_resource])
+        """Enumerate resources."""
+        return len(self.resources)
 
     @property
     def total_military_zones_count(self) -> int:
@@ -359,7 +391,7 @@ class Mission:
                     log_msg = f"'{self.map_name}': `{field}` matches in-game data."
                     LOGGER.debug(log_msg)
 
-    def export(self, dir_: Path) -> None:
+    def export_data(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
@@ -371,3 +403,23 @@ class Mission:
             )
             log_msg = f"'{self.map_name}': exported '{export_filename}'."
             LOGGER.info(log_msg)
+
+    def export_plot(self, dir_: Path) -> None:
+        """Export mission map plot."""
+        ax = setup_plot()
+        series = {
+            "A": self.airports,
+            "B": self.bases,
+            "S": self.waterports,
+            "R": self.resources,
+            "F": self.factories,
+            "O": self.outposts,
+        }
+        for key, value in series.items():
+            plot_markers(axes=ax, map_markers=value, marker=f"${key}$")
+        finalise_plot(ax)
+        export_filename = f"{self.map_name}.png"
+        plt.savefig(dir_ / export_filename)
+        plt.close()
+        log_msg = f"'{self.map_name}': exported '{export_filename}'."
+        LOGGER.info(log_msg)

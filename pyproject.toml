@@ -8,6 +8,7 @@ dependencies = [
     "armaclass>=0.2.2",
     "attrs>=25.3.0",
     "cattrs>=25.1.1",
+    "matplotlib>=3.10.3",
     "mkdocs-material>=9.6.15",
     "msgspec>=0.19.0",
     "pyparsing>=3.2.3",
