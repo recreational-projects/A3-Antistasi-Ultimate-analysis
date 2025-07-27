@@ -1,16 +1,40 @@
-"""`Marker` class."""
+"""`Marker` and supporting classes."""
 
 from typing import ClassVar, Self
 
 from attrs import define
-from cattrs import structure
+
+
+@define
+class Position:
+    """3D coordinate for `Marker`."""
+
+    x: float
+    y: float
+    z: float
+
+    @classmethod
+    def from_data(
+        cls,
+        data: list[float],
+    ) -> Self:
+        """Construct instance from data."""
+        return cls(
+            x=data[0],
+            y=data[2],
+            z=data[1],
+        )
 
 from src.types_ import Node
 
 
 @define
 class Marker:
-    """Represents a map marker."""
+    """
+    Represents a map marker.
+
+    Implemented as a class for future-proofing.
+    """
 
     INCLUDE_STARTS_WITH: ClassVar = {
         # case-insensitive
@@ -23,11 +47,15 @@ class Marker:
     }
 
     name: str
+    position: Position
 
     @classmethod
     def from_data(cls, data: Node) -> Self:
         """Construct instance from data."""
-        return structure(data, cls)
+        return cls(
+            name=data["name"],
+            position=Position.from_data(data["position"]),
+        )
 
     @property
     def is_airport(self) -> bool:
