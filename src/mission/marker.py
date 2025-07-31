@@ -21,6 +21,7 @@ class Marker:
     }
 
     name: str
+    colorName: str
 
     @classmethod
     def from_data(
