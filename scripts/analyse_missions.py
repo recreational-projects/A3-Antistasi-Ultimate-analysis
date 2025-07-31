@@ -10,10 +10,7 @@ from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
 from src.mission.utils import mission_dirs_in_dir
 from src.utils import pretty_iterable_of_str
-from static_data import in_game_data
-from static_data.au_mission_overrides import (
-    EXCLUDED_MISSIONS,
-)
+from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
 LOGGER = logging.getLogger(__name__)
@@ -33,10 +30,10 @@ def main() -> None:
     mission_dirs = sorted(
         d
         for d in mission_dirs_in_dir(MISSIONS_BASE_DIRPATH)
-        if d.name not in EXCLUDED_MISSIONS
+        if d.name not in au_mission_overrides.EXCLUDED_MISSIONS
     )
     log_msg = (
-        f"Ignoring {pretty_iterable_of_str(EXCLUDED_MISSIONS)}. "
+        f"Ignoring {pretty_iterable_of_str(au_mission_overrides.EXCLUDED_MISSIONS)}. "
         f"Found {len(mission_dirs)} candidate missions in {MISSIONS_BASE_DIRPATH}."
     )
     LOGGER.info(log_msg)

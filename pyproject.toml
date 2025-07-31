@@ -63,6 +63,6 @@ extend-safe-fixes = [
     "S101",     # Use of assert detected
     "SLF001",   # Private member accessed
 ]
-"scripts/_docs_includes.py" = [
+"scripts/docs_includes.py" = [
    "RUF001",    # String contains ambiguous Unicode character - `×`
 ]

@@ -19,13 +19,11 @@ def get_marker_nodes(
     """Get marker `JSONNode`s from the file."""
     with Path.open(filepath, errors="ignore") as fp:
         data = fp.read()
-
     try:
         mission = armaclass.parse(data)
         log_msg = f"Parsed `...{filepath}."
         LOGGER.debug(log_msg)
         nodes = collect_marker_nodes(mission["Mission"])
-
     except armaclass.ParseError:
         nodes = []
         log_msg = f"Couldn't parse `...{filepath}` - may be binarized."
@@ -40,8 +38,10 @@ def collect_marker_nodes(node: JSONNode) -> list[JSONNode]:
     children = _get_layer_nodes(node)
     if not children:
         return markers
+
     for child_layer in children:
         markers.extend(collect_marker_nodes(child_layer))
+
     return markers
 
 
