@@ -23,7 +23,7 @@ jobs:
 
     - name: Setup Python
       # Faster than using uv, as it caches Python on GitHub runner
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
 
