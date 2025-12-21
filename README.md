@@ -27,10 +27,10 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 Run Python script:
 
 ```shell
-python scripts/analyse_missions.py
+python -m scripts.analyse_missions
 ```
 or equivalent to generate data from each AU mission, compare with reference data and
-export temporary JSON files to `data/`.
+export temporary JSON files to `working_data/`.
 
 - Analyses the mission's `mission.sqm` using
   [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a
@@ -48,7 +48,7 @@ export temporary JSON files to `data/`.
 Run Python script
 
 ```shell
-python scripts/build_docs.py
+python -m scripts.build_docs
 ```
 or equivalent to load intermediate data and generate a single Markdown file in `docs/`.
 

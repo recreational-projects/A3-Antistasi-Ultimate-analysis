@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Refactors and docstring improvements
 - CI: bump GitHub Action dependencies
 
+### Fixed
+
+- Docs: fix script invocation commands
+
+
 ## [0.11.0] - 2025-07-18
 
 ### Added
