@@ -54,10 +54,11 @@ or equivalent to load intermediate data and generate a single Markdown file in `
 
 - Logs info and warnings
 
-### Generate static site from Markdown
+### Generate static site from Markdown and preview locally in browser
 
-#TODO
-
+```shell
+mkdocs serve
+```
 
 ## License
 

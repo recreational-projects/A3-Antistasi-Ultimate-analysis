@@ -53,6 +53,7 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "psyfx_pht": {"total_military_zones_count": 51},
     "pja310": {"total_military_zones_count": 47},  # image filename (45) is incorrect
     "pulau": {"total_military_zones_count": 33},
+    "regero": {},
     "rhspkl": {"total_military_zones_count": 26},
     "ruha": {"total_military_zones_count": 27},
     "sara": {"total_military_zones_count": 57},
@@ -74,6 +75,8 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "tembelan": {"total_military_zones_count": 36},
     "umb_colombia": {"total_military_zones_count": 96},
     "vn_khe_sanh": {"total_military_zones_count": 32},
+    "vtf_korsac": {},
+    "vtf_korsac_winter": {},
     "vt7": {
         "resources_count": 14,
         "factories_count": 6,

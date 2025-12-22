@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - tbc
 
+### Added
+
+- Update for AU v11.8.5 (adds Kingdom of Regero, Korsac, Korsac (Winter) maps,
+  changes Yulakia)
+
 ### Changed
 
 - Refactors and docstring improvements

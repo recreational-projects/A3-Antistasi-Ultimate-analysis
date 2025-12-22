@@ -145,6 +145,10 @@ MAP_INDEX: dict[str, dict[str, str]] = {
         "display_name": "Pulau",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1423583812",
     },
+    "regero": {  # mod
+        "display_name": "Kingdom of Regero",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2278254320",
+    },
     "rhspkl": {  # mod
         "display_name": "Prei Khmaoch Luong",  # aka RHSPKL
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1978754337",
@@ -236,6 +240,14 @@ MAP_INDEX: dict[str, dict[str, str]] = {
     "vt7": {  # mod
         "display_name": "Virolahti - Valtatie 7",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1926513010",
+    },
+    "vtf_korsac": {
+        "display_name": "Korsac",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3043043427",
+    },
+    "vtf_korsac_winter": {
+        "display_name": "Korsac (Winter)",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3043043427",
     },
     "winthera3": {  # mod
         "display_name": "Island Panthera (Winter)",  # aka "Island Winthera"
