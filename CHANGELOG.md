@@ -4,19 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## UNRELEASED - tbc
+
+## [0.13.0] - 2025-12-23
 
 ### Added
 
-- Update for AU v11.8.6 (fixes Chernarus (Autumn))
+- Update for AU v11.8.6, which fixes Chernarus (Autumn) map
 
 
 ## [0.12.0] - 2025-12-22
 
 ### Added
 
-- Update for AU v11.8.5 (adds Kingdom of Regero, Korsac, Korsac (Winter) maps,
-  changes Yulakia)
+- Update for AU v11.8.5, which adds Kingdom of Regero, Korsac, Korsac (Winter) maps,
+  changes Yulakia
 
 ### Changed
 
@@ -194,6 +195,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[0.13.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.9.2...v0.10.0

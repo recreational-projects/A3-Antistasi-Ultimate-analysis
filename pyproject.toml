@@ -1,6 +1,6 @@
 [project]
 name = "a3-antistasi-ultimate-analysis"
-version = "0.12.0"
+version = "0.13.0"
 description = "Compare missions from the Antistasi Ultimate mod for Arma 3"
 readme = "README.md"
 requires-python = ">=3.12"
