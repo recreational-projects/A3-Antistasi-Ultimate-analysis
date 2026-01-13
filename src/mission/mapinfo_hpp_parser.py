@@ -1,5 +1,5 @@
 """
-Parse `mapInfo.hpp` file.
+Parse a mission's `mapInfo.hpp` file.
 
 Simple `pyparsing` custom parser to get only critical info,  as `armaclass` parser
 fails on common elements in `mapInfo.hpp` like `#INCLUDE`.
@@ -7,10 +7,11 @@ fails on common elements in `mapInfo.hpp` like `#INCLUDE`.
 
 import logging
 from pathlib import Path
-from typing import Any
 
 import pyparsing as pp
 from pyparsing import common as ppc
+
+from src.types_ import JSONNode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ DISABLED_TOWNS = (
 )
 
 
-def get_map_info_data(filepath: Path) -> dict[str, Any]:
+def get_map_info_data(filepath: Path) -> JSONNode:
     """Get key data from the file."""
     with Path.open(filepath) as fp:
         map_info_file_data = fp.read()

@@ -4,9 +4,9 @@ Partial implementation of GeoJSON spec.
 Derived from https://jcristharif.com/msgspec/examples/geojson.html.
 """
 
-from typing import Any
-
 import msgspec
+
+from src.types_ import JSONNode
 
 Position = tuple[float, float]
 
@@ -21,5 +21,5 @@ class Feature(msgspec.Struct, tag=True):
     """Feature class."""
 
     geometry: Point
-    properties: dict[str, Any]
+    properties: JSONNode
     id: str | int | None = None

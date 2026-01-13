@@ -1,9 +1,11 @@
 """`Marker` class."""
 
-from typing import Any, ClassVar, Self
+from typing import ClassVar, Self
 
 from attrs import define
 from cattrs import structure
+
+from src.types_ import JSONNode
 
 
 @define
@@ -25,7 +27,7 @@ class Marker:
     @classmethod
     def from_data(
         cls,
-        data: dict[str, Any],
+        data: JSONNode,
     ) -> Self:
         """Construct instance from data."""
         return structure(data, cls)

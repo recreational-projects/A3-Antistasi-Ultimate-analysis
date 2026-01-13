@@ -1,16 +1,14 @@
-"""Parse `mission.sqm` file."""
+"""Parse a mission's `mission.sqm` file with armaclass."""
 
 import logging
 from pathlib import Path
-from typing import Any
 
 import armaclass
 
 from src.mission.marker import Marker
+from src.types_ import JSONNode
 
 LOGGER = logging.getLogger(__name__)
-
-type JSONNode = dict[str, Any]
 
 
 def get_marker_nodes(

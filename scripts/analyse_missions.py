@@ -3,13 +3,12 @@
 import logging
 from pathlib import Path
 
-from rich.logging import RichHandler
 from rich.progress import track
 
 from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
 from src.mission.utils import mission_dirs_in_dir
-from src.utils import pretty_iterable_of_str
+from src.utils import configure_logging, pretty_iterable_of_str
 from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
@@ -21,12 +20,7 @@ OUTPUT_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
 def main() -> None:
     """Analyse all missions."""
-    logging.basicConfig(
-        level="INFO",
-        format="%(message)s",
-        datefmt="[%X]",
-        handlers=[RichHandler()],
-    )
+    configure_logging()
     mission_dirs = sorted(
         d
         for d in mission_dirs_in_dir(MISSIONS_BASE_DIRPATH)
@@ -77,8 +71,8 @@ def process_mission(mission_dir: Path) -> str:
     log_msg = f"'{mission_dir.name}': loaded mission."
     LOGGER.info(log_msg)
 
-    mission.validate_pois(in_game_data.MILITARY_ZONES_COUNT)
-    mission.validate_towns(
+    mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
+    mission.validate_and_correct_towns(
         GM_LOCATIONS_BASE_DIRPATH / mission.map_name / "geojson" / "locations"
     )
     mission.export(OUTPUT_DIRPATH)

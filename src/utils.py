@@ -1,8 +1,11 @@
 """Utilities."""
 
+import logging
 import tomllib
 from collections.abc import Iterable
 from pathlib import Path
+
+from rich.logging import RichHandler
 
 
 def pretty_iterable_of_str(iterable: Iterable[str]) -> str:
@@ -16,3 +19,13 @@ def project_version() -> str | None:
     with filepath.open("rb") as fp:
         version = tomllib.load(fp).get("project", {}).get("version")
         return str(version)
+
+
+def configure_logging() -> None:
+    """Configure logging in scripts."""
+    logging.basicConfig(
+        level="INFO",
+        format="%(message)s",
+        datefmt="[%X]",
+        handlers=[RichHandler()],
+    )
