@@ -1,1 +1,1 @@
-"""Module containing Antistasi Ultimate mission analysis code."""
+"""Module for analysing AU missions."""

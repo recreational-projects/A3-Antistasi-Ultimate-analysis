@@ -1,22 +1,18 @@
-"""Parse `mission.sqm` file."""
+"""Parse a mission's `mission.sqm` file with armaclass."""
 
 import logging
 from pathlib import Path
-from typing import Any
 
 import armaclass
 
 from src.mission.marker import Marker
+from src.types_ import Node
 
 LOGGER = logging.getLogger(__name__)
 
-type JSONNode = dict[str, Any]
 
-
-def get_marker_nodes(
-    filepath: Path,
-) -> list[JSONNode]:
-    """Get marker `JSONNode`s from the file."""
+def get_marker_nodes(filepath: Path) -> list[Node]:
+    """Get marker nodes from the file."""
     with Path.open(filepath, errors="ignore") as fp:
         data = fp.read()
     try:
@@ -32,7 +28,7 @@ def get_marker_nodes(
     return nodes
 
 
-def collect_marker_nodes(node: JSONNode) -> list[JSONNode]:
+def collect_marker_nodes(node: Node) -> list[Node]:
     """Return `node`'s relevant marker node descendants, recursively."""
     markers = _get_marker_nodes(node)
     children = _get_layer_nodes(node)
@@ -45,7 +41,7 @@ def collect_marker_nodes(node: JSONNode) -> list[JSONNode]:
     return markers
 
 
-def _get_marker_nodes(node: JSONNode) -> list[JSONNode]:
+def _get_marker_nodes(node: Node) -> list[Node]:
     """Return `node`'s relevant marker node children."""
     return [
         e
@@ -58,12 +54,12 @@ def _get_marker_nodes(node: JSONNode) -> list[JSONNode]:
     ]
 
 
-def _get_layer_nodes(node: JSONNode) -> list[JSONNode]:
+def _get_layer_nodes(node: Node) -> list[Node]:
     """Return `node`'s child layers."""
     return [e for e in _get_entities(node) if e.get("dataType") == "Layer"]
 
 
-def _get_entities(node: JSONNode) -> list[JSONNode]:
+def _get_entities(node: Node) -> list[Node]:
     """Return `node`'s relevant data dict children.."""
     if "Entities" not in node:
         return []

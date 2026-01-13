@@ -18,7 +18,7 @@ DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 
 
-def sort_missions_by_name(mission: Mission) -> int:
+def sort_missions_by_points(mission: Mission) -> int:
     """Sort order for `Mission`s table."""
     return 0 if mission.war_level_points is None else mission.war_level_points
 
@@ -123,7 +123,7 @@ def main() -> None:
         docs_includes.INTRO_MARKDOWN,
         markdown_total_missions(missions),
         markdown_table(
-            missions=sorted(missions, key=sort_missions_by_name, reverse=True),
+            missions=sorted(missions, key=sort_missions_by_points, reverse=True),
             columns=docs_includes.COLUMNS,
             max_war_level_points=max_war_level_points,
         ),

@@ -1,5 +1,5 @@
 """
-Parse `mapInfo.hpp` file.
+Parse a mission's `mapInfo.hpp` file.
 
 Simple `pyparsing` custom parser to get only critical info,  as `armaclass` parser
 fails on common elements in `mapInfo.hpp` like `#INCLUDE`.
