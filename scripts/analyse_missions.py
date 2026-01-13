@@ -14,7 +14,7 @@ from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
 LOGGER = logging.getLogger(__name__)
-MISSIONS_BASE_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"]
+MISSIONS_BASE_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
 GM_LOCATIONS_BASE_DIRPATH = BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
 OUTPUT_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
@@ -37,6 +37,9 @@ def main() -> None:
         f"Found {len(mission_dirs)} candidate missions in {MISSIONS_BASE_DIRPATH}."
     )
     LOGGER.info(log_msg)
+    if not mission_dirs:
+        msg = "No missions found."
+        raise RuntimeError(msg)
 
     OUTPUT_DIRPATH.mkdir(parents=True, exist_ok=True)
 
