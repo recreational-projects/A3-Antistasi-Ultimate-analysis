@@ -176,8 +176,5 @@ cython_debug/
 .pypirc
 
 # Project specific
-#   Generated documentation:
-docs/
-!/docs/javascripts/
 #   Working data:
 working_data/
