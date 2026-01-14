@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## UNRELEASED - tbc
+
+### Fixed
+
+- `scripts/analyse_missions.py`: broken warning when mission towns contain duplicates
+
+
 ## [0.13.0] - 2025-12-23
 
 ### Added

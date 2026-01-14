@@ -26,9 +26,20 @@ from static_data import in_game_data
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from src.types_ import Node
+
 LOGGER = logging.getLogger(__name__)
 _MAPINFO_FILENAME = "mapInfo.hpp"
 _MISSION_FILENAME = "mission.sqm"
+
+
+def _populations_from_map_info(map_info: Node) -> list[tuple[str, int | None]]:
+    # Returns list of tuple instead of dict, as may include duplicate town names
+    return [
+        (p[0], p[1])
+        for p in map_info["populations"]
+        if p[0] not in map_info["disabled_towns"]
+    ]
 
 
 @define
@@ -166,30 +177,20 @@ class Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
-        populations_ = [
-            # may include duplicates
-            p
-            for p in map_info["populations"]
-            if p[0] not in map_info["disabled_towns"]
-        ]
-        towns = {p[0]: p[1] for p in sorted(populations_)}
-        towns_count = len(towns)
+        populations_ = _populations_from_map_info(map_info)  # may contain duplicates
+        towns = dict(populations_)  # unique
 
-        if towns_count == 0:
-            unique_town_names = set()
-            duplicated = {
-                p[0]
-                for p in populations_
-                # TODO: fix type issue
-                if p[0] in unique_town_names or unique_town_names.add(p[0])  # type: ignore[func-returns-value]
-            }
-            if len(unique_town_names) != len(populations_):
-                log_msg = (
-                    f"'{map_name}': towns_count={len(populations_)} but "
-                    f"{len(unique_town_names)} unique.\n"
-                    f"{pretty_iterable_of_str(duplicated)} duplicated."
-                )
-                LOGGER.warning(log_msg)
+        if len(towns) != len(populations_):
+            duplicated_town_names = [p[0] for p in populations_]
+            for t in towns:
+                duplicated_town_names.remove(t)
+
+            log_msg = (
+                f"'{map_name}': {len(populations_)} in mission but "
+                f"{len(towns)} unique.\n"
+                f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
+            )
+            LOGGER.warning(log_msg)
 
         marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
 
