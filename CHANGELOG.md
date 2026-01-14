@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - tbc
 
+### Added
+
+- Update military zone count reference values for Yulakia re AU v11.8.5 (doesn't
+  affect output)
+
 ### Fixed
 
 - `scripts/analyse_missions.py`: broken warning when mission towns contain duplicates
@@ -43,11 +48,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Completed towns counts and therefore all data for all missions
 - Log error when mission fails military zone count verification
 - `scripts/build_docs.py`: log project version
+- Update military zone count reference value for Šumava in AU v11.7.0 (doesn't
+  affect output)
+
 
 ### Changed
 
-- Update military zone count reference value for Šumava in AU v11.7.0 (doesn't
-  affect output)
 - Change 'objectives' -> 'military zones' in code, data and output
 - `scripts/analyse_missions.py`: fix and improve log messages
 

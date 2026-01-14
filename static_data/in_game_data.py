@@ -88,7 +88,15 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     },
     "winthera3": {"total_military_zones_count": 33},
     "ww2_omaha_beach": {"total_military_zones_count": 18},
-    "yulakia": {"total_military_zones_count": 69},
+    "yulakia": {
+        "resources_count": 12,
+        "factories_count": 11,
+        "outposts_count": 35,
+        "waterports_count": 7,
+        "bases_count": 7,
+        "airports_count": 4,
+        "total_military_zones_count": 76,
+    },
 }
 
 TOWNS_COUNT: dict[str, int] = {
