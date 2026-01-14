@@ -9,8 +9,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `scripts/analyse_missions.py`: raise error if no missions found
 - Update military zone count reference values for Yulakia re AU v11.8.5 (doesn't
   affect output)
+
+### Changed
+
+- Build: deps: bump mkdocs-material to latest
 
 ### Fixed
 
