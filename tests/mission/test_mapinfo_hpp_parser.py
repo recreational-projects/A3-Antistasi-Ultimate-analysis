@@ -1,6 +1,12 @@
 """Test parsing a mission's `mapInfo.hpp` file."""
 
-from src.mission.mapinfo_hpp_parser import _parse
+from cxxheaderparser.simple import parse_string
+
+from src.mission.mapinfo_hpp_parser import (
+    _get_climate,
+    _get_disabled_towns,
+    _get_populations,
+)
 
 # Cut down/edited version of `.../Antistasi_Altis.Altis/mapInfo.hpp`
 MAP_INFO_HPP = r"""
@@ -36,19 +42,34 @@ class altis {
 };"""  # noqa: E501
 
 
-def test_parse() -> None:
-    """Test parsing a mission's `mapInfo.hpp` file."""
+def test_get_climate() -> None:
+    """Get climate value."""
     # arrange
+    class_scope = parse_string(MAP_INFO_HPP).namespace.classes[0]
     # act
-    parse_result = _parse(MAP_INFO_HPP)
+    value = _get_climate(class_scope)
     # assert
-    assert parse_result["climate"] == "arid"
-    assert parse_result["populations"] == [
-        ["Therisa", 154],
-        ["Zaros", 371],
-        ["Poliakko", 136],
-    ]
-    assert parse_result["disabled_towns"] == [
+    assert value == "arid"
+
+
+def test_get_populations() -> None:
+    """Get populations value."""
+    # arrange
+    class_scope = parse_string(MAP_INFO_HPP).namespace.classes[0]
+    # act
+    value = _get_populations(class_scope)
+    # assert
+    assert value == [("Therisa", 154), ("Zaros", 371), ("Poliakko", 136)]
+
+
+def test_get_disabled_towns() -> None:
+    """Get populations value."""
+    # arrange
+    class_scope = parse_string(MAP_INFO_HPP).namespace.classes[0]
+    # act
+    value = _get_disabled_towns(class_scope)
+    # assert
+    assert value == [
         "Tikanen",
         "toipela",
         "hirvela",

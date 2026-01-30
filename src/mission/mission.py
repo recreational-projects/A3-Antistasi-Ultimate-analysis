@@ -12,7 +12,7 @@ from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
 from src.geojson.load import load_towns_from_dir
-from src.mission.mapinfo_hpp_parser import get_map_info_data
+from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
 from src.mission.utils import (
@@ -34,7 +34,7 @@ _MISSION_FILENAME = "mission.sqm"
 
 
 def _populations_from_map_info(map_info: Node) -> list[tuple[str, int | None]]:
-    # Returns list of tuple instead of dict, as may include duplicate town names
+    # List of tuple instead of dict, as may include duplicate town names
     return [
         (p[0], p[1])
         for p in map_info["populations"]
@@ -176,7 +176,7 @@ class Mission:
     ) -> Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
+        map_info = parse_mapinfo_hpp_file(mission_dir / _MAPINFO_FILENAME)
         populations_ = _populations_from_map_info(map_info)  # may contain duplicates
         towns = dict(populations_)  # unique
 

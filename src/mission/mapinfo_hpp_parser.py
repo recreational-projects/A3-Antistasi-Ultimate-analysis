@@ -1,65 +1,106 @@
-"""
-Parse a mission's `mapInfo.hpp` file.
-
-Simple `pyparsing` custom parser to get only critical info,  as `armaclass` parser
-fails on common elements in `mapInfo.hpp` like `#INCLUDE`.
-"""
+"""Parse a mission's `mapInfo.hpp` file."""
 
 import logging
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-import pyparsing as pp
-from pyparsing import common as ppc
+from cxxheaderparser.simple import ClassScope, parse_string
+from cxxheaderparser.tokfmt import Token
 
 LOGGER = logging.getLogger(__name__)
 
-_LBRACE, _RBRACE, _SEMICOLON, _COMMA, _EQ = map(
-    pp.Suppress,
-    "{};,=",
-)
-_MAP_INFO_STRING = pp.dblQuotedString().setParseAction(pp.removeQuotes)
 
-CLIMATE = pp.Suppress("climate") + _EQ + _MAP_INFO_STRING + _SEMICOLON
-POPULATIONS = (
-    pp.Suppress("population[]")
-    + _EQ
-    + _LBRACE
-    + pp.DelimitedList(
-        pp.Group(
-            _LBRACE + _MAP_INFO_STRING + _COMMA + ppc.integer + _RBRACE,
-            aslist=True,
-        ),
-    )
-    + _RBRACE
-    + _SEMICOLON
-)
-DISABLED_TOWNS = (
-    pp.Suppress("disabledTowns[]")
-    + _EQ
-    + _LBRACE
-    + pp.DelimitedList(_MAP_INFO_STRING)
-    + _RBRACE
-    + _SEMICOLON
-)
+def _field_lookup(*, field_name: str, class_scope: ClassScope) -> str | None:
+    """Get field by name."""
+    for field in class_scope.fields:
+        t = field.type
+        if (
+            hasattr(t, "typename")
+            and hasattr(t.typename.segments[0], "name")
+            and t.typename.segments[0].name == field_name
+        ):
+            if field.value is None:
+                err_msg = f"'{field_name}' field has no value."
+                raise ValueError(err_msg)
+
+            return field.value.tokens[0].value
+
+    err_msg = f"Can't find '{field_name}' field."
+    raise ValueError(err_msg)
+
+
+def _field_array_lookup(*, field_name: str, class_scope: ClassScope) -> list[Token]:
+    """Get field by name."""
+    for field in class_scope.fields:
+        t = field.type
+        if (
+            hasattr(t, "array_of")
+            and hasattr(t.array_of, "typename")
+            and hasattr(t.array_of.typename.segments[0], "name")
+            and t.array_of.typename.segments[0].name == field_name
+        ):
+            if field.value is None:
+                err_msg = f"'{field_name}' field has no value."
+                raise ValueError(err_msg)
+
+            return field.value.tokens
+
+    err_msg = f"Can't find '{field_name}' field."
+    raise ValueError(err_msg)
+
+
+def _unquote(value: str) -> str:
+    """Remove double quotes from a string."""
+    return value.strip('"')
+
+
+def _get_climate(class_scope: ClassScope) -> str:
+    """Get climate value."""
+    value = _field_lookup(field_name="climate", class_scope=class_scope)
+    return _unquote(str(value))
+
+
+def pairwise(t: Iterable[str | int]) -> Any:
+    """Return pairs."""
+    it = iter(t)
+    return zip(it, it, strict=True)
+
+
+def _filter_tokens(tokens: list[Token]) -> list[str]:
+    return [_unquote(token.value) for token in tokens if token.value not in "{},"]
+
+
+def _get_populations(class_scope: ClassScope) -> list[tuple[str, int]]:
+    """
+    Get population names and values.
+
+    List of tuple instead of dict, as may include duplicate town names.
+    """
+    tokens = _field_array_lookup(field_name="population", class_scope=class_scope)
+    values = _filter_tokens(tokens)
+    return [
+        (
+            str(pair[0]),
+            int(pair[1]),
+        )
+        for pair in pairwise(values)
+    ]
+
+
+def _get_disabled_towns(class_scope: ClassScope) -> list[str]:
+    """Get disabled towns."""
+    tokens = _field_array_lookup(field_name="disabledTowns", class_scope=class_scope)
+    return _filter_tokens(tokens)
 
 
 def _parse(str_: str) -> dict[str, Any]:
     """Parse relevant contents of a `mapInfo.hpp` file."""
-    climate = str(CLIMATE.search_string(str_)[0][0])
-    try:
-        populations_parse_result = POPULATIONS.search_string(
-            str_,
-        )[0]
-        populations = list(populations_parse_result)
-    except IndexError:
-        populations = []
-    try:
-        disabled_towns_parse_result = DISABLED_TOWNS.search_string(str_)[0]
-        disabled_towns = list(disabled_towns_parse_result)
-    except IndexError:
-        disabled_towns = []
-
+    parsed_data = parse_string(str_)
+    class_scope = parsed_data.namespace.classes[0]
+    climate = _get_climate(class_scope)
+    populations = _get_populations(class_scope)
+    disabled_towns = _get_disabled_towns(class_scope)
     return {
         "climate": climate,
         "populations": populations,
@@ -67,12 +108,11 @@ def _parse(str_: str) -> dict[str, Any]:
     }
 
 
-def get_map_info_data(filepath: Path) -> dict[str, Any]:
+def parse_mapinfo_hpp_file(filepath: Path) -> dict[str, Any]:
     """Parse a `mapInfo.hpp` file."""
     with Path.open(filepath) as fp:
         data = fp.read()
 
     log_msg = f"Parsed `{filepath}`."
     LOGGER.debug(log_msg)
-
     return _parse(data)
