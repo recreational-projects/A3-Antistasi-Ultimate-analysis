@@ -18,7 +18,7 @@ dependencies = [
 dev = [
     "mypy>=1.19.1",
     "pytest>=9.0.2",
-    "ruff>=0.14.11",
+    "ruff>=0.14.14",
 ]
 
 [tool.mypy]
@@ -69,4 +69,3 @@ extend-safe-fixes = [
 "src/types.py" = [
    "A005",  # Module shadows a Python standard-library module
 ]
-

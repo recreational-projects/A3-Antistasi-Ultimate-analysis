@@ -44,32 +44,35 @@ DISABLED_TOWNS = (
 )
 
 
-def get_map_info_data(filepath: Path) -> dict[str, Any]:
-    """Get key data from the file."""
-    with Path.open(filepath) as fp:
-        map_info_file_data = fp.read()
-
-    climate = str(CLIMATE.search_string(map_info_file_data)[0][0])
+def _parse(str_: str) -> dict[str, Any]:
+    """Parse relevant contents of a `mapInfo.hpp` file."""
+    climate = str(CLIMATE.search_string(str_)[0][0])
     try:
         populations_parse_result = POPULATIONS.search_string(
-            map_info_file_data,
+            str_,
         )[0]
         populations = list(populations_parse_result)
     except IndexError:
         populations = []
     try:
-        disabled_towns_parse_result = DISABLED_TOWNS.search_string(map_info_file_data)[
-            0
-        ]
+        disabled_towns_parse_result = DISABLED_TOWNS.search_string(str_)[0]
         disabled_towns = list(disabled_towns_parse_result)
     except IndexError:
         disabled_towns = []
-
-    log_msg = f"Parsed `{filepath}`."
-    LOGGER.debug(log_msg)
 
     return {
         "climate": climate,
         "populations": populations,
         "disabled_towns": disabled_towns,
     }
+
+
+def get_map_info_data(filepath: Path) -> dict[str, Any]:
+    """Parse a `mapInfo.hpp` file."""
+    with Path.open(filepath) as fp:
+        data = fp.read()
+
+    log_msg = f"Parsed `{filepath}`."
+    LOGGER.debug(log_msg)
+
+    return _parse(data)
