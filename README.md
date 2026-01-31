@@ -16,9 +16,9 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 ### Pre-requisites 
 
 - Cloned/downloaded copy of current
-  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate).
+  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)  (~ 800 MB total).
   
-  Only the contents of `A3A/addons/maps` folder is required (~ 120 MB)
+  Only `A3A/addons/maps` folder is required (~ 120 MB)
 
 - Arma 3 installation with
   [Gruppe Adler Map Exporter ('grad_meh`)](https://github.com/gruppe-adler/grad_meh) mod
@@ -41,8 +41,7 @@ python -m scripts.analyse_missions
 or equivalent to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
 
-- Analyses the mission's `mission.sqm` using
-  [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
+- Analyses the mission's `mission.sqm` and `mapInfo.hpp`
 - Gets each mission's friendly map name and download URL from
   `static_data/map_index.py`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
