@@ -12,7 +12,7 @@ from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
 from src.geojson.load import load_towns_from_dir
-from src.mission.mapinfo_hpp_parser import get_map_info_data
+from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_marker_nodes
 from src.mission.utils import (
@@ -26,20 +26,10 @@ from static_data import in_game_data
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from src.types_ import Node
 
 LOGGER = logging.getLogger(__name__)
 _MAPINFO_FILENAME = "mapInfo.hpp"
 _MISSION_FILENAME = "mission.sqm"
-
-
-def _populations_from_map_info(map_info: Node) -> list[tuple[str, int | None]]:
-    # Returns list of tuple instead of dict, as may include duplicate town names
-    return [
-        (p[0], p[1])
-        for p in map_info["populations"]
-        if p[0] not in map_info["disabled_towns"]
-    ]
 
 
 @define
@@ -176,18 +166,22 @@ class Mission:
     ) -> Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = get_map_info_data(mission_dir / _MAPINFO_FILENAME)
-        populations_ = _populations_from_map_info(map_info)  # may contain duplicates
-        towns = dict(populations_)  # unique
+        map_info = parse_mapinfo_hpp_file(mission_dir / _MAPINFO_FILENAME)
+        towns = [
+            (name, population)
+            for (name, population) in map_info["populations"]
+            if name not in map_info["disabled_towns"]
+        ]
+        unique_towns = dict(towns)  # unique
 
-        if len(towns) != len(populations_):
-            duplicated_town_names = [p[0] for p in populations_]
-            for t in towns:
+        if len(unique_towns) != len(towns):
+            duplicated_town_names = [p[0] for p in towns]
+            for t in unique_towns:
                 duplicated_town_names.remove(t)
 
             log_msg = (
-                f"'{map_name}': {len(populations_)} in mission but "
-                f"{len(towns)} unique.\n"
+                f"'{map_name}': {len(towns)} in mission but "
+                f"{len(unique_towns)} unique.\n"
                 f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
             )
             LOGGER.warning(log_msg)
@@ -215,7 +209,7 @@ class Mission:
             map_display_name=map_display_name,
             map_url=map_url,
             climate=map_info["climate"],
-            towns=towns,
+            towns=unique_towns,
             disabled_towns=map_info["disabled_towns"],
             military_zone_markers=[Marker.from_data(m) for m in marker_nodes],
         )
