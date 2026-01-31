@@ -41,13 +41,14 @@ def map_name_from_mission_dir_path(path: Path) -> str:
     return path.suffix.lstrip(".").lower()
 
 
+def normalise_town_name(name: str) -> str:
+    """Normalise town name from map data, for comparison purposes."""
+    return name.lower().replace(" ", "")
+
+
 def normalise_mission_town_name(name: str) -> str:
     """Normalise town name from mission data, for comparison purposes."""
     for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
         name = name.removeprefix(prefix)
-    return name.lower().replace(" ", "")
 
-
-def normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
-    return name.lower().replace(" ", "")
+    return normalise_town_name(name)
