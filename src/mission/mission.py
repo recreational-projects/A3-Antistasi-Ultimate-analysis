@@ -13,7 +13,7 @@ from cattrs import ClassValidationError, structure
 from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
-from src.mission.mission_sqm_parser import get_marker_nodes
+from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
 from src.mission.utils import (
     map_name_from_mission_dir_path,
     normalise_mission_town_name,
@@ -69,38 +69,42 @@ class Mission:
     Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
     to the map!"""
 
-    military_zone_markers: list[Marker] = Factory(list)
-    """Relevant subset of markers from `mission.sqm`."""
+    airports: list[Marker] = Factory(list)
+    factories: list[Marker] = Factory(list)
+    bases: list[Marker] = Factory(list)
+    outposts: list[Marker] = Factory(list)
+    waterports: list[Marker] = Factory(list)
+    resources: list[Marker] = Factory(list)
 
     @property
     def airports_count(self) -> int:
         """Enumerate airports from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_airport])
+        return len(self.airports)
 
     @property
     def waterports_count(self) -> int:
-        """Enumerate sea/river ports from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_waterport])
+        """Enumerate sea/river ports."""
+        return len(self.waterports)
 
     @property
     def bases_count(self) -> int:
-        """Enumerate bases from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_base])
+        """Enumerate bases."""
+        return len(self.bases)
 
     @property
     def outposts_count(self) -> int:
-        """Enumerate outposts from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_outpost])
+        """Enumerate outposts."""
+        return len(self.outposts)
 
     @property
     def factories_count(self) -> int:
-        """Enumerate factories from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_factory])
+        """Enumerate factories."""
+        return len(self.factories)
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources from `self.markers`."""
-        return len([m for m in self.military_zone_markers if m.is_resource])
+        """Enumerate resources`."""
+        return len(self.resources)
 
     @property
     def total_military_zones_count(self) -> int:
@@ -121,6 +125,7 @@ class Mission:
         """Enumerate towns."""
         if not self.towns:
             return None
+
         return len(self.towns)
 
     @property
@@ -131,12 +136,12 @@ class Mission:
 
         return sum(
             (
-                8 * self.airports_count,
-                6 * self.bases_count,
-                4 * self.waterports_count,
-                2 * self.outposts_count,
-                2 * self.resources_count,
-                2 * self.factories_count,
+                8 * len(self.airports),
+                6 * len(self.bases),
+                4 * len(self.waterports),
+                2 * len(self.outposts),
+                2 * len(self.resources),
+                2 * len(self.factories),
                 len(self.towns),
             )
         )
@@ -150,6 +155,7 @@ class Mission:
         if ratio > 1:
             err_msg = f"War Level Points ratio {ratio} > 1."
             raise ValueError(err_msg)
+
         return ratio
 
     @classmethod
@@ -181,7 +187,7 @@ class Mission:
             )
             LOGGER.warning(log_msg)
 
-        marker_nodes = get_marker_nodes(mission_dir / _MISSION_FILENAME)
+        marker_nodes = get_military_zone_marker_nodes(mission_dir / _MISSION_FILENAME)
 
         map_display_name, map_url = None, None
         if map_name not in map_index:
@@ -199,6 +205,16 @@ class Mission:
             log_msg = f"'{map_name}': map index issue: no `map_url`."
             LOGGER.error(log_msg)
 
+        military_zone_markers: dict[str, list[Marker]] = {}
+        for prefix in Marker.RELEVANT_PREFIXES:
+            military_zone_markers[prefix] = []
+
+        for marker_node in marker_nodes:
+            marker = Marker.from_data(marker_node)
+            for prefix, list_ in military_zone_markers.items():
+                if marker.name.lower().startswith(prefix):
+                    list_.append(marker)
+
         return cls(
             map_name=map_name,
             map_display_name=map_display_name,
@@ -206,7 +222,12 @@ class Mission:
             climate=map_info["climate"],
             towns=unique_towns,
             disabled_towns=map_info["disabled_towns"],
-            military_zone_markers=[Marker.from_data(m) for m in marker_nodes],
+            airports=military_zone_markers["airport"],
+            bases=military_zone_markers["milbase"],
+            waterports=military_zone_markers["seaport"],
+            outposts=military_zone_markers["outpost"],
+            factories=military_zone_markers["factory"],
+            resources=military_zone_markers["resource"],
         )
 
     @classmethod
@@ -251,6 +272,7 @@ class Mission:
                 LOGGER.debug(log_msg)
             else:
                 gm_towns.add(v)
+
         return gm_towns
 
     def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
@@ -272,6 +294,7 @@ class Mission:
                     f"doesn't match {len(gm_towns)} in map locations data."
                 )
                 LOGGER.warning(log_msg)
+
         elif self.towns:
             log_msg = (
                 f"'{map_name}': {self.towns_count} towns defined in mission; "
