@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import json
 import logging
-from operator import attrgetter
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import Self
 
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
@@ -22,10 +21,6 @@ from src.mission.utils import (
 )
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
-
 
 LOGGER = logging.getLogger(__name__)
 _MAPINFO_FILENAME = "mapInfo.hpp"
@@ -215,32 +210,16 @@ class Mission:
         )
 
     @classmethod
-    def missions_from_json(cls, path: Path, excludes: Iterable[str]) -> list[Mission]:
-        """Load previously-exported `Missions` data from `path`."""
-        json_files = [
-            p
-            for p in list(path.iterdir())
-            if p.suffix == ".json" and p.stem not in excludes
-        ]
-        log_msg = (
-            f"Found {len(json_files)} files in {path} "
-            f"ignoring {pretty_iterable_of_str(excludes)}."
-        )
-        LOGGER.info(log_msg)
+    def from_json(cls, file_path: Path) -> Self:
+        """Load previously-exported `Mission` data from `path`."""
+        with Path.open(file_path, "r", encoding="utf-8") as file:
+            try:
+                mission = structure(json.load(file), cls)
+            except ClassValidationError as err:
+                err_msg = f"Error creating `Mission` from JSON: {file_path}."
+                raise ValueError(err_msg) from err
 
-        missions = []
-        for fp in json_files:
-            with Path.open(fp, "r", encoding="utf-8") as file:
-                try:
-                    mission = structure(json.load(file), Mission)
-                except ClassValidationError as err:
-                    err_msg = f"Error creating `Mission` from JSON: {fp}."
-                    raise ValueError(err_msg) from err
-                missions.append(mission)
-
-        log_msg = f"Loaded data for {len(missions)} missions."
-        LOGGER.info(log_msg)
-        return sorted(missions, key=attrgetter("map_name"))
+        return mission
 
     def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
         """

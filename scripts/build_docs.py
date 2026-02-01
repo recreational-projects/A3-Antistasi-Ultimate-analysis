@@ -1,15 +1,17 @@
 """Generate the Markdown doc representing site content."""
 
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence, Sized
+from operator import attrgetter
 from pathlib import Path
 
+import attrs
 from rich.logging import RichHandler
 
 from scripts import docs_includes
 from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
-from src.utils import project_version
+from src.utils import pretty_iterable_of_str, project_version
 from static_data import au_mission_overrides
 
 LOGGER = logging.getLogger(__name__)
@@ -18,28 +20,60 @@ DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 
 
-def sort_missions_by_points(mission: Mission) -> int:
+def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
+    """Load previously-exported `Missions` from `path`."""
+    json_files = [
+        p
+        for p in list(path.iterdir())
+        if p.suffix == ".json" and p.stem not in excludes
+    ]
+    log_msg = (
+        f"Found {len(json_files)} files in {path} "
+        f"ignoring {pretty_iterable_of_str(excludes)}."
+    )
+    LOGGER.info(log_msg)
+
+    missions = [Mission.from_json(fp) for fp in json_files]
+    log_msg = f"Loaded data for {len(missions)} missions."
+    LOGGER.info(log_msg)
+
+    required_fields = {
+        field.name for field in attrs.fields(Mission) if field.name != "disabled_towns"
+    }
+    for mission in missions:
+        empty_fields = {f for f in required_fields if not getattr(mission, f)}
+        if empty_fields:
+            log_msg = (
+                f"{mission.map_display_name}: "
+                f"no {pretty_iterable_of_str(empty_fields)} value."
+            )
+            LOGGER.error(log_msg)
+
+    return sorted(missions, key=attrgetter("map_name"))
+
+
+def _sort_missions_by_points(mission: Mission) -> int:
     """Sort order for `Mission`s table."""
     return 0 if mission.war_level_points is None else mission.war_level_points
 
 
-def markdown_total_missions(missions: Sequence[Mission]) -> str:
+def _markdown_total_missions(missions: Sized) -> str:
     """Create Markdown total missions line."""
     return (
         f"- {len(missions)} maps total including season variants, excluding Stratis\n"
     )
 
 
-def markdown_handle_missing_value(val: int | str | None) -> str:
+def _markdown_handle_missing_value(val: int | str | None) -> str:
     """
-    Display `` instead of `0` if value is `None`.
+    Display '' instead of '0' if value is `None`.
 
     `None` is used to flag unknown/missing value, as opposed to calculated zero.
     """
     return "" if val is None else str(val)
 
 
-def markdown_table_row(
+def _markdown_table_row(
     *,
     mission: Mission,
     columns: dict[str, dict[str, str | bool]],
@@ -59,7 +93,7 @@ def markdown_table_row(
             if ratio:
                 td_value = f"{ratio:.2f}"
         else:
-            td_value = markdown_handle_missing_value(getattr(mission, col))
+            td_value = _markdown_handle_missing_value(getattr(mission, col))
 
         tr += f"| {td_value} "
 
@@ -67,7 +101,7 @@ def markdown_table_row(
     return tr
 
 
-def markdown_table(
+def _markdown_table(
     *,
     missions: Sequence[Mission],
     columns: dict[str, dict[str, str | bool]],
@@ -87,17 +121,15 @@ def markdown_table(
 
     tdivider += "|\n"
     trs = [
-        markdown_table_row(
-            mission=m,
-            columns=columns,
-            max_war_level_points=max_war_level_points,
+        _markdown_table_row(
+            mission=m, columns=columns, max_war_level_points=max_war_level_points
         )
         for m in missions
     ]
     return thead + tdivider + "".join(trs) + "\n"
 
 
-def markdown_version() -> str:
+def _markdown_version() -> str:
     """Create Markdown project version line."""
     return f"\n- Version {PROJECT_VERSION}\n"
 
@@ -110,10 +142,10 @@ def main() -> None:
         datefmt="[%X]",
         handlers=[RichHandler()],
     )
-    log_msg = f"{PROJECT_VERSION = }"
+    log_msg = f"Project version {PROJECT_VERSION}"
     LOGGER.info(log_msg)
 
-    missions = Mission.missions_from_json(
+    missions = _missions_from_json(
         DATA_DIRPATH, excludes=au_mission_overrides.EXCLUDED_MISSIONS
     )
     max_war_level_points = max(
@@ -121,14 +153,14 @@ def main() -> None:
     )
     markdown_content = [
         docs_includes.INTRO_MARKDOWN,
-        markdown_total_missions(missions),
-        markdown_table(
-            missions=sorted(missions, key=sort_missions_by_points, reverse=True),
+        _markdown_total_missions(missions),
+        _markdown_table(
+            missions=sorted(missions, key=_sort_missions_by_points, reverse=True),
             columns=docs_includes.COLUMNS,
             max_war_level_points=max_war_level_points,
         ),
         docs_includes.OUTRO_MARKDOWN,
-        markdown_version(),
+        _markdown_version(),
     ]
     LOGGER.info("Generated Markdown.")
 

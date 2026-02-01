@@ -61,7 +61,7 @@ def _get_climate(class_scope: ClassScope) -> str:
     return _unquote(str(value))
 
 
-def pairwise(t: Iterable[str | int]) -> Any:
+def pairwise(t: Iterable[str | int]) -> Iterable[tuple[str | int, str | int]]:
     """Return pairs."""
     it = iter(t)
     return zip(it, it, strict=True)
