@@ -44,10 +44,6 @@ ignore = [
     "COM812",  # Trailing comma missing
     "D203",    # incorrect-blank-line-before-class
     "D212",    # multi-line-summary-first-line
-    # Fix/todos while in early development:
-    "ERA001",
-    "FIX002",
-    "TD",
 ]
 
 # Allow applying these 'unsafe' fixes without the `--unsafe-fixes` flag:
@@ -69,7 +65,4 @@ extend-safe-fixes = [
 ]
 "src/types.py" = [
    "A005",  # Module shadows a Python standard-library module
-]
-"src/mission/mapinfo_hpp_parser.py" = [
-    "ANN401",  # any-type
 ]
