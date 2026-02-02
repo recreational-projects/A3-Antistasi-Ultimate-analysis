@@ -27,10 +27,8 @@ def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
         for p in list(path.iterdir())
         if p.suffix == ".json" and p.stem not in excludes
     ]
-    log_msg = (
-        f"Found {len(json_files)} files in {path} "
-        f"ignoring {pretty_iterable_of_str(excludes)}."
-    )
+    _excludes_str = pretty_iterable_of_str(excludes)
+    log_msg = f"Found {len(json_files)} files in {path} ignoring {excludes}."
     LOGGER.info(log_msg)
 
     missions = [Mission.from_json(fp) for fp in json_files]
@@ -38,7 +36,9 @@ def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
     LOGGER.info(log_msg)
 
     required_fields = {
-        field.name for field in attrs.fields(Mission) if field.name != "disabled_towns"
+        field.name
+        for field in attrs.fields(Mission)
+        if field.name not in ["disabled_towns", "waterports"]
     }
     for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}

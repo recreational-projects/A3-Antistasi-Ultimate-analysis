@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
@@ -22,9 +22,33 @@ from src.mission.utils import (
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
 
+if TYPE_CHECKING:
+    from src.types_ import DictNode
+
 LOGGER = logging.getLogger(__name__)
-_MAPINFO_FILENAME = "mapInfo.hpp"
-_MISSION_FILENAME = "mission.sqm"
+
+
+def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
+    towns = [
+        (name, population)
+        for (name, population) in map_info["populations"]
+        if name not in map_info["disabled_towns"]
+    ]
+    unique_towns = dict(towns)
+
+    if len(unique_towns) != len(towns):
+        duplicated_town_names = [p[0] for p in towns]
+        for t in unique_towns:
+            duplicated_town_names.remove(t)
+
+        log_msg = (
+            f"'{map_name}': {len(towns)} in mission but "
+            f"{len(unique_towns)} unique.\n"
+            f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
+        )
+        LOGGER.warning(log_msg)
+
+    return unique_towns
 
 
 @define
@@ -34,19 +58,16 @@ class Mission:
     map_name: str
     """
     Derived from directory name and normalised to lower case.
-
     Assumed unique; used as primary key."""
 
     map_display_name: str | None
     """
     Full name of map, generally as it appears in Steam app/workshop titles/text.
-
     From static reference data. `None` if not available."""
 
     map_url: str | None
     """
     URL at which the map can be downloaded.
-
     From static reference data. `None` if not available."""
 
     climate: str
@@ -65,7 +86,6 @@ class Mission:
 
     disabled_towns: list[str] = Factory(list)
     """Towns defined in the mission as not used.
-
     Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
     to the map!"""
 
@@ -78,7 +98,7 @@ class Mission:
 
     @property
     def airports_count(self) -> int:
-        """Enumerate airports from `self.markers`."""
+        """Enumerate airports."""
         return len(self.airports)
 
     @property
@@ -103,7 +123,7 @@ class Mission:
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources`."""
+        """Enumerate resources."""
         return len(self.resources)
 
     @property
@@ -136,13 +156,13 @@ class Mission:
 
         return sum(
             (
-                8 * len(self.airports),
-                6 * len(self.bases),
-                4 * len(self.waterports),
-                2 * len(self.outposts),
-                2 * len(self.resources),
-                2 * len(self.factories),
-                len(self.towns),
+                8 * self.airports_count,
+                6 * self.bases_count,
+                4 * self.waterports_count,
+                2 * self.outposts_count,
+                2 * self.resources_count,
+                2 * self.factories_count,
+                len(self.towns),  # as self.towns_count may be None
             )
         )
 
@@ -167,29 +187,10 @@ class Mission:
     ) -> Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = parse_mapinfo_hpp_file(mission_dir / _MAPINFO_FILENAME)
-        towns = [
-            (name, population)
-            for (name, population) in map_info["populations"]
-            if name not in map_info["disabled_towns"]
-        ]
-        unique_towns = dict(towns)  # unique
+        map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
+        towns = _towns_from_map_info(map_info, map_name)
+        marker_nodes = get_military_zone_marker_nodes(mission_dir / "mission.sqm")
 
-        if len(unique_towns) != len(towns):
-            duplicated_town_names = [p[0] for p in towns]
-            for t in unique_towns:
-                duplicated_town_names.remove(t)
-
-            log_msg = (
-                f"'{map_name}': {len(towns)} in mission but "
-                f"{len(unique_towns)} unique.\n"
-                f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
-            )
-            LOGGER.warning(log_msg)
-
-        marker_nodes = get_military_zone_marker_nodes(mission_dir / _MISSION_FILENAME)
-
-        map_display_name, map_url = None, None
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
             LOGGER.error(log_msg)
@@ -220,7 +221,7 @@ class Mission:
             map_display_name=map_display_name,
             map_url=map_url,
             climate=map_info["climate"],
-            towns=unique_towns,
+            towns=towns,
             disabled_towns=map_info["disabled_towns"],
             airports=military_zone_markers["airport"],
             bases=military_zone_markers["milbase"],

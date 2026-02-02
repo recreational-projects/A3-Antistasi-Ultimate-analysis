@@ -6,12 +6,12 @@ from pathlib import Path
 import armaclass
 
 from src.mission.marker import Marker
-from src.types_ import Node
+from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 
 
-def _get_entities(node: Node) -> list[Node]:
+def _get_entities(node: DictNode) -> list[DictNode]:
     """Return `node`'s relevant data dict children.."""
     if "Entities" not in node:
         return []
@@ -19,7 +19,7 @@ def _get_entities(node: Node) -> list[Node]:
     return [e for e in node["Entities"].values() if isinstance(e, dict)]
 
 
-def _is_relevant_marker(node: Node) -> bool:
+def _is_relevant_marker(node: DictNode) -> bool:
     """Check if the node represents a relevant marker."""
     return node.get("dataType") == "Marker" and any(
         node.get("name", "").lower().startswith(prefix)
@@ -27,17 +27,17 @@ def _is_relevant_marker(node: Node) -> bool:
     )
 
 
-def _get_marker_nodes(node: Node) -> list[Node]:
+def _get_marker_nodes(node: DictNode) -> list[DictNode]:
     """Return `node`'s relevant marker node children."""
     return [e for e in _get_entities(node) if _is_relevant_marker(e)]
 
 
-def _get_layer_nodes(node: Node) -> list[Node]:
+def _get_layer_nodes(node: DictNode) -> list[DictNode]:
     """Return `node`'s child layers."""
     return [e for e in _get_entities(node) if e.get("dataType") == "Layer"]
 
 
-def _collect_marker_nodes(node: Node) -> list[Node]:
+def _collect_marker_nodes(node: DictNode) -> list[DictNode]:
     """Return `node`'s relevant marker node descendants, recursively."""
     markers = _get_marker_nodes(node)
     for child_layer in _get_layer_nodes(node):
@@ -46,7 +46,7 @@ def _collect_marker_nodes(node: Node) -> list[Node]:
     return markers
 
 
-def get_military_zone_marker_nodes(filepath: Path) -> list[Node]:
+def get_military_zone_marker_nodes(filepath: Path) -> list[DictNode]:
     """Get relevant marker nodes from the file."""
     with filepath.open(errors="ignore") as fp:
         data = fp.read()

@@ -6,7 +6,7 @@ Derived from https://jcristharif.com/msgspec/examples/geojson.html.
 
 import msgspec
 
-from src.types_ import JSONNode
+from src.types_ import DictNode
 
 Position = tuple[float, float]
 
@@ -21,5 +21,5 @@ class Feature(msgspec.Struct, tag=True):
     """Feature class."""
 
     geometry: Point
-    properties: JSONNode
+    properties: DictNode
     id: str | int | None = None
