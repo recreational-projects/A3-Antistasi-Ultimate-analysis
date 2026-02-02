@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
+from scripts.constants import BASE_PATH, CONFIG
 from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
@@ -21,11 +22,41 @@ from src.mission.utils import (
 )
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
+from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
+PATHS = {
+    "GRAD_MEH_DIR": (BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]).resolve(),
+    "DATA_DIR": (BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]).resolve(),
+}
+
+
+def analyse_mission(mission_dir: Path) -> str:
+    """Analyse a single mission and export intermediate data."""
+    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
+    log_msg = f"'{mission_dir.name}': loaded mission."
+    LOGGER.info(log_msg)
+
+    mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
+    grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name
+    if not grad_meh_map_dirpath.is_dir():
+        grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name.capitalize()
+
+    if not grad_meh_map_dirpath.is_dir():
+        log_msg = (
+            f"'{mission.map_name}': "
+            f"no grad-meh data. Skipping locations validation/correction."
+        )
+        LOGGER.warning(log_msg)
+
+    else:
+        mission.validate_and_correct_towns(grad_meh_map_dirpath / "geojson/locations")
+
+    mission.export(PATHS["DATA_DIR"])
+    return mission.map_name
 
 
 def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
