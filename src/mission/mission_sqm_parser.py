@@ -19,17 +19,17 @@ def _get_entities(node: Node) -> list[Node]:
     return [e for e in node["Entities"].values() if isinstance(e, dict)]
 
 
-def is_relevant_marker(node: Node) -> bool:
+def _is_relevant_marker(node: Node) -> bool:
     """Check if the node represents a relevant marker."""
     return node.get("dataType") == "Marker" and any(
         node.get("name", "").lower().startswith(prefix)
-        for prefix in Marker.INCLUDE_STARTS_WITH
+        for prefix in Marker.RELEVANT_PREFIXES
     )
 
 
 def _get_marker_nodes(node: Node) -> list[Node]:
     """Return `node`'s relevant marker node children."""
-    return [e for e in _get_entities(node) if is_relevant_marker(e)]
+    return [e for e in _get_entities(node) if _is_relevant_marker(e)]
 
 
 def _get_layer_nodes(node: Node) -> list[Node]:
@@ -46,18 +46,17 @@ def _collect_marker_nodes(node: Node) -> list[Node]:
     return markers
 
 
-def get_marker_nodes(filepath: Path) -> list[Node]:
-    """Get marker nodes from the file."""
+def get_military_zone_marker_nodes(filepath: Path) -> list[Node]:
+    """Get relevant marker nodes from the file."""
     with filepath.open(errors="ignore") as fp:
         data = fp.read()
     try:
         mission = armaclass.parse(data)
         log_msg = f"Parsed `{filepath}."
         LOGGER.debug(log_msg)
-        nodes = _collect_marker_nodes(mission["Mission"])
     except armaclass.ParseError:
-        nodes = []
         log_msg = f"Couldn't parse `{filepath}`; may be binarized."
         LOGGER.warning(log_msg)
+        return []
 
-    return nodes
+    return _collect_marker_nodes(mission["Mission"])
