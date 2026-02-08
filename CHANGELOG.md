@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
-## UNRELEASED - tbc
+## [0.14.0] - 2026-02-08
 
 ### Added
 
 - `scripts/analyse_missions.py`: raise error if no missions found
-- Update military zone count reference values for Yulakia re AU v11.8.5 (doesn't
-  affect output)
+- `scripts/build_docs.py`: log error if missing values
+- New parser for `mapInfo.hpp` files
+- Military zone kinds stored separately
 
 ### Changed
 
@@ -20,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - `scripts/analyse_missions.py`: broken warning when mission towns contain duplicates
+- Military zone count reference values for Yulakia re AU v11.8.5 (doesn't affect output)
 
 
 ## [0.13.0] - 2025-12-23
@@ -213,6 +215,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release
 
 
+[0.14.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.10.0...v0.11.0
