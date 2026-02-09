@@ -21,27 +21,27 @@ COLUMNS: dict[str, dict[str, str | bool]] = {
     "climate": {
         "display_heading": "Climate",
     },
-    "airports_count": {
+    "airports": {
         "display_heading": "Airports",
         "text-align": "right",
     },
-    "bases_count": {
+    "bases": {
         "display_heading": "Bases",
         "text-align": "right",
     },
-    "waterports_count": {
+    "waterports": {
         "display_heading": "Sea/<br>riverports",
         "text-align": "right",
     },
-    "outposts_count": {
+    "outposts": {
         "display_heading": "Outposts",
         "text-align": "right",
     },
-    "factories_count": {
+    "factories": {
         "display_heading": "Factories",
         "text-align": "right",
     },
-    "resources_count": {
+    "resources": {
         "display_heading": "Resources",
         "text-align": "right",
     },

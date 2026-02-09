@@ -134,46 +134,16 @@ class Mission:
     """From `mission.sqm`."""
 
     @property
-    def airports_count(self) -> int:
-        """Enumerate airports."""
-        return len(self.airports)
-
-    @property
-    def waterports_count(self) -> int:
-        """Enumerate sea/river ports."""
-        return len(self.waterports)
-
-    @property
-    def bases_count(self) -> int:
-        """Enumerate bases."""
-        return len(self.bases)
-
-    @property
-    def outposts_count(self) -> int:
-        """Enumerate outposts."""
-        return len(self.outposts)
-
-    @property
-    def factories_count(self) -> int:
-        """Enumerate factories."""
-        return len(self.factories)
-
-    @property
-    def resources_count(self) -> int:
-        """Enumerate resources."""
-        return len(self.resources)
-
-    @property
     def total_military_zones_count(self) -> int:
         """Count total military zones (not towns)."""
         return sum(
             (
-                self.airports_count,
-                self.waterports_count,
-                self.bases_count,
-                self.outposts_count,
-                self.factories_count,
-                self.resources_count,
+                len(self.airports),
+                len(self.waterports),
+                len(self.bases),
+                len(self.outposts),
+                len(self.factories),
+                len(self.resources),
             )
         )
 
