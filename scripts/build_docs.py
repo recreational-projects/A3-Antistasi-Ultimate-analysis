@@ -1,4 +1,6 @@
-"""Generate the Markdown doc representing site content."""
+"""
+Load all `Mission`s from JSON and generate the Markdown doc representing site content.
+"""  # noqa: D200
 
 import logging
 from collections.abc import Iterable, Sequence, Sized
@@ -6,12 +8,11 @@ from operator import attrgetter
 from pathlib import Path
 
 import attrs
-from rich.logging import RichHandler
 
 from scripts import docs_includes
 from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
-from src.utils import pretty_iterable_of_str, project_version
+from src.utils import configure_logging, pretty_iterable_of_str, project_version
 from static_data import au_mission_overrides
 
 LOGGER = logging.getLogger(__name__)
@@ -136,12 +137,7 @@ def _markdown_version() -> str:
 
 def main() -> None:
     """Generate the Markdown doc representing site content."""
-    logging.basicConfig(
-        level="INFO",
-        format="%(message)s",
-        datefmt="[%X]",
-        handlers=[RichHandler()],
-    )
+    configure_logging()
     log_msg = f"Project version {PROJECT_VERSION}"
     LOGGER.info(log_msg)
 

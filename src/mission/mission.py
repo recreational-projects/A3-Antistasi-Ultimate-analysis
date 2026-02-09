@@ -231,6 +231,19 @@ class Mission:
             resources=military_zone_markers["resource"],
         )
 
+    def export(self, dir_: Path) -> None:
+        """Export the mission as a JSON file."""
+        export_filename = f"{self.map_name}.json"
+        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+            json.dump(
+                asdict(self),
+                file,
+                ensure_ascii=False,
+                indent=4,
+            )
+            log_msg = f"'{self.map_name}': exported '{export_filename}'."
+            LOGGER.info(log_msg)
+
     @classmethod
     def from_json(cls, file_path: Path) -> Self:
         """Load previously-exported `Mission` data from `path`."""
@@ -356,16 +369,3 @@ class Mission:
                 else:
                     log_msg = f"'{self.map_name}': `{field}` matches in-game data."
                     LOGGER.debug(log_msg)
-
-    def export(self, dir_: Path) -> None:
-        """Export the mission as a JSON file."""
-        export_filename = f"{self.map_name}.json"
-        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
-            json.dump(
-                asdict(self),
-                file,
-                ensure_ascii=False,
-                indent=4,
-            )
-            log_msg = f"'{self.map_name}': exported '{export_filename}'."
-            LOGGER.info(log_msg)
