@@ -34,6 +34,20 @@ def _process_mission(mission_dir: Path) -> str:
     return mission.map_name
 
 
+def _process_mission(mission_dir: Path) -> str:
+    """Analyse a single mission and export intermediate data."""
+    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
+    log_msg = f"'{mission_dir.name}': loaded mission."
+    LOGGER.info(log_msg)
+
+    mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
+    mission.validate_and_correct_towns(
+        GM_LOCATIONS_BASE_DIRPATH / mission.map_name / "geojson" / "locations"
+    )
+    mission.export(OUTPUT_DIRPATH)
+    return mission.map_name
+
+
 def main() -> None:
     """Analyse all missions."""
     configure_logging()
