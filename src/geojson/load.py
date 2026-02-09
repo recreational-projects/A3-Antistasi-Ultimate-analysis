@@ -1,12 +1,17 @@
 """Load data from GeoJSON files."""
 
+from __future__ import annotations
+
 import gzip
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import msgspec
 
 from src.geojson.feature import Feature
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
 

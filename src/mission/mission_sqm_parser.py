@@ -1,12 +1,18 @@
 """Parse a mission's `mission.sqm` file with armaclass."""
 
+from __future__ import annotations
+
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import armaclass
 
 from src.mission.marker import Marker
-from src.types_ import DictNode
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 

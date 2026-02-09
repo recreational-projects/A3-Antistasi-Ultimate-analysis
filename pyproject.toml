@@ -37,6 +37,8 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff.lint]
+flake8-type-checking.runtime-evaluated-base-classes = ["msgspec.Struct"]
+future-annotations = true
 select = ["ALL"]
 
 ignore = [
@@ -48,7 +50,6 @@ ignore = [
 
 # Allow applying these 'unsafe' fixes without the `--unsafe-fixes` flag:
 extend-safe-fixes = [
-    "TC001",  # Move application import ... into a type-checking block
     "TC003",  # Move standard library import ... into a type-checking block
     "W293",   # Blank line contains whitespace
 ]

@@ -1,11 +1,14 @@
 """`Marker` class."""
 
-from typing import ClassVar, Self
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, ClassVar, Self
 
 from attrs import define
 from cattrs import structure
 
-from src.types_ import DictNode
+if TYPE_CHECKING:
+    from src.types_ import DictNode
 
 
 @define

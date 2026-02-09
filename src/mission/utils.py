@@ -1,11 +1,16 @@
 """Mission related."""
 
-from pathlib import Path
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
+if TYPE_CHECKING:
+    from pathlib import Path
 
-def path_looks_like_mission_dir(path: Path) -> bool:
+
+def _path_looks_like_mission_dir(path: Path) -> bool:
     """
     Verify mission directory candidate.
 
@@ -29,7 +34,7 @@ def mission_dirs_in_dir(path: Path) -> list[Path]:
         List of `Path`s.
 
     """
-    return [p for p in (path.iterdir()) if path_looks_like_mission_dir(p)]
+    return [p for p in (path.iterdir()) if _path_looks_like_mission_dir(p)]
 
 
 def map_name_from_mission_dir_path(path: Path) -> str:
