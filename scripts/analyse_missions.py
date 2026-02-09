@@ -26,17 +26,17 @@ def main() -> None:
         for d in mission_dirs_in_dir(MISSIONS_BASE_DIRPATH)
         if d.name not in au_mission_overrides.EXCLUDED_MISSIONS
     )
+    if not mission_dirs:
+        err_msg = "No missions found."
+        raise RuntimeError(err_msg)
+
     log_msg = (
         f"Ignoring {pretty_iterable_of_str(au_mission_overrides.EXCLUDED_MISSIONS)}. "
         f"Found {len(mission_dirs)} candidate missions in {MISSIONS_BASE_DIRPATH}."
     )
     LOGGER.info(log_msg)
-    if not mission_dirs:
-        msg = "No missions found."
-        raise RuntimeError(msg)
 
     OUTPUT_DIRPATH.mkdir(parents=True, exist_ok=True)
-
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
         map_name = process_mission(mission_dir)
@@ -46,6 +46,7 @@ def main() -> None:
         f"Exported data for {len(analysed_map_names)} missions to '{OUTPUT_DIRPATH}'."
     )
     LOGGER.info(log_msg)
+
     unused_map_index_names = MAP_INDEX.keys() - analysed_map_names
     if unused_map_index_names:
         log_msg = (
