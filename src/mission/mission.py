@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
+from src.map_render import export_map
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_military_zone_markers
@@ -38,7 +39,12 @@ def analyse_mission(
         reference_data=MAP_INDEX[map_name],
     )
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    mission.export(export_dir)
+    mission.export_json(export_dir)
+    export_map(
+        mission=mission,
+        grad_meh_dem_filepath=grad_meh_map_dir / "dem.asc.gz",
+        export_filepath=mission_dir / "map.png",
+    )
 
 
 @define(kw_only=True)
@@ -225,10 +231,10 @@ class Mission:
             resources=military_zone_markers["resource"],
         )
 
-    def export(self, dir_: Path) -> None:
-        """Export the mission as a JSON file in `dir_`."""
+    def export_json(self, dir_path: Path) -> None:
+        """Export the mission as a JSON file in `dir_path`."""
         export_filename = f"{self.map_name}.json"
-        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+        with Path.open(dir_path / export_filename, "w", encoding="utf-8") as file:
             json.dump(
                 asdict(self),
                 file,
