@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from rich.progress import track
 
 from scripts.constants import BASE_PATH, CONFIG
+from src.map_render import export_map_render
 from src.mission.mission import Mission
 from src.mission.utils import mission_dirs_in_dir
 from src.utils import configure_logging, pretty_iterable_of_str
@@ -32,10 +33,32 @@ def _process_mission(mission_dir: Path) -> str:
     LOGGER.info(log_msg)
 
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    mission.validate_and_correct_towns(
-        GRAD_MEH_DIRPATH / mission.map_name / "geojson" / "locations"
-    )
-    mission.export(DATA_DIRPATH)
+
+    grad_meh_map_dirpath = GRAD_MEH_DIRPATH / mission.map_name
+    if not grad_meh_map_dirpath.is_dir():
+        log_msg = (
+            f"'{mission.map_name}': no grad-meh data. "
+            f"Skipping towns validation/correction and map export."
+        )
+        LOGGER.warning(log_msg)
+
+    else:
+        mission.validate_and_correct_towns(
+            GRAD_MEH_DIRPATH / mission.map_name / "geojson" / "locations"
+        )
+        grad_meh_dem_filepath = grad_meh_map_dirpath / "dem.asc.gz"
+        if not grad_meh_dem_filepath.exists():
+            log_msg = f"'{mission.map_name}': no grad-meh DEM. Skipping map export."
+            LOGGER.warning(log_msg)
+        else:
+            export_map_render(
+                dem_filepath=grad_meh_dem_filepath,
+                export_filepath=DATA_DIRPATH / f"{mission.map_name}_outline.png",
+            )
+            log_msg = f"'{mission.map_name}': exported outline map."
+            LOGGER.info(log_msg)
+
+    mission.export_json(DATA_DIRPATH)
     return mission.map_name
 
 

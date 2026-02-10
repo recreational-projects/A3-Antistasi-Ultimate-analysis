@@ -231,10 +231,10 @@ class Mission:
             resources=military_zone_markers["resource"],
         )
 
-    def export(self, dir_: Path) -> None:
-        """Export the mission as a JSON file."""
+    def export_json(self, dir_path: Path) -> None:
+        """Export the mission as a JSON file in `dir_path`."""
         export_filename = f"{self.map_name}.json"
-        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+        with Path.open(dir_path / export_filename, "w", encoding="utf-8") as file:
             json.dump(
                 asdict(self),
                 file,
