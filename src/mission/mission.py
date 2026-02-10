@@ -245,7 +245,7 @@ class Mission:
 
         return mission
 
-    def export(self, dir_: Path) -> None:
+    def export_json(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
