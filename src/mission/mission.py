@@ -12,16 +12,15 @@ from cattrs import ClassValidationError, structure
 
 from scripts.constants import BASE_PATH, CONFIG
 from src.geojson.load import load_towns_from_dir
+from src.map_render import export_map
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import RELEVANT_MARKER_PREFIXES, Marker
 from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
 from src.mission.town import Town
 from src.mission.utils import map_name_from_mission_dir_path
 from static_data import in_game_data
+from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 from static_data.map_index import MAP_INDEX
-
-if TYPE_CHECKING:
-    from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 PATHS = {
@@ -44,14 +43,24 @@ def analyse_mission(mission_dir: Path) -> str:
     if not grad_meh_map_dirpath.is_dir():
         log_msg = (
             f"'{mission.map_name}': "
-            f"no grad-meh data. Skipping locations validation/correction."
+            f"no grad-meh data. Skipping towns validation/correction and map export."
         )
         LOGGER.warning(log_msg)
 
     else:
         mission.validate_and_correct_towns(grad_meh_map_dirpath / "geojson/locations")
+        grad_meh_dem_filepath = grad_meh_map_dirpath / "dem.asc.gz"
+        if not grad_meh_dem_filepath.exists():
+            log_msg = f"'{mission.map_name}': no grad-meh DEM. Skipping map export."
+            LOGGER.warning(log_msg)
+        else:
+            export_map(
+                mission=mission,
+                grad_meh_dem_filepath=grad_meh_dem_filepath,
+                export_filepath=PATHS["DATA_DIR"] / f"{mission.map_name}_map.png",
+            )
 
-    mission.export(PATHS["DATA_DIR"])
+    mission.export_json(PATHS["DATA_DIR"])
     return mission.map_name
 
 
@@ -248,10 +257,10 @@ class Mission:
             resources=military_zone_markers["resource"],
         )
 
-    def export(self, dir_: Path) -> None:
-        """Export the mission as a JSON file."""
+    def export_json(self, dir_path: Path) -> None:
+        """Export the mission as a JSON file in `dir_path`."""
         export_filename = f"{self.map_name}.json"
-        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+        with Path.open(dir_path / export_filename, "w", encoding="utf-8") as file:
             json.dump(
                 asdict(self),
                 file,

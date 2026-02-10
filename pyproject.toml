@@ -9,8 +9,10 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
+    "matplotlib>=3.10.8",
     "mkdocs-material>=9.7.2",
     "msgspec>=0.20.0",
+    "numpy>=2.4.2",
     "rich>=14.3.2",
 ]
 
