@@ -1,12 +1,18 @@
 """Parse a mission's `mapInfo.hpp` file."""
 
-import logging
-from collections.abc import Iterable
-from pathlib import Path
-from typing import Any
+from __future__ import annotations
 
-from cxxheaderparser.simple import ClassScope, parse_string
-from cxxheaderparser.tokfmt import Token
+import logging
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
+from cxxheaderparser.simple import parse_string
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from cxxheaderparser.simple import ClassScope
+    from cxxheaderparser.tokfmt import Token
 
 LOGGER = logging.getLogger(__name__)
 

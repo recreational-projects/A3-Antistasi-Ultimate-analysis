@@ -1,12 +1,18 @@
 """Parse a mission's `mission.sqm` file with armaclass."""
 
+from __future__ import annotations
+
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import armaclass
 
 from src.mission.marker import Marker
-from src.types_ import DictNode
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -48,11 +54,12 @@ def _collect_marker_nodes(node: DictNode) -> list[DictNode]:
 
 def get_military_zone_marker_nodes(filepath: Path) -> list[DictNode]:
     """Get relevant marker nodes from the file."""
-    with filepath.open(errors="ignore") as fp:
-        data = fp.read()
+    with filepath.open(errors="ignore") as f:
+        data = f.read()
+
     try:
         mission = armaclass.parse(data)
-        log_msg = f"Parsed `{filepath}."
+        log_msg = f"Parsed `{filepath}`."
         LOGGER.debug(log_msg)
     except armaclass.ParseError:
         log_msg = f"Couldn't parse `{filepath}`; may be binarized."
