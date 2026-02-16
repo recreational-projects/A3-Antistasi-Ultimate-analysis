@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - TBC
 
+### Added
+
+- Support capitalized grad-meh map paths
+
 ### Fixed
 
 - `scripts/analyse_missions.py`: logging/error raising when no missions found 
