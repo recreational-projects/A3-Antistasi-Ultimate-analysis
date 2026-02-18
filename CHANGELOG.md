@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Support capitalized grad-meh map paths
 
+### Changed
+
+- Build: deps: bump attrs, cattrs, mkdocs-material, msgspec, rich to latest
+
 ### Fixed
 
 - `scripts/analyse_missions.py`: logging/error raising when no missions found 
