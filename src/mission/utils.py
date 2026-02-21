@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
-
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -44,16 +42,3 @@ def map_name_from_mission_dir_path(path: Path) -> str:
     e.g. `Antistasi_Altis.Altis` -> "altis".
     """
     return path.suffix.lstrip(".").lower()
-
-
-def normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
-    return name.lower().replace(" ", "")
-
-
-def normalise_mission_town_name(name: str) -> str:
-    """Normalise town name from mission data, for comparison purposes."""
-    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
-        name = name.removeprefix(prefix)
-
-    return normalise_town_name(name)

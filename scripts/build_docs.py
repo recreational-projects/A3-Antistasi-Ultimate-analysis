@@ -42,7 +42,7 @@ def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
     required_fields = {
         field.name
         for field in attrs.fields(Mission)
-        if field.name not in ["disabled_towns", "waterports"]
+        if field.name not in ["disabled_town_names", "waterports"]
     }
     for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}

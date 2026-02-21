@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
+from typing import Self
 
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
@@ -15,12 +15,8 @@ from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import RELEVANT_MARKER_PREFIXES, Marker
 from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
-from src.mission.utils import (
-    map_name_from_mission_dir_path,
-    normalise_mission_town_name,
-    normalise_town_name,
-)
-from src.utils import pretty_iterable_of_str
+from src.mission.town import Town
+from src.mission.utils import map_name_from_mission_dir_path
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 
@@ -59,30 +55,20 @@ def analyse_mission(mission_dir: Path) -> str:
     return mission.map_name
 
 
-def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
-    towns = [
-        (name, population)
-        for (name, population) in map_info["populations"]
-        if name not in map_info["disabled_towns"]
-    ]
-    unique_towns = dict(towns)
-
-    if len(unique_towns) != len(towns):
-        duplicated_town_names = [p[0] for p in towns]
-        for t in unique_towns:
-            duplicated_town_names.remove(t)
-
-        log_msg = (
-            f"'{map_name}': {len(towns)} in mission but "
-            f"{len(unique_towns)} unique.\n"
-            f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
-        )
-        LOGGER.warning(log_msg)
-
-    return unique_towns
+def _normalise_town_name(name: str) -> str:
+    """Normalise town name from map data, for comparison purposes."""
+    return name.lower().replace(" ", "")
 
 
-@define
+def _normalise_mission_town_name(name: str) -> str:
+    """Normalise town name from mission data, for comparison purposes."""
+    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
+        name = name.removeprefix(prefix)
+
+    return _normalise_town_name(name)
+
+
+@define(kw_only=True)
 class Mission:
     """Information about a mission."""
 
@@ -104,18 +90,18 @@ class Mission:
     climate: str
     """From `mapinfo.hpp`."""
 
-    towns: dict[str, int | None] = Factory(dict)
-    """Towns in the mission, with population if known.
+    towns: list[Town] = Factory(list)
+    """Towns used in the mission.
 
     If the mission defines a `populations` array in `mapinfo.hpp`, it will be used to
-    derive town names and population values, removing duplicates and any
+    derive town names and populations, removing duplicates and any
     in `disabled_towns`.
 
-    Otherwise, town names will be derived from grad-meh data if available, but this
+    Otherwise, towns will be derived from grad-meh data if available, but this
     won't include population values, which will be set to `None`.
     """
 
-    disabled_towns: list[str] = Factory(list)
+    disabled_town_names: list[str] = Factory(list)
     """Towns defined in the mission as not used.
     Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
     to the map!"""
@@ -219,7 +205,7 @@ class Mission:
         """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
-        towns = _towns_from_map_info(map_info, map_name)
+        towns = Town.towns_from_map_info(map_info, map_name)
         marker_nodes = get_military_zone_marker_nodes(mission_dir / "mission.sqm")
 
         if map_name not in map_index:
@@ -253,7 +239,7 @@ class Mission:
             map_url=map_url,
             climate=map_info["climate"],
             towns=towns,
-            disabled_towns=map_info["disabled_towns"],
+            disabled_town_names=map_info["disabled_town_names"],
             airports=military_zone_markers["airport"],
             bases=military_zone_markers["milbase"],
             waterports=military_zone_markers["seaport"],
@@ -287,14 +273,14 @@ class Mission:
 
         return mission
 
-    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
+    def _get_gm_towns(self, gm_locations_dir: Path) -> list[Town]:
         """
-        Return town names from grad_meh data.
+        Return towns from grad_meh data.
 
         Discards any defined as disabled in mission.
         """
-        disabled_towns_lookup = {
-            normalise_mission_town_name(t): t for t in self.disabled_towns
+        disabled_town_names = {
+            _normalise_mission_town_name(t): t for t in self.disabled_town_names
         }
         gm_towns_lookup = {}
 
@@ -304,19 +290,21 @@ class Mission:
         else:
             _gm_towns = load_towns_from_dir(gm_locations_dir)
             gm_towns_lookup = {
-                normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
+                _normalise_town_name(t.properties["name"]): t for t in _gm_towns
             }
 
-        gm_towns = set()
+        gm_towns = []
         matched_keys = set()
-        for k, v in gm_towns_lookup.items():
-            if k in disabled_towns_lookup:
-                matched_keys.add(k)
-                log_msg = f"Didn't add disabled: '{k}' ('{v}')."
+        for normalised_town_name, town in gm_towns_lookup.items():
+            if normalised_town_name in disabled_town_names:
+                matched_keys.add(normalised_town_name)
+                log_msg = (
+                    f"Didn't add disabled town: "
+                    f"'{normalised_town_name}' ('{town.properties['name']}')."
+                )
                 LOGGER.debug(log_msg)
             else:
-                gm_towns.add(v)
+                gm_towns.append(Town.from_geojson(town))
 
         return gm_towns
 
@@ -346,15 +334,20 @@ class Mission:
                 f"no map locations data."
             )
             LOGGER.info(log_msg)
+
         elif gm_towns:
-            self.towns = dict.fromkeys(gm_towns)
+            self.towns = gm_towns
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission; used {self.towns_count} "
                 f"from map locations data."
             )
             LOGGER.info(log_msg)
+
         elif in_game_towns_count:
-            self.towns = {f"UNKNOWN_{i}": 0 for i in range(in_game_towns_count)}
+            self.towns = [
+                Town(name=f"UNKNOWN_{i}", position=None, population=None)
+                for i in range(in_game_towns_count)
+            ]
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission or map locations data; "
                 f"used {self.towns_count} towns from in-game data."

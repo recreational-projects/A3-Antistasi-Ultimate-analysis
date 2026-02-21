@@ -110,7 +110,7 @@ def _parse(str_: str) -> dict[str, Any]:
     return {
         "climate": climate,
         "populations": populations,
-        "disabled_towns": disabled_towns,
+        "disabled_town_names": disabled_towns,
     }
 
 
