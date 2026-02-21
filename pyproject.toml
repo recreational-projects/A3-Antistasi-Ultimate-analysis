@@ -1,13 +1,13 @@
 [project]
 name = "a3-antistasi-ultimate-analysis"
-version = "0.14.0"
+version = "1.0.0"
 description = "Compare missions from the Antistasi Ultimate mod for Arma 3"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "armaclass>=0.2.2",
     "attrs>=25.4.0",  # CalVer
-    "cattrs>=25.3.0",  # CalVer
+    "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
     "mkdocs-material>=9.7.2",
     "msgspec>=0.20.0",
