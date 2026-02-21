@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import armaclass
 
-from src.mission.marker import Marker
+from src.mission.marker import RELEVANT_MARKER_PREFIXES
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -29,7 +29,7 @@ def _is_relevant_marker(node: DictNode) -> bool:
     """Check if the node represents a relevant marker."""
     return node.get("dataType") == "Marker" and any(
         node.get("name", "").lower().startswith(prefix)
-        for prefix in Marker.RELEVANT_PREFIXES
+        for prefix in RELEVANT_MARKER_PREFIXES
     )
 
 

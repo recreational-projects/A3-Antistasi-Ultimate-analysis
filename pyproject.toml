@@ -18,7 +18,7 @@ dependencies = [
 dev = [
     "mypy>=1.19.1",
     "pytest>=9.0.2",
-    "ruff>=0.15.1",
+    "ruff>=0.15.2",
 ]
 
 [tool.mypy]
@@ -39,6 +39,7 @@ ignore_missing_imports = true
 [tool.ruff.lint]
 future-annotations = true
 flake8-type-checking.runtime-evaluated-base-classes = ["msgspec.Struct"]
+flake8-type-checking.runtime-evaluated-decorators = ["attrs.define"]
 select = ["ALL"]
 
 ignore = [
