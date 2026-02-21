@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Self
 from attrs import define
 
 from src.geojson.load import load_towns_from_dir
+from src.mission.position_2d import Position2D
 from src.utils import pretty_iterable_of_str
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
@@ -25,10 +26,10 @@ def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[To
     """
     Derive `Town`s from data parsed from `mapinfo.hpp`.
 
-    `Town`s include `population`.
+    `Town`s include `population` but not `position`.
     """
     towns = [
-        Town(name=name, population=population)
+        Town(name=name, position=None, population=population)
         for (name, population) in map_info["populations"]
         if name not in map_info["disabled_town_names"]
     ]
@@ -70,7 +71,7 @@ def towns_from_grad_meh(
     """
     Derive `Town`s from grad_meh data, ignoring any defined as disabled in the mission.
 
-    `Town`s don't include `population`.
+    `Town`s include `population` but not `position`.
     """
     ignore_town_names = {_normalise_mission_town_name(t): t for t in ignore_town_names}
     gm_towns_lookup = {}
@@ -105,6 +106,7 @@ class Town:
     """Information about a town used in the mission."""
 
     name: str
+    position: Position2D | None
     population: int | None
     """Populated only if mission's `mapinfo.hpp` defines a `populations` array."""
 
@@ -113,5 +115,6 @@ class Town:
         """Construct instance from GeoJSON `Feature`."""
         return cls(
             name=feature.properties["name"],
+            position=Position2D.from_geojson_point(feature.geometry),
             population=None,
         )

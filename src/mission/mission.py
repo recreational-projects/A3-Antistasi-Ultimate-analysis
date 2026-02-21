@@ -285,7 +285,7 @@ class Mission:
 
         elif in_game_towns_count:
             self.towns = [
-                Town(name=f"UNKNOWN_{i}", population=None)
+                Town(name=f"UNKNOWN_{i}", position=None, population=None)
                 for i in range(in_game_towns_count)
             ]
             log_msg = (
