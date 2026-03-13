@@ -10,79 +10,48 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
-from scripts.constants import BASE_PATH, CONFIG
-from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
-from src.mission.marker import RELEVANT_MARKER_PREFIXES, Marker
-from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
-from src.mission.utils import (
-    map_name_from_mission_dir_path,
-    normalise_mission_town_name,
-    normalise_town_name,
-)
-from src.utils import pretty_iterable_of_str
+from src.mission.marker import Marker
+from src.mission.mission_sqm_parser import get_military_zone_markers
+from src.mission.town import Town, towns_from_grad_meh, towns_from_map_info
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
-    from src.types_ import DictNode
+    from collections.abc import Mapping
 
 LOGGER = logging.getLogger(__name__)
-PATHS = {
-    "GRAD_MEH_DIR": (BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]).resolve(),
-    "DATA_DIR": (BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]).resolve(),
-}
 
 
-def analyse_mission(mission_dir: Path) -> str:
+def analyse_mission(
+    *, map_name: str, mission_dir: Path, grad_meh_map_dir: Path, export_dir: Path
+) -> None:
     """Analyse a single mission and export intermediate data."""
-    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
-    log_msg = f"'{mission_dir.name}': loaded mission."
-    LOGGER.info(log_msg)
+    if map_name not in MAP_INDEX:
+        log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
+        LOGGER.error(log_msg)
 
+    mission = Mission.from_source_data(
+        map_name=map_name, mission_dir=mission_dir, reference_data=MAP_INDEX[map_name]
+    )
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name
-    if not grad_meh_map_dirpath.is_dir():
-        grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name.capitalize()
+    if not grad_meh_map_dir.is_dir():
+        grad_meh_map_dir = grad_meh_map_dir / ".." / mission.map_name.capitalize()
 
-    if not grad_meh_map_dirpath.is_dir():
+    if not grad_meh_map_dir.is_dir():
         log_msg = (
             f"'{mission.map_name}': "
-            f"no grad-meh data. Skipping locations validation/correction."
+            f"no grad-meh data. Skipping towns validation/correction."
         )
         LOGGER.warning(log_msg)
 
     else:
-        mission.validate_and_correct_towns(grad_meh_map_dirpath / "geojson/locations")
+        mission.validate_and_correct_towns(grad_meh_map_dir / "geojson/locations")
 
-    mission.export(PATHS["DATA_DIR"])
-    return mission.map_name
-
-
-def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
-    towns = [
-        (name, population)
-        for (name, population) in map_info["populations"]
-        if name not in map_info["disabled_towns"]
-    ]
-    unique_towns = dict(towns)
-
-    if len(unique_towns) != len(towns):
-        duplicated_town_names = [p[0] for p in towns]
-        for t in unique_towns:
-            duplicated_town_names.remove(t)
-
-        log_msg = (
-            f"'{map_name}': {len(towns)} in mission but "
-            f"{len(unique_towns)} unique.\n"
-            f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
-        )
-        LOGGER.warning(log_msg)
-
-    return unique_towns
+    mission.export(export_dir)
 
 
-@define
+@define(kw_only=True)
 class Mission:
     """Information about a mission."""
 
@@ -104,21 +73,14 @@ class Mission:
     climate: str
     """From `mapinfo.hpp`."""
 
-    towns: dict[str, int | None] = Factory(dict)
-    """Towns in the mission, with population if known.
+    towns: list[Town] = Factory(list)
+    """Towns used in the mission."""
 
-    If the mission defines a `populations` array in `mapinfo.hpp`, it will be used to
-    derive town names and population values, removing duplicates and any
-    in `disabled_towns`.
-
-    Otherwise, town names will be derived from grad-meh data if available, but this
-    won't include population values, which will be set to `None`.
-    """
-
-    disabled_towns: list[str] = Factory(list)
+    disabled_town_names: list[str] = Factory(list)
     """Towns defined in the mission as not used.
-    Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
-    to the map!"""
+
+    From mission's `mapinfo.hpp` `disabledTowns` array.
+    NB: not necessarily relevant to the map!"""
 
     airports: list[Marker] = Factory(list)
     """From `mission.sqm`."""
@@ -216,50 +178,39 @@ class Mission:
         return ratio
 
     @classmethod
-    def from_data(
+    def from_source_data(
         cls,
         *,
+        map_name: str,
         mission_dir: Path,
-        map_index: dict[str, dict[str, str]],
+        reference_data: dict[str, str],
     ) -> Mission:
-        """Return instance from AU mission data and reference map index."""
-        map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
-        towns = _towns_from_map_info(map_info, map_name)
-        marker_nodes = get_military_zone_marker_nodes(mission_dir / "mission.sqm")
-
-        if map_name not in map_index:
-            log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
-            LOGGER.error(log_msg)
-        else:
-            map_lookup = map_index[map_name]
-            map_display_name = map_lookup.get("display_name")
-            map_url = map_lookup.get("url")
-
+        """Return instance from AU mission data and reference data."""
+        map_display_name = reference_data["display_name"]
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
             LOGGER.error(log_msg)
+
+        map_url = reference_data["url"]
         if not map_url:
             log_msg = f"'{map_name}': map index issue: no `map_url`."
             LOGGER.error(log_msg)
 
-        military_zone_markers: dict[str, list[Marker]] = {}
-        for prefix in RELEVANT_MARKER_PREFIXES:
-            military_zone_markers[prefix] = []
-
-        for marker_node in marker_nodes:
-            marker = Marker.from_mission_data(marker_node)
-            for prefix, list_ in military_zone_markers.items():
-                if marker.name.lower().startswith(prefix):
-                    list_.append(marker)
+        map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
+        mission_towns = towns_from_map_info(
+            map_info=map_info, logging_map_name=map_name
+        )
+        military_zone_markers = get_military_zone_markers(mission_dir / "mission.sqm")
+        log_msg = f"'{map_name}': loaded AU source data."
+        LOGGER.info(log_msg)
 
         return cls(
             map_name=map_name,
             map_display_name=map_display_name,
             map_url=map_url,
             climate=map_info["climate"],
-            towns=towns,
-            disabled_towns=map_info["disabled_towns"],
+            towns=mission_towns,
+            disabled_town_names=map_info["disabled_town_names"],
             airports=military_zone_markers["airport"],
             bases=military_zone_markers["milbase"],
             waterports=military_zone_markers["seaport"],
@@ -269,7 +220,7 @@ class Mission:
         )
 
     def export(self, dir_: Path) -> None:
-        """Export the mission as a JSON file."""
+        """Export the mission as a JSON file in `dir_`."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
             json.dump(
@@ -293,43 +244,14 @@ class Mission:
 
         return mission
 
-    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
-        """
-        Return town names from grad_meh data.
-
-        Discards any defined as disabled in mission.
-        """
-        disabled_towns_lookup = {
-            normalise_mission_town_name(t): t for t in self.disabled_towns
-        }
-        gm_towns_lookup = {}
-
-        if not gm_locations_dir.is_dir():
-            log_msg = f"'{self.map_name}': no grad-meh locations data."
-            LOGGER.warning(log_msg)
-        else:
-            _gm_towns = load_towns_from_dir(gm_locations_dir)
-            gm_towns_lookup = {
-                normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
-            }
-
-        gm_towns = set()
-        matched_keys = set()
-        for k, v in gm_towns_lookup.items():
-            if k in disabled_towns_lookup:
-                matched_keys.add(k)
-                log_msg = f"Didn't add disabled: '{k}' ('{v}')."
-                LOGGER.debug(log_msg)
-            else:
-                gm_towns.add(v)
-
-        return gm_towns
-
     def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
         """Check against map locations and in-game data."""
         map_name = self.map_name
-        gm_towns = self._get_gm_towns(gm_locations_dir)
+        gm_towns = towns_from_grad_meh(
+            gm_locations_dir=gm_locations_dir,
+            ignore_town_names=self.disabled_town_names,
+            logging_map_name=map_name,
+        )
         in_game_towns_count = in_game_data.TOWNS_COUNT.get(map_name)
 
         if self.towns and gm_towns:
@@ -352,20 +274,26 @@ class Mission:
                 f"no map locations data."
             )
             LOGGER.info(log_msg)
+
         elif gm_towns:
-            self.towns = dict.fromkeys(gm_towns)
+            self.towns = gm_towns
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission; used {self.towns_count} "
                 f"from map locations data."
             )
             LOGGER.info(log_msg)
+
         elif in_game_towns_count:
-            self.towns = {f"UNKNOWN_{i}": 0 for i in range(in_game_towns_count)}
+            self.towns = [
+                Town(name=f"UNKNOWN_{i}", population=None)
+                for i in range(in_game_towns_count)
+            ]
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission or map locations data; "
                 f"used {self.towns_count} towns from in-game data."
             )
             LOGGER.warning(log_msg)
+
         else:
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission, retrieved from map "
@@ -373,7 +301,7 @@ class Mission:
             )
             LOGGER.error(log_msg)
 
-    def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
+    def validate_military_zones(self, data: Mapping[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
         map_name = self.map_name
 

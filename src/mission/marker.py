@@ -12,18 +12,7 @@ if TYPE_CHECKING:
     from src.types_ import DictNode
 
 
-RELEVANT_MARKER_PREFIXES = {
-    # case-insensitive
-    "airport",
-    "factory",
-    "milbase",
-    "outpost",
-    "resource",
-    "seaport",
-}
-
-
-@define
+@define(kw_only=True, frozen=True)
 class Marker:
     """Represents a map marker."""
 
