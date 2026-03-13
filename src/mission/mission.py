@@ -10,9 +10,10 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
+from scripts.constants import BASE_PATH, CONFIG
 from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
-from src.mission.marker import Marker
+from src.mission.marker import RELEVANT_MARKER_PREFIXES, Marker
 from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
 from src.mission.utils import (
     map_name_from_mission_dir_path,
@@ -21,11 +22,41 @@ from src.mission.utils import (
 )
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
+from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
+PATHS = {
+    "GRAD_MEH_DIR": (BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]).resolve(),
+    "DATA_DIR": (BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]).resolve(),
+}
+
+
+def analyse_mission(mission_dir: Path) -> str:
+    """Analyse a single mission and export intermediate data."""
+    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
+    log_msg = f"'{mission_dir.name}': loaded mission."
+    LOGGER.info(log_msg)
+
+    mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
+    grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name
+    if not grad_meh_map_dirpath.is_dir():
+        grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name.capitalize()
+
+    if not grad_meh_map_dirpath.is_dir():
+        log_msg = (
+            f"'{mission.map_name}': "
+            f"no grad-meh data. Skipping locations validation/correction."
+        )
+        LOGGER.warning(log_msg)
+
+    else:
+        mission.validate_and_correct_towns(grad_meh_map_dirpath / "geojson/locations")
+
+    mission.export(PATHS["DATA_DIR"])
+    return mission.map_name
 
 
 def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
@@ -90,11 +121,17 @@ class Mission:
     to the map!"""
 
     airports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     factories: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     bases: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     outposts: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     waterports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     resources: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
 
     @property
     def airports_count(self) -> int:
@@ -185,7 +222,7 @@ class Mission:
         mission_dir: Path,
         map_index: dict[str, dict[str, str]],
     ) -> Mission:
-        """Return instance from source data."""
+        """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
         towns = _towns_from_map_info(map_info, map_name)
@@ -207,11 +244,11 @@ class Mission:
             LOGGER.error(log_msg)
 
         military_zone_markers: dict[str, list[Marker]] = {}
-        for prefix in Marker.RELEVANT_PREFIXES:
+        for prefix in RELEVANT_MARKER_PREFIXES:
             military_zone_markers[prefix] = []
 
         for marker_node in marker_nodes:
-            marker = Marker.from_data(marker_node)
+            marker = Marker.from_mission_data(marker_node)
             for prefix, list_ in military_zone_markers.items():
                 if marker.name.lower().startswith(prefix):
                     list_.append(marker)
