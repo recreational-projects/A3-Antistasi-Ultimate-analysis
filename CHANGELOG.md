@@ -8,7 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- 2D positions extracted for military zone markers; not yet used in output 
+- `scripts/analyse_mission.py`: analyse a single mission
+- Logging improvements
+- 2D positions extracted for military zone markers; not yet used in output
+- 2D positions extracted for some towns; not yet used in output
 
 
 ## [1.0.0] - 2026-02-21

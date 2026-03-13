@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import attrs
 
 from scripts import docs_includes
-from scripts.constants import BASE_PATH, CONFIG
+from scripts.constants import PATHS
 from src.mission.mission import Mission
 from src.utils import configure_logging, pretty_iterable_of_str, project_version
 from static_data import au_mission_overrides
@@ -19,30 +19,17 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence, Sized
 
 LOGGER = logging.getLogger(__name__)
-DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 
 
-def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
+def _load_missions(path: Path, excludes: Iterable[str]) -> list[Mission]:
     """Load previously-exported `Missions` from `path`."""
-    json_files = [
-        p
-        for p in list(path.iterdir())
-        if p.suffix == ".json" and p.stem not in excludes
-    ]
-    _excludes_str = pretty_iterable_of_str(excludes)
-    log_msg = f"Found {len(json_files)} files in {path} ignoring {excludes}."
-    LOGGER.info(log_msg)
-
-    missions = [Mission.from_json(fp) for fp in json_files]
-    log_msg = f"Loaded data for {len(missions)} missions."
-    LOGGER.info(log_msg)
+    missions = list(Mission.missions_from_json(path, excludes))
 
     required_fields = {
         field.name
         for field in attrs.fields(Mission)
-        if field.name not in ["disabled_towns", "waterports"]
+        if field.name not in ["disabled_town_names", "waterports"]
     }
     for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}
@@ -144,8 +131,8 @@ def build_docs() -> None:
     log_msg = f"Project version {PROJECT_VERSION}"
     LOGGER.info(log_msg)
 
-    missions = _missions_from_json(
-        DATA_DIRPATH, excludes=au_mission_overrides.EXCLUDED_MISSIONS
+    missions = Mission.missions_from_json(
+        PATHS["DATA_DIR"], excludes=au_mission_overrides.EXCLUDED_MISSIONS
     )
     max_war_level_points = max(
         m.war_level_points for m in missions if m.war_level_points
@@ -162,11 +149,12 @@ def build_docs() -> None:
         _markdown_version(),
     ]
     LOGGER.info("Generated Markdown.")
+    doc_file = PATHS["MARKDOWN_OUTPUT_DIR"] / "index.md"
 
-    with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
+    with Path.open(doc_file, "w", encoding="utf-8") as fp:
         fp.write("".join(markdown_content))
 
-    log_msg = f"Markdown saved to {DOC_FILEPATH}."
+    log_msg = f"Markdown saved to {doc_file}."
     LOGGER.info(log_msg)
 
 
