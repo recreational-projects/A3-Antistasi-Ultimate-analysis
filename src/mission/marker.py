@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Self
 
 from attrs import define
 
-from src.position_2d import Position2D
+from src.mission.position_2d import Position2D
 
 if TYPE_CHECKING:
     from src.types_ import DictNode
