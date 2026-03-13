@@ -94,7 +94,7 @@ def _get_populations(class_scope: ClassScope) -> list[tuple[str, int]]:
     ]
 
 
-def _get_disabled_towns(class_scope: ClassScope) -> list[str]:
+def _get_disabled_town_names(class_scope: ClassScope) -> list[str]:
     """Get disabled towns."""
     tokens = _field_array_lookup(field_name="disabledTowns", class_scope=class_scope)
     return _filter_tokens(tokens)
@@ -106,11 +106,11 @@ def _parse(str_: str) -> dict[str, Any]:
     class_scope = parsed_data.namespace.classes[0]
     climate = _get_climate(class_scope)
     populations = _get_populations(class_scope)
-    disabled_towns = _get_disabled_towns(class_scope)
+    disabled_town_names = _get_disabled_town_names(class_scope)
     return {
         "climate": climate,
         "populations": populations,
-        "disabled_towns": disabled_towns,
+        "disabled_town_names": disabled_town_names,
     }
 
 

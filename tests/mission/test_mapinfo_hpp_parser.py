@@ -4,7 +4,7 @@ from cxxheaderparser.simple import parse_string
 
 from src.mission.mapinfo_hpp_parser import (
     _get_climate,
-    _get_disabled_towns,
+    _get_disabled_town_names,
     _get_populations,
 )
 
@@ -67,7 +67,7 @@ def test_get_disabled_towns() -> None:
     # arrange
     class_scope = parse_string(MAP_INFO_HPP).namespace.classes[0]
     # act
-    value = _get_disabled_towns(class_scope)
+    value = _get_disabled_town_names(class_scope)
     # assert
     assert value == [
         "Tikanen",
