@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from src.geojson.feature import Point
 
 
-@define
+@define(kw_only=True, frozen=True)
 class Position2D:
     """2D coordinate."""
 

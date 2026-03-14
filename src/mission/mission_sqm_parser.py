@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import armaclass
 
-from src.mission.marker import RELEVANT_MARKER_PREFIXES
+from src.mission.marker import Marker
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -15,6 +15,15 @@ if TYPE_CHECKING:
     from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
+RELEVANT_MARKER_PREFIXES = {
+    # case-insensitive
+    "airport",
+    "factory",
+    "milbase",
+    "outpost",
+    "resource",
+    "seaport",
+}
 
 
 def _get_entities(node: DictNode) -> list[DictNode]:
@@ -33,37 +42,45 @@ def _is_relevant_marker(node: DictNode) -> bool:
     )
 
 
-def _get_marker_nodes(node: DictNode) -> list[DictNode]:
-    """Return `node`'s relevant marker node children."""
-    return [e for e in _get_entities(node) if _is_relevant_marker(e)]
-
-
-def _get_layer_nodes(node: DictNode) -> list[DictNode]:
+def _get_child_layers(node: DictNode) -> list[DictNode]:
     """Return `node`'s child layers."""
     return [e for e in _get_entities(node) if e.get("dataType") == "Layer"]
 
 
-def _collect_marker_nodes(node: DictNode) -> list[DictNode]:
-    """Return `node`'s relevant marker node descendants, recursively."""
-    markers = _get_marker_nodes(node)
-    for child_layer in _get_layer_nodes(node):
-        markers.extend(_collect_marker_nodes(child_layer))
+def _collect_markers(node: DictNode) -> list[Marker]:
+    """Return `node`'s relevant descendants as `Marker`s, recursively."""
+    markers = [
+        Marker.from_mission_data(e)
+        for e in _get_entities(node)
+        if _is_relevant_marker(e)
+    ]
+    for layer_node in _get_child_layers(node):
+        markers.extend(_collect_markers(layer_node))
 
     return markers
 
 
-def get_military_zone_marker_nodes(filepath: Path) -> list[DictNode]:
-    """Get relevant marker nodes from the file."""
-    with filepath.open(errors="ignore") as f:
+def get_military_zone_markers(mission_sqm_path: Path) -> dict[str, list[Marker]]:
+    """Get relevant `Marker`s from the file."""
+    with mission_sqm_path.open(errors="ignore") as f:
         data = f.read()
 
     try:
         mission = armaclass.parse(data)
-        log_msg = f"Parsed `{filepath}`."
+        log_msg = f"Parsed `{mission_sqm_path}`."
         LOGGER.debug(log_msg)
     except armaclass.ParseError:
-        log_msg = f"Couldn't parse `{filepath}`; may be binarized."
+        log_msg = f"Couldn't parse `{mission_sqm_path}`; may be binarized."
         LOGGER.warning(log_msg)
-        return []
+        return {}
 
-    return _collect_marker_nodes(mission["Mission"])
+    marker_list = _collect_markers(mission["Mission"])
+    markers: dict[str, list[Marker]] = {
+        prefix: [] for prefix in RELEVANT_MARKER_PREFIXES
+    }
+    for marker in marker_list:
+        for prefix, list_ in markers.items():
+            if marker.name.lower().startswith(prefix):
+                list_.append(marker)
+
+    return markers

@@ -19,8 +19,9 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence, Sized
 
 LOGGER = logging.getLogger(__name__)
-DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
+_BASE_PATH = BASE_PATH.resolve()
+DATA_DIRPATH = _BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
+DOC_FILEPATH = _BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 
 
@@ -42,7 +43,7 @@ def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
     required_fields = {
         field.name
         for field in attrs.fields(Mission)
-        if field.name not in ["disabled_towns", "waterports"]
+        if field.name not in ["disabled_town_names", "waterports"]
     }
     for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}
