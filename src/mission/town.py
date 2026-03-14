@@ -8,7 +8,9 @@ from typing import TYPE_CHECKING, Self
 from attrs import define
 
 from src.geojson.load import load_towns_from_dir
+from src.mission.position_2d import Position2D
 from src.utils import pretty_iterable_of_str
+from static_data import in_game_data
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 if TYPE_CHECKING:
@@ -25,10 +27,10 @@ def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[To
     """
     Derive `Town`s from data parsed from `mapinfo.hpp`.
 
-    `Town`s include `population`.
+    `Town`s include `population` but not `position`.
     """
     towns = [
-        Town(name=name, population=population)
+        Town(name=name, position=None, population=population)
         for (name, population) in map_info["populations"]
         if name not in map_info["disabled_town_names"]
     ]
@@ -61,7 +63,7 @@ def _normalise_mission_town_name(name: str) -> str:
     return _normalise_town_name(name)
 
 
-def towns_from_grad_meh(
+def _towns_from_grad_meh(
     *,
     gm_locations_dir: Path,
     ignore_town_names: Collection[str],
@@ -70,7 +72,7 @@ def towns_from_grad_meh(
     """
     Derive `Town`s from grad_meh data, ignoring any defined as disabled in the mission.
 
-    `Town`s don't include `population`.
+    `Town`s include `population` but not `position`.
     """
     ignore_town_names = {_normalise_mission_town_name(t): t for t in ignore_town_names}
     gm_towns_lookup = {}
@@ -100,11 +102,75 @@ def towns_from_grad_meh(
     return gm_towns
 
 
+def compile_towns(
+    *,
+    map_name: str,
+    map_info: DictNode,
+    gm_locations_dir: Path,
+    ignore_town_names: Collection[str],
+) -> list[Town]:
+    """Check against map locations and in-game data."""
+    mission_defined_towns = towns_from_map_info(
+        map_info=map_info, logging_map_name=map_name
+    )
+    n_mission_defined_towns = len(mission_defined_towns)
+    gm_towns = _towns_from_grad_meh(
+        gm_locations_dir=gm_locations_dir,
+        ignore_town_names=ignore_town_names,
+        logging_map_name=map_name,
+    )
+    n_gm_towns = len(gm_towns)
+    n_reference_towns = in_game_data.TOWNS_COUNT.get(map_name)
+    log_msg = f"'{map_name}': "
+
+    if mission_defined_towns:
+        log_msg += f"used {n_mission_defined_towns} towns defined in mission; "
+        if gm_towns:
+            if n_mission_defined_towns == n_gm_towns:
+                log_msg += "matches map locations data."
+                LOGGER.info(log_msg)
+            else:
+                log_msg += f"doesn't match {n_gm_towns} in map locations data."
+                LOGGER.warning(log_msg)
+
+        else:
+            log_msg += "no map locations data."
+            LOGGER.info(log_msg)
+
+        return mission_defined_towns
+
+    if gm_towns:
+        log_msg += (
+            f"0 towns defined in mission; used {n_gm_towns} from map locations data."
+        )
+        LOGGER.info(log_msg)
+        return gm_towns
+
+    if n_reference_towns:
+        anon_towns = [
+            Town(name=f"UNKNOWN_{i}", position=None, population=None)
+            for i in range(n_reference_towns)
+        ]
+        log_msg += (
+            f"0 towns defined in mission or map locations data; "
+            f"used {n_reference_towns} towns from in-game data."
+        )
+        LOGGER.warning(log_msg)
+        return anon_towns
+
+    log_msg += (
+        "0 towns defined in mission, retrieved from map locations data or in-game data."
+    )
+    LOGGER.error(log_msg)
+    return []
+
+
 @define(kw_only=True)
 class Town:
     """Information about a town used in the mission."""
 
     name: str
+    position: Position2D | None
     population: int | None
     """Populated only if mission's `mapinfo.hpp` defines a `populations` array."""
 
@@ -113,5 +179,6 @@ class Town:
         """Construct instance from GeoJSON `Feature`."""
         return cls(
             name=feature.properties["name"],
+            position=Position2D.from_geojson_point(feature.geometry),
             population=None,
         )
