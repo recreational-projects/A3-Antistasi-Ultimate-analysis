@@ -8,15 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- `scripts/analyse_mission.py`: analyse a single mission
+- Logging improvements and refactors
 - 2D positions extracted for military zone markers; not yet used in output
-
-
-## [1.0.1] - 2026-03-21
-
-### Removed
-
-- Support for capitalized grad-meh map paths, as it caused issues
+- 2D positions extracted for some towns; not yet used in output
 
 
 ## [1.0.0] - 2026-02-21
@@ -243,7 +237,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release
 
-[1.0.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.0.0...v1.0.1
+
 [1.0.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.14.0...v1.0.0
 [0.14.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.12.0...v0.13.0
