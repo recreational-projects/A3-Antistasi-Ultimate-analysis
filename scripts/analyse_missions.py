@@ -6,30 +6,19 @@ import logging
 
 from rich.progress import track
 
-from scripts.constants import BASE_PATH, CONFIG
-from src.mission.mission import analyse_mission
+from scripts.constants import PATHS
+from src.mission.mission import analyse_single_mission
 from src.mission.utils import map_name_from_mission_dir_path, mission_dirs_in_dir
 from src.utils import configure_logging, pretty_iterable_of_str
 from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
 LOGGER = logging.getLogger(__name__)
-_BASE_PATH = BASE_PATH.resolve()
-PATHS = {
-    "AU_MAPS_DIR": (_BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"),
-    "GRAD_MEH_DIR": (_BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]),
-    "DATA_DIR": (_BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]),
-}
 
 
 def analyse_missions() -> None:
     """Analyse all missions."""
     configure_logging()
-    for name, path in PATHS.items():
-        if not path.is_dir():
-            err_msg = f"{name}: {path} not found"
-            raise RuntimeError(err_msg)
-
     mission_dirs = sorted(
         d
         for d in mission_dirs_in_dir(PATHS["AU_MAPS_DIR"])
@@ -49,9 +38,9 @@ def analyse_missions() -> None:
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
         map_name = map_name_from_mission_dir_path(mission_dir)
-        analyse_mission(
-            map_name=map_name,
-            mission_dir=mission_dir,
+        analyse_single_mission(
+            au_map_dir=mission_dir,
+            map_index=MAP_INDEX,
             grad_meh_map_dir=PATHS["GRAD_MEH_DIR"] / map_name,
             export_dir=PATHS["DATA_DIR"],
         )

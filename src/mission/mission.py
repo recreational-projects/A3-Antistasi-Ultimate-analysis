@@ -14,8 +14,8 @@ from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_military_zone_markers
 from src.mission.town import Town, compile_towns, towns_from_map_info
+from src.mission.utils import map_name_from_mission_dir_path
 from static_data import in_game_data
-from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -23,19 +23,35 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-def analyse_mission(
-    *, map_name: str, mission_dir: Path, grad_meh_map_dir: Path, export_dir: Path
+def analyse_single_mission(
+    *,
+    au_map_dir: Path,
+    map_index: Mapping[str, dict[str, str]],
+    grad_meh_map_dir: Path,
+    export_dir: Path,
 ) -> None:
-    """Analyse a single mission and export intermediate data."""
-    if map_name not in MAP_INDEX:
+    """
+    Parse a single Antistasi Ultimate mission, validate, and export data.
+
+    Logs Error if the map name is not in `map_index` keys.
+
+    Args:
+        au_map_dir: Directory containing the AU source mission data.
+        map_index: Map index data.
+        grad_meh_map_dir: Directory containing grad-meh map data.
+        export_dir: Directory where mission data will be exported.
+
+    """
+    map_name = map_name_from_mission_dir_path(au_map_dir)
+    reference_data = map_index.get(map_name, {})
+    if not reference_data:
         log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
         LOGGER.error(log_msg)
 
     mission = Mission.from_source_data(
-        map_name=map_name,
-        mission_dir=mission_dir,
+        au_map_dir=au_map_dir,
         grad_meh_map_dir=grad_meh_map_dir,
-        reference_data=MAP_INDEX[map_name],
+        reference_data=reference_data,
     )
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
     mission.export(export_dir)
@@ -171,24 +187,24 @@ class Mission:
     def from_source_data(
         cls,
         *,
-        map_name: str,
-        mission_dir: Path,
+        au_map_dir: Path,
         grad_meh_map_dir: Path,
-        reference_data: dict[str, str],
+        reference_data: Mapping[str, str],
     ) -> Mission:
         """Return instance from AU mission data and reference data."""
-        map_display_name = reference_data["display_name"]
+        map_name = map_name_from_mission_dir_path(au_map_dir)
+        map_display_name = reference_data.get("display_name")
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
             LOGGER.error(log_msg)
 
-        map_url = reference_data["url"]
+        map_url = reference_data.get("url")
         if not map_url:
             log_msg = f"'{map_name}': map index issue: no `map_url`."
             LOGGER.error(log_msg)
 
-        map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
-        military_zone_markers = get_military_zone_markers(mission_dir / "mission.sqm")
+        map_info = parse_mapinfo_hpp_file(au_map_dir / "mapInfo.hpp")
+        military_zone_markers = get_military_zone_markers(au_map_dir / "mission.sqm")
         log_msg = f"'{map_name}': loaded AU source data."
         LOGGER.info(log_msg)
 
