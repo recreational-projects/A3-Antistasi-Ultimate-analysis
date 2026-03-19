@@ -72,7 +72,7 @@ def _towns_from_grad_meh(
     """
     Derive `Town`s from grad_meh data, ignoring any defined as disabled in the mission.
 
-    `Town`s include `population` but not `position`.
+    `Town`s include `position` but not `population`.
     """
     ignore_town_names = {_normalise_mission_town_name(t): t for t in ignore_town_names}
     gm_towns_lookup = {}
