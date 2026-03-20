@@ -5,6 +5,11 @@ EXCLUDED_MISSIONS: set[str] = {
     # Mission dir name
     "Antistasi_Stratis.Stratis",
 }
+MISSION_TOWNS_IGNORED_PREFIXES = [
+    # Ignored when comparing against canonical names
+    "gm_name_",
+]
+
 DISABLED_TOWNS_IGNORED_PREFIXES = [
     # Ignored when comparing against canonical names
     "castle_",
@@ -18,3 +23,5 @@ DISABLED_TOWNS_IGNORED_PREFIXES = [
     "mil_",
     "pass_",
 ]
+
+GM_TOWNS_TRANSLATIONS = {"ö": "oe"}

@@ -11,7 +11,11 @@ from src.geojson.load import load_towns_from_dir
 from src.mission.position_2d import Position2D
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
-from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
+from static_data.au_mission_overrides import (
+    DISABLED_TOWNS_IGNORED_PREFIXES,
+    GM_TOWNS_TRANSLATIONS,
+    MISSION_TOWNS_IGNORED_PREFIXES,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Collection
@@ -23,7 +27,9 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[Town]:
+def towns_from_map_populations(
+    *, populations: DictNode, logging_map_name: str
+) -> list[Town]:
     """
     Derive `Town`s from data parsed from `mapinfo.hpp`.
 
@@ -31,8 +37,7 @@ def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[To
     """
     towns = [
         Town(name=name, position=None, population=population)
-        for (name, population) in map_info["populations"]
-        if name not in map_info["disabled_town_names"]
+        for name, population in populations
     ]
     unique_town_names = {t.name for t in towns}
     if len(unique_town_names) != len(towns):
@@ -41,8 +46,8 @@ def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[To
             duplicated_town_names.remove(t)
 
         log_msg = (
-            f"'{logging_map_name}': {len(towns)} in mission but "
-            f"{len(unique_town_names)} unique.\n"
+            f"'{logging_map_name}': {len(towns)} towns defined in mission "
+            f"but {len(unique_town_names)} unique. "
             f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
         )
         LOGGER.warning(log_msg)
@@ -51,12 +56,28 @@ def towns_from_map_info(*, map_info: DictNode, logging_map_name: str) -> list[To
 
 
 def _normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
+    """Normalisation for all town names, for comparison purposes."""
     return name.lower().replace(" ", "")
 
 
 def _normalise_mission_town_name(name: str) -> str:
-    """Normalise town name from mission data, for comparison purposes."""
+    """Normalisation for town names from mission, for comparison purposes."""
+    for prefix in MISSION_TOWNS_IGNORED_PREFIXES:
+        name = name.removeprefix(prefix)
+
+    return _normalise_town_name(name)
+
+
+def _normalise_grad_meh_town_name(name: str) -> str:
+    """Normalisation for town names from grad-meh data, for comparison purposes."""
+    for old, new in GM_TOWNS_TRANSLATIONS.items():
+        name = name.replace(old, new)
+
+    return _normalise_town_name(name)
+
+
+def _normalise_disabled_town_name(name: str) -> str:
+    """Normalise disabled town name from mission data, for comparison purposes."""
     for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
         name = name.removeprefix(prefix)
 
@@ -66,38 +87,22 @@ def _normalise_mission_town_name(name: str) -> str:
 def _towns_from_grad_meh(
     *,
     gm_locations_dir: Path,
-    ignore_town_names: Collection[str],
     logging_map_name: str,
 ) -> list[Town]:
     """
-    Derive `Town`s from grad_meh data, ignoring any defined as disabled in the mission.
+    Derive `Town`s (all capital/city/village) from grad_meh data.
 
     `Town`s include `position` but not `population`.
     """
-    ignore_town_names = {_normalise_mission_town_name(t): t for t in ignore_town_names}
-    gm_towns_lookup = {}
-
     if not gm_locations_dir.is_dir():
         log_msg = f"'{logging_map_name}': no grad-meh locations data."
         LOGGER.warning(log_msg)
-    else:
-        _gm_towns = load_towns_from_dir(gm_locations_dir)
-        gm_towns_lookup = {
-            _normalise_town_name(t.properties["name"]): t for t in _gm_towns
-        }
+        return []
 
-    gm_towns = []
-    matched_keys = set()
-    for normalised_town_name, town in gm_towns_lookup.items():
-        if normalised_town_name in ignore_town_names:
-            matched_keys.add(normalised_town_name)
-            log_msg = (
-                f"Didn't add disabled town: "
-                f"'{normalised_town_name}' ('{town.properties['name']}')."
-            )
-            LOGGER.debug(log_msg)
-        else:
-            gm_towns.append(Town.from_geojson(town))
+    gm_towns_geojson = load_towns_from_dir(gm_locations_dir)
+    gm_towns = [Town.from_geojson(t) for t in gm_towns_geojson]
+    log_msg = f"'{logging_map_name}': loaded {len(gm_towns)} towns from locations data."
+    LOGGER.info(log_msg)
 
     return gm_towns
 
@@ -105,62 +110,75 @@ def _towns_from_grad_meh(
 def compile_towns(
     *,
     map_name: str,
-    map_info: DictNode,
+    map_populations: DictNode,
     gm_locations_dir: Path,
     ignore_town_names: Collection[str],
 ) -> list[Town]:
-    """Check against map locations and in-game data."""
-    mission_defined_towns = towns_from_map_info(
-        map_info=map_info, logging_map_name=map_name
+    """Compile towns from all sources."""
+    log_msg = f"{ignore_town_names=}"
+    LOGGER.debug(log_msg)
+
+    mission_defined_towns = towns_from_map_populations(
+        populations=map_populations, logging_map_name=map_name
     )
     n_mission_defined_towns = len(mission_defined_towns)
     gm_towns = _towns_from_grad_meh(
         gm_locations_dir=gm_locations_dir,
-        ignore_town_names=ignore_town_names,
         logging_map_name=map_name,
     )
-    n_gm_towns = len(gm_towns)
-    n_reference_towns = in_game_data.TOWNS_COUNT.get(map_name)
-    log_msg = f"'{map_name}': "
 
     if mission_defined_towns:
-        log_msg += f"used {n_mission_defined_towns} towns defined in mission; "
-        if gm_towns:
-            if n_mission_defined_towns == n_gm_towns:
-                log_msg += "matches map locations data."
-                LOGGER.info(log_msg)
-            else:
-                log_msg += f"doesn't match {n_gm_towns} in map locations data."
-                LOGGER.warning(log_msg)
+        if not gm_towns:
+            log_msg = (
+                f"No map locations data."
+                f"Using {n_mission_defined_towns} mission defined towns "
+                f"without positions."
+            )
+            LOGGER.warning(log_msg)
+            return mission_defined_towns
 
-        else:
-            log_msg += "no map locations data."
-            LOGGER.info(log_msg)
+        gm_town_names_normalised = {
+            _normalise_grad_meh_town_name(t.name) for t in gm_towns
+        }
+        log_msg = f"gm_town_names_normalised: {sorted(gm_town_names_normalised)}"
+        LOGGER.debug(log_msg)
 
-        return mission_defined_towns
+        mission_defined_town_names_normalised = {
+            _normalise_mission_town_name(t.name) for t in mission_defined_towns
+        }
+        log_msg = (
+            f"mission_defined_town_names_normalised: "
+            f"{sorted(mission_defined_town_names_normalised)}"
+        )
+        LOGGER.debug(log_msg)
 
-    if gm_towns:
-        log_msg += (
-            f"0 towns defined in mission; used {n_gm_towns} from map locations data."
+        relevant_gm_towns = [
+            t
+            for t in gm_towns
+            if _normalise_grad_meh_town_name(t.name)
+            in mission_defined_town_names_normalised
+        ]
+        log_msg = (
+            f"Using {len(relevant_gm_towns)} matched grad-meh towns with positions."
         )
         LOGGER.info(log_msg)
-        return gm_towns
 
+        relevant_gm_town_names = sorted(t.name for t in relevant_gm_towns)
+        log_msg = f"{relevant_gm_town_names}"
+        LOGGER.debug(log_msg)
+
+        return relevant_gm_towns
+
+    n_reference_towns = in_game_data.TOWNS_COUNT.get(map_name)
     if n_reference_towns:
-        anon_towns = [
+        log_msg = f"Using {n_reference_towns} anonymous towns from in-game count."
+        LOGGER.warning(log_msg)
+        return [
             Town(name=f"UNKNOWN_{i}", position=None, population=None)
             for i in range(n_reference_towns)
         ]
-        log_msg += (
-            f"0 towns defined in mission or map locations data; "
-            f"used {n_reference_towns} towns from in-game data."
-        )
-        LOGGER.warning(log_msg)
-        return anon_towns
 
-    log_msg += (
-        "0 towns defined in mission, retrieved from map locations data or in-game data."
-    )
+    log_msg = "No sources for towns."
     LOGGER.error(log_msg)
     return []
 

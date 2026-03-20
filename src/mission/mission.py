@@ -13,7 +13,7 @@ from cattrs import ClassValidationError, structure
 from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import get_military_zone_markers
-from src.mission.town import Town, compile_towns, towns_from_map_info
+from src.mission.town import Town, compile_towns
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 
@@ -192,24 +192,12 @@ class Mission:
         log_msg = f"'{map_name}': loaded AU source data."
         LOGGER.info(log_msg)
 
-        if not grad_meh_map_dir.is_dir():
-            grad_meh_map_dir = grad_meh_map_dir / ".." / map_name.capitalize()
-
-        if not grad_meh_map_dir.is_dir():
-            log_msg = (
-                f"'{map_name}': no grad-meh data. Skipping towns validation/correction."
-            )
-            LOGGER.warning(log_msg)
-            towns = towns_from_map_info(map_info=map_info, logging_map_name=map_name)
-
-        else:
-            towns = compile_towns(
-                map_name=map_name,
-                map_info=map_info,
-                gm_locations_dir=grad_meh_map_dir / "geojson/locations",
-                ignore_town_names=map_info["disabled_town_names"],
-            )
-
+        towns = compile_towns(
+            map_name=map_name,
+            map_populations=map_info["populations"],
+            gm_locations_dir=grad_meh_map_dir / "geojson/locations",
+            ignore_town_names=map_info["disabled_town_names"],
+        )
         return cls(
             map_name=map_name,
             map_display_name=map_display_name,
