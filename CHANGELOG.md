@@ -235,7 +235,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release
 
-
+[1.0.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.14.0...v1.0.0
 [0.14.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v0.12.0...v0.13.0
