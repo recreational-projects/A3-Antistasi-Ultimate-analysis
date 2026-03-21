@@ -15,13 +15,10 @@ from src.geojson.load import load_towns_from_dir
 from src.mission.mapinfo_hpp_parser import MapInfoHppData
 from src.mission.marker import Marker
 from src.mission.mission_sqm_parser import MissionSqmData
-from src.mission.utils import (
-    map_name_from_mission_dir_path,
-    normalise_mission_town_name,
-    normalise_town_name,
-)
+from src.mission.utils import map_name_from_mission_dir_path
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
+from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,7 +46,20 @@ def _towns_from_map_info(
     return unique_towns
 
 
-@define
+def _normalise_town_name(name: str) -> str:
+    """Normalise town name from map data, for comparison purposes."""
+    return name.lower().replace(" ", "")
+
+
+def _normalise_mission_town_name(name: str) -> str:
+    """Normalise town name from mission data, for comparison purposes."""
+    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
+        name = name.removeprefix(prefix)
+
+    return _normalise_town_name(name)
+
+
+@define(kw_only=True)
 class Mission:
     """Information about a mission."""
 
@@ -88,11 +98,17 @@ class Mission:
     to the map!"""
 
     airports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     factories: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     bases: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     outposts: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     waterports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     resources: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
 
     @property
     def airports_count(self) -> int:
@@ -183,7 +199,7 @@ class Mission:
         mission_dir: Path,
         map_index: dict[str, dict[str, str]],
     ) -> Mission:
-        """Return instance from source data."""
+        """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
@@ -258,7 +274,7 @@ class Mission:
         Discards any defined as disabled in mission.
         """
         disabled_towns_lookup = {
-            normalise_mission_town_name(t): t for t in self.disabled_towns
+            _normalise_mission_town_name(t): t for t in self.disabled_towns
         }
         gm_towns_lookup = {}
 
@@ -268,7 +284,7 @@ class Mission:
         else:
             _gm_towns = load_towns_from_dir(gm_locations_dir)
             gm_towns_lookup = {
-                normalise_town_name(t.properties["name"]): t.properties["name"]
+                _normalise_town_name(t.properties["name"]): t.properties["name"]
                 for t in _gm_towns
             }
 
