@@ -1,40 +1,21 @@
-"""Analyse each mission in AU source code and export `Mission` as JSON."""
+"""Analyse each mission in a folder of AU source code and export `Mission`s as JSON."""
 
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 from rich.progress import track
 
+from scripts.analyse_mission import analyse_mission
 from scripts.constants import BASE_PATH, CONFIG
-from src.mission.mission import Mission
 from src.mission.utils import mission_dirs_in_dir
 from src.utils import configure_logging, pretty_iterable_of_str
 from static_data import au_mission_overrides, in_game_data
 from static_data.map_index import MAP_INDEX
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
 LOGGER = logging.getLogger(__name__)
 AU_MAPS_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
-GRAD_MEH_DIRPATH = BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
 DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-
-
-def _analyse_mission(mission_dir: Path) -> str:
-    """Analyse a single mission and export intermediate data."""
-    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
-    log_msg = f"'{mission_dir.name}': loaded mission."
-    LOGGER.info(log_msg)
-
-    mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    mission.validate_and_correct_towns(
-        GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
-    )
-    mission.export(DATA_DIRPATH)
-    return mission.map_name
 
 
 def analyse_missions() -> None:
@@ -58,7 +39,7 @@ def analyse_missions() -> None:
     DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
-        map_name = _analyse_mission(mission_dir)
+        map_name = analyse_mission(mission_dir)
         analysed_map_names.add(map_name)
 
     log_msg = (
