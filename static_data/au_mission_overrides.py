@@ -1,10 +1,5 @@
 """Override AU mission data."""
 
-EXCLUDED_MISSIONS: set[str] = {
-    # Excluded from final data table
-    # Mission dir name
-    "Antistasi_Stratis.Stratis",
-}
 DISABLED_TOWNS_IGNORED_PREFIXES = [
     # Ignored when comparing against canonical names
     "castle_",

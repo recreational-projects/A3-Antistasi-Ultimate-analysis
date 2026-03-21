@@ -13,10 +13,9 @@ from scripts import docs_includes
 from scripts.constants import BASE_PATH, CONFIG
 from src.mission.mission import Mission
 from src.utils import configure_logging, pretty_iterable_of_str, project_version
-from static_data import au_mission_overrides
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Sequence, Sized
+    from collections.abc import Sequence, Sized
 
 LOGGER = logging.getLogger(__name__)
 DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
@@ -24,36 +23,31 @@ DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
 PROJECT_VERSION = project_version()
 
 
-def _missions_from_json(path: Path, excludes: Iterable[str]) -> list[Mission]:
+def _missions_from_json(path: Path) -> list[Mission]:
     """Load previously-exported `Missions` from `path`."""
-    json_files = [
-        p
-        for p in list(path.iterdir())
-        if p.suffix == ".json" and p.stem not in excludes
-    ]
-    _excludes_str = pretty_iterable_of_str(excludes)
-    log_msg = f"Found {len(json_files)} files in {path} ignoring {excludes}."
+    json_files = [p for p in list(path.iterdir()) if p.suffix == ".json"]
+    log_msg = f"Found {len(json_files)} files in {path}."
     LOGGER.info(log_msg)
 
     missions = [Mission.from_json(fp) for fp in json_files]
-    log_msg = f"Loaded data for {len(missions)} missions."
+    filtered_missions = [m for m in missions if not m.exclude]
+    log_msg = f"Loaded data for {len(filtered_missions)} missions; "
+    log_msg += f"{len(missions) - len(filtered_missions)} excluded."
     LOGGER.info(log_msg)
 
     required_fields = {
         field.name
         for field in attrs.fields(Mission)
-        if field.name not in ["disabled_towns", "waterports"]
+        if field.name not in ["disabled_towns", "waterports", "exclude"]
     }
-    for mission in missions:
+    for mission in filtered_missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}
         if empty_fields:
-            log_msg = (
-                f"{mission.map_display_name}: "
-                f"no {pretty_iterable_of_str(empty_fields)} value."
-            )
+            log_msg = f"{mission.map_name}: "
+            log_msg += f"no {pretty_iterable_of_str(empty_fields)} value."
             LOGGER.error(log_msg)
 
-    return sorted(missions, key=attrgetter("map_name"))
+    return sorted(filtered_missions, key=attrgetter("map_name"))
 
 
 def _sort_missions_by_points(mission: Mission) -> int:
@@ -63,9 +57,7 @@ def _sort_missions_by_points(mission: Mission) -> int:
 
 def _markdown_total_missions(missions: Sized) -> str:
     """Create Markdown total missions line."""
-    return (
-        f"- {len(missions)} maps total including season variants, excluding Stratis\n"
-    )
+    return f"- {len(missions)} maps total including season variants\n"
 
 
 def _markdown_handle_missing_value(val: int | str | None) -> str:
@@ -144,9 +136,7 @@ def build_docs() -> None:
     log_msg = f"Project version {PROJECT_VERSION}"
     LOGGER.info(log_msg)
 
-    missions = _missions_from_json(
-        DATA_DIRPATH, excludes=au_mission_overrides.EXCLUDED_MISSIONS
-    )
+    missions = _missions_from_json(DATA_DIRPATH)
     max_war_level_points = max(
         m.war_level_points for m in missions if m.war_level_points
     )

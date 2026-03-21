@@ -6,7 +6,7 @@ Manually compiled.
 This should have an entry for every Antistasi Utimate mission.
 """
 
-MAP_INDEX: dict[str, dict[str, str]] = {
+MAP_INDEX: dict[str, dict[str, str | bool]] = {
     # key: `map_name`, derived from directory name and normalised to lower case.
     #   `display_name` as per Steam app/workshop titles/text except where noted.
     "abramia": {  # mod
@@ -196,6 +196,7 @@ MAP_INDEX: dict[str, dict[str, str]] = {
     "stratis": {  # base game
         "display_name": "Stratis",
         "url": "https://store.steampowered.com/app/107410",
+        "exclude": True,
     },
     "stubbhult": {  # mod
         "display_name": "Stubbhult",

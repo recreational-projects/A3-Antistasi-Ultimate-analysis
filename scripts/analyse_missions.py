@@ -10,7 +10,7 @@ from scripts.analyse_mission import analyse_mission
 from scripts.constants import BASE_PATH, CONFIG
 from src.mission.utils import mission_dirs_in_dir
 from src.utils import configure_logging, pretty_iterable_of_str
-from static_data import au_mission_overrides, in_game_data
+from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 
 LOGGER = logging.getLogger(__name__)
@@ -20,19 +20,12 @@ DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
 def analyse_missions() -> None:
     """Analyse all missions."""
-    mission_dirs = sorted(
-        d
-        for d in mission_dirs_in_dir(AU_MAPS_DIRPATH)
-        if d.name not in au_mission_overrides.EXCLUDED_MISSIONS
-    )
+    mission_dirs = sorted(mission_dirs_in_dir(AU_MAPS_DIRPATH))
     if not mission_dirs:
         err_msg = "No missions found."
         raise RuntimeError(err_msg)
 
-    log_msg = (
-        f"Ignoring {pretty_iterable_of_str(au_mission_overrides.EXCLUDED_MISSIONS)}. "
-        f"Found {len(mission_dirs)} candidate missions in {AU_MAPS_DIRPATH}."
-    )
+    log_msg = f"Found {len(mission_dirs)} candidate missions in {AU_MAPS_DIRPATH}."
     LOGGER.info(log_msg)
 
     DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
