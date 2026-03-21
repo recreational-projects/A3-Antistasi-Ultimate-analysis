@@ -6,7 +6,7 @@ import json
 import logging
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
@@ -19,6 +19,9 @@ from src.mission.utils import map_name_from_mission_dir_path
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
+
+if TYPE_CHECKING:
+    from src.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -110,6 +113,9 @@ class Mission:
     resources: list[Marker] = Factory(list)
     """From `mission.sqm`."""
 
+    exclude: bool = False
+    """Omit this mission from the final output."""
+
     @property
     def airports_count(self) -> int:
         """Enumerate airports."""
@@ -193,12 +199,7 @@ class Mission:
         return ratio
 
     @classmethod
-    def from_data(
-        cls,
-        *,
-        mission_dir: Path,
-        map_index: dict[str, dict[str, str]],
-    ) -> Mission:
+    def from_data(cls, *, mission_dir: Path, map_index: DictNode) -> Mission:
         """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
@@ -208,6 +209,7 @@ class Mission:
             map_lookup = map_index[map_name]
             map_display_name = map_lookup.get("display_name")
             map_url = map_lookup.get("url")
+            exclude = map_lookup.get("exclude")
 
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
@@ -230,6 +232,7 @@ class Mission:
             climate=parsed_map_info.climate,
             towns=towns,
             disabled_towns=parsed_map_info.disabled_town_names,
+            exclude=exclude,
         )
         if parsed_mission_sqm:
             markers_ = parsed_mission_sqm.military_zone_markers
