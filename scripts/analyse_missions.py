@@ -18,13 +18,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
-PATHS = {
-    "AU_MAPS_DIR": (
-        BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
-    ).resolve(),
-    "GRAD_MEH_DIR": (BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]).resolve(),
-    "DATA_DIR": (BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]).resolve(),
-}
+AU_MAPS_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
+GRAD_MEH_DIRPATH = BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
+DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
 
 def _analyse_mission(mission_dir: Path) -> str:
@@ -34,35 +30,19 @@ def _analyse_mission(mission_dir: Path) -> str:
     LOGGER.info(log_msg)
 
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name
-    if not grad_meh_map_dirpath.is_dir():
-        grad_meh_map_dirpath = PATHS["GRAD_MEH_DIR"] / mission.map_name.capitalize()
-
-    if not grad_meh_map_dirpath.is_dir():
-        log_msg = (
-            f"'{mission.map_name}': "
-            f"no grad-meh data. Skipping locations validation/correction."
-        )
-        LOGGER.warning(log_msg)
-
-    else:
-        mission.validate_and_correct_towns(grad_meh_map_dirpath / "geojson/locations")
-
-    mission.export(PATHS["DATA_DIR"])
+    mission.validate_and_correct_towns(
+        GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
+    )
+    mission.export(DATA_DIRPATH)
     return mission.map_name
 
 
 def analyse_missions() -> None:
     """Analyse all missions."""
     configure_logging()
-    for name, path in PATHS.items():
-        if not path.is_dir():
-            err_msg = f"{name}: {path} not found"
-            raise RuntimeError(err_msg)
-
     mission_dirs = sorted(
         d
-        for d in mission_dirs_in_dir(PATHS["AU_MAPS_DIR"])
+        for d in mission_dirs_in_dir(AU_MAPS_DIRPATH)
         if d.name not in au_mission_overrides.EXCLUDED_MISSIONS
     )
     if not mission_dirs:
@@ -71,19 +51,18 @@ def analyse_missions() -> None:
 
     log_msg = (
         f"Ignoring {pretty_iterable_of_str(au_mission_overrides.EXCLUDED_MISSIONS)}. "
-        f"Found {len(mission_dirs)} candidate missions in {PATHS['AU_MAPS_DIR']}."
+        f"Found {len(mission_dirs)} candidate missions in {AU_MAPS_DIRPATH}."
     )
     LOGGER.info(log_msg)
 
-    PATHS["DATA_DIR"].mkdir(parents=True, exist_ok=True)
+    DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
         map_name = _analyse_mission(mission_dir)
         analysed_map_names.add(map_name)
 
     log_msg = (
-        f"Exported data for {len(analysed_map_names)} missions "
-        f"to '{PATHS['DATA_DIR']}'."
+        f"Exported data for {len(analysed_map_names)} missions to '{DATA_DIRPATH}'."
     )
     LOGGER.info(log_msg)
 
