@@ -11,7 +11,7 @@ hide:
 - Data is auto-generated from Antistasi Ultimate stable release v11.8.6
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified
   against in-game information
-- 62 maps total including season variants, excluding Stratis
+- 62 maps total including season variants
 
 | Map <br>| Climate <br>| Airports <br>| Bases <br>| Sea/<br>riverports <br>| Outposts <br>| Factories <br>| Resources <br>| Total<br>military<br>zones[^1] <br>| Towns <br>| Total<br>War Level<br>points[^2]<br>ratio<br> |
 | --- | --- | ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:|
@@ -95,4 +95,4 @@ hide:
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md);
   [raise a bug, question or feature request](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/issues)
 
-- Version 0.13.0
+- Version 1.0.1
