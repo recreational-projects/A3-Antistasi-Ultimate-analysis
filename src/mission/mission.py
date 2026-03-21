@@ -88,11 +88,17 @@ class Mission:
     to the map!"""
 
     airports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     factories: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     bases: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     outposts: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     waterports: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
     resources: list[Marker] = Factory(list)
+    """From `mission.sqm`."""
 
     @property
     def airports_count(self) -> int:
@@ -183,7 +189,7 @@ class Mission:
         mission_dir: Path,
         map_index: dict[str, dict[str, str]],
     ) -> Mission:
-        """Return instance from source data."""
+        """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."

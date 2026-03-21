@@ -51,7 +51,9 @@ def _get_child_layers(node: DictNode) -> list[DictNode]:
 def _collect_markers(node: DictNode) -> list[Marker]:
     """Return `node`'s relevant descendants as `Marker`s, recursively."""
     markers = [
-        Marker.from_data(e) for e in _get_entities(node) if _is_relevant_marker(e)
+        Marker.from_mission_sqm_data(e)
+        for e in _get_entities(node)
+        if _is_relevant_marker(e)
     ]
     for layer_node in _get_child_layers(node):
         markers.extend(_collect_markers(layer_node))
