@@ -4,16 +4,17 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
+from typing import Self
 
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
 from src.geojson.load import load_towns_from_dir
-from src.mission.mapinfo_hpp_parser import parse_mapinfo_hpp_file
+from src.mission.mapinfo_hpp_parser import MapInfoHppData
 from src.mission.marker import Marker
-from src.mission.mission_sqm_parser import get_military_zone_marker_nodes
+from src.mission.mission_sqm_parser import MissionSqmData
 from src.mission.utils import (
     map_name_from_mission_dir_path,
     normalise_mission_town_name,
@@ -22,17 +23,14 @@ from src.mission.utils import (
 from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
 
-if TYPE_CHECKING:
-    from src.types_ import DictNode
-
 LOGGER = logging.getLogger(__name__)
 
 
-def _towns_from_map_info(map_info: DictNode, map_name: str) -> dict[str, int | None]:
+def _towns_from_map_info(
+    map_info: MapInfoHppData, map_name: str
+) -> Mapping[str, int | None]:
     towns = [
-        (name, population)
-        for (name, population) in map_info["populations"]
-        if name not in map_info["disabled_towns"]
+        p for p in map_info.populations if p[0] not in map_info.disabled_town_names
     ]
     unique_towns = dict(towns)
 
@@ -73,7 +71,7 @@ class Mission:
     climate: str
     """From `mapinfo.hpp`."""
 
-    towns: dict[str, int | None] = Factory(dict)
+    towns: Mapping[str, int | None] = Factory(Mapping)
     """Towns in the mission, with population if known.
 
     If the mission defines a `populations` array in `mapinfo.hpp`, it will be used to
@@ -187,10 +185,6 @@ class Mission:
     ) -> Mission:
         """Return instance from source data."""
         map_name = map_name_from_mission_dir_path(mission_dir)
-        map_info = parse_mapinfo_hpp_file(mission_dir / "mapInfo.hpp")
-        towns = _towns_from_map_info(map_info, map_name)
-        marker_nodes = get_military_zone_marker_nodes(mission_dir / "mission.sqm")
-
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
             LOGGER.error(log_msg)
@@ -202,34 +196,35 @@ class Mission:
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
             LOGGER.error(log_msg)
+
         if not map_url:
             log_msg = f"'{map_name}': map index issue: no `map_url`."
             LOGGER.error(log_msg)
 
-        military_zone_markers: dict[str, list[Marker]] = {}
-        for prefix in Marker.RELEVANT_PREFIXES:
-            military_zone_markers[prefix] = []
+        parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
+        parsed_mission_sqm = MissionSqmData.from_file(mission_dir / "mission.sqm")
+        log_msg = f"'{map_name}': parsed AU source data."
+        LOGGER.info(log_msg)
 
-        for marker_node in marker_nodes:
-            marker = Marker.from_data(marker_node)
-            for prefix, list_ in military_zone_markers.items():
-                if marker.name.lower().startswith(prefix):
-                    list_.append(marker)
-
-        return cls(
+        towns = _towns_from_map_info(parsed_map_info, map_name)
+        mission = cls(
             map_name=map_name,
             map_display_name=map_display_name,
             map_url=map_url,
-            climate=map_info["climate"],
+            climate=parsed_map_info.climate,
             towns=towns,
-            disabled_towns=map_info["disabled_towns"],
-            airports=military_zone_markers["airport"],
-            bases=military_zone_markers["milbase"],
-            waterports=military_zone_markers["seaport"],
-            outposts=military_zone_markers["outpost"],
-            factories=military_zone_markers["factory"],
-            resources=military_zone_markers["resource"],
+            disabled_towns=parsed_map_info.disabled_town_names,
         )
+        if parsed_mission_sqm:
+            markers_ = parsed_mission_sqm.military_zone_markers
+            mission.airports = markers_["airport"]
+            mission.bases = markers_["milbase"]
+            mission.waterports = markers_["seaport"]
+            mission.outposts = markers_["outpost"]
+            mission.factories = markers_["factory"]
+            mission.resources = markers_["resource"]
+
+        return mission
 
     def export(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
@@ -339,7 +334,6 @@ class Mission:
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
         map_name = self.map_name
-
         if map_name not in data:
             log_msg = (
                 f"'{map_name}': military zone verification issue: "
