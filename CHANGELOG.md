@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `scripts/analyse_mission.py`: analyse a single mission
 - 2D positions extracted for military zone markers; not yet used in output
 
+### Changed
+
+- Build: deps: bump mkdocs-material to latest
+
 
 ## [1.0.1] - 2026-03-21
 
