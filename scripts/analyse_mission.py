@@ -37,6 +37,7 @@ def analyse_mission(mission_dir: Path) -> str:
     mission.export_json(DATA_DIRPATH)
     export_map_render(
         mission=mission,
+        grad_meh_dem_filepath=GRAD_MEH_DIRPATH / mission.map_name / "dem.asc.gz",
         export_filepath=DATA_DIRPATH / f"{mission.map_name}_map.png",
     )
     return mission.map_name
