@@ -12,6 +12,7 @@ from scripts._common import (
     configure_logging,
     require_dir,
 )
+from src.map_render.map_render import export_map_render
 from src.mission.mission import Mission
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
@@ -33,7 +34,11 @@ def analyse_mission(mission_dir: Path) -> str:
     mission.validate_and_correct_towns(
         GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
     )
-    mission.export(DATA_DIRPATH)
+    mission.export_json(DATA_DIRPATH)
+    export_map_render(
+        mission=mission,
+        export_filepath=DATA_DIRPATH / f"{mission.map_name}_map.png",
+    )
     return mission.map_name
 
 
