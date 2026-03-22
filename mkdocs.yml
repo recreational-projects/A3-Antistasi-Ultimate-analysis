@@ -2,7 +2,7 @@ site_name: Antistasi Ultimate analysis
 site_url: https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/
 
 theme:
-  name: material
+  name: materialx
   custom_dir: docs-overrides
   icon:
     logo: material/map-search
