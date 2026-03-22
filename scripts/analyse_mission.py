@@ -3,35 +3,32 @@
 from __future__ import annotations
 
 import argparse
-import logging
 from typing import TYPE_CHECKING
 
-from scripts.constants import BASE_PATH, CONFIG
+from scripts._common import (
+    AU_MAPS_DIRPATH,
+    DATA_DIRPATH,
+    GRAD_MEH_DIRPATH,
+    configure_logging,
+    require_dir,
+)
 from src.mission.mission import Mission
-from src.utils import configure_logging
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-LOGGER = logging.getLogger(__name__)
-AU_MAPS_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
-GRAD_MEH_DIRPATH = BASE_PATH / CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"]
-DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-
 
 def analyse_mission(mission_dir: Path) -> str:
     """Analyse a single mission and export intermediate data."""
-    dir_ = mission_dir.resolve()
-    if not dir_.is_dir():
-        err_msg = f"No such directory: {dir_}"
-        raise RuntimeError(err_msg)
+    for path in AU_MAPS_DIRPATH, GRAD_MEH_DIRPATH:
+        require_dir(path)
 
-    mission = Mission.from_data(mission_dir=dir_, map_index=MAP_INDEX)
-    log_msg = f"'{mission.map_name}': loaded mission."
-    LOGGER.info(log_msg)
-
+    DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
+    mission_dir.resolve()
+    require_dir(mission_dir)
+    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
     mission.validate_and_correct_towns(
         GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
