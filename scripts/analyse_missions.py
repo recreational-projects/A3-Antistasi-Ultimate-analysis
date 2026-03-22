@@ -2,24 +2,27 @@
 
 from __future__ import annotations
 
-import logging
-
 from rich.progress import track
 
+from scripts._common import (
+    AU_MAPS_DIRPATH,
+    DATA_DIRPATH,
+    LOGGER,
+    configure_logging,
+    require_dir,
+)
 from scripts.analyse_mission import analyse_mission
-from scripts.constants import BASE_PATH, CONFIG
 from src.mission.utils import mission_dirs_in_dir
-from src.utils import configure_logging, pretty_iterable_of_str
+from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
-
-LOGGER = logging.getLogger(__name__)
-AU_MAPS_DIRPATH = BASE_PATH / CONFIG["AU_SOURCE_DIR_RELATIVE"] / "A3A/addons/maps"
-DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
 
 
 def analyse_missions() -> None:
     """Analyse all missions."""
+    require_dir(AU_MAPS_DIRPATH)
+    DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
+
     mission_dirs = sorted(mission_dirs_in_dir(AU_MAPS_DIRPATH))
     if not mission_dirs:
         err_msg = "No missions found."
@@ -28,7 +31,6 @@ def analyse_missions() -> None:
     log_msg = f"Found {len(mission_dirs)} candidate missions in {AU_MAPS_DIRPATH}."
     LOGGER.info(log_msg)
 
-    DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
         map_name = analyse_mission(mission_dir)

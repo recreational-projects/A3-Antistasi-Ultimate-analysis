@@ -2,25 +2,26 @@
 
 from __future__ import annotations
 
-import logging
+import tomllib
 from operator import attrgetter
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import attrs
 
-from scripts import docs_includes
-from scripts.constants import BASE_PATH, CONFIG
+from scripts._common import (
+    DATA_DIRPATH,
+    DOC_DIRPATH,
+    LOGGER,
+    configure_logging,
+    require_dir,
+)
+from scripts._docs_includes import COLUMNS, INTRO_MARKDOWN, OUTRO_MARKDOWN
 from src.mission.mission import Mission
-from src.utils import configure_logging, pretty_iterable_of_str, project_version
+from src.utils import pretty_iterable_of_str
 
 if TYPE_CHECKING:
     from collections.abc import Sequence, Sized
-
-LOGGER = logging.getLogger(__name__)
-DATA_DIRPATH = BASE_PATH / CONFIG["INTERMEDIATE_DATA_DIR_RELATIVE"]
-DOC_FILEPATH = BASE_PATH / CONFIG["MARKDOWN_OUTPUT_FILE_RELATIVE"]
-PROJECT_VERSION = project_version()
 
 
 def _missions_from_json(path: Path) -> list[Mission]:
@@ -125,15 +126,26 @@ def _markdown_table(
     return thead + tdivider + "".join(trs) + "\n"
 
 
-def _markdown_version() -> str:
+def _project_version() -> str:
+    """Get project version from `pyproject.toml`."""
+    filepath = Path(__file__).resolve().parent / "../pyproject.toml"
+    with filepath.open("rb") as fp:
+        version = tomllib.load(fp).get("project", {}).get("version")
+        return str(version)
+
+
+def _markdown_project_version(v: str) -> str:
     """Create Markdown project version line."""
-    return f"\n- Version {PROJECT_VERSION}\n"
+    return f"\n- Version {v}\n"
 
 
 def build_docs() -> None:
     """Generate the Markdown doc representing site content."""
-    configure_logging()
-    log_msg = f"Project version {PROJECT_VERSION}"
+    for path in DATA_DIRPATH, DOC_DIRPATH:
+        require_dir(path)
+
+    project_version_ = _project_version()
+    log_msg = f"Project version {project_version_}"
     LOGGER.info(log_msg)
 
     missions = _missions_from_json(DATA_DIRPATH)
@@ -141,24 +153,26 @@ def build_docs() -> None:
         m.war_level_points for m in missions if m.war_level_points
     )
     markdown_content = [
-        docs_includes.INTRO_MARKDOWN,
+        INTRO_MARKDOWN,
         _markdown_total_missions(missions),
         _markdown_table(
             missions=sorted(missions, key=_sort_missions_by_points, reverse=True),
-            columns=docs_includes.COLUMNS,
+            columns=COLUMNS,
             max_war_level_points=max_war_level_points,
         ),
-        docs_includes.OUTRO_MARKDOWN,
-        _markdown_version(),
+        OUTRO_MARKDOWN,
+        _markdown_project_version(project_version_),
     ]
     LOGGER.info("Generated Markdown.")
 
-    with Path.open(DOC_FILEPATH, "w", encoding="utf-8") as fp:
+    doc_filepath = DOC_DIRPATH / "index.md"
+    with Path.open(doc_filepath, "w", encoding="utf-8") as fp:
         fp.write("".join(markdown_content))
 
-    log_msg = f"Markdown saved to {DOC_FILEPATH}."
+    log_msg = f"Markdown saved to {doc_filepath}."
     LOGGER.info(log_msg)
 
 
 if __name__ == "__main__":
+    configure_logging()
     build_docs()
