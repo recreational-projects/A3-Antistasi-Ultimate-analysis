@@ -23,7 +23,9 @@ def analyse_missions() -> None:
     require_dir(AU_MAPS_DIRPATH)
     DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
 
-    mission_dirs = sorted(mission_dirs_in_dir(AU_MAPS_DIRPATH))
+    mission_dirs = sorted(
+        mission_dirs_in_dir(AU_MAPS_DIRPATH), key=lambda path: path.stem.lower()
+    )
     if not mission_dirs:
         err_msg = "No missions found."
         raise RuntimeError(err_msg)
