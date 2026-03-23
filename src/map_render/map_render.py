@@ -5,7 +5,10 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+import numpy as np
 from matplotlib import pyplot as plt
+
+from src.map_render.dem import DEM
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -18,6 +21,19 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 MAP_IMAGE_SIZE_PX = 1000
+
+
+def _plot_water(axes: Axes, dem: DEM) -> None:
+    """Plot monotone image of sea area; land is transparent."""
+    z = dem.elevation
+    zeros = np.zeros(z.shape)
+    alphas = (z <= 0).astype(float)
+    axes.imshow(
+        zeros,
+        cmap="terrain",
+        extent=(0, dem.extents.x, 0, dem.extents.y),  # order: l, r, btm, top
+        alpha=alphas,
+    )
 
 
 def _plot_series(
@@ -34,14 +50,32 @@ def _plot_series(
     )
 
 
-def export_map_render(*, mission: Mission, export_filepath: Path) -> None:
-    """Export a map render."""
+def export_map_render(
+    *, mission: Mission, grad_meh_dem_filepath: Path, export_filepath: Path
+) -> None:
+    """Load gzipped DEM (must be `*.asc.gz`) and export a map render."""
     log_msg = f"'{mission.map_name}': plotting map..."
     LOGGER.info(log_msg)
-
     fig, ax = plt.subplots()
     size_inches = MAP_IMAGE_SIZE_PX / 100  # default 100 ppi
     fig.set_size_inches(size_inches, size_inches)
+
+    if not grad_meh_dem_filepath.is_file():
+        log_msg = f"'{mission.map_name}': - no DEM."
+        LOGGER.warning(log_msg)
+
+    else:
+        log_msg = f"'{mission.map_name}': - loading DEM..."
+        LOGGER.info(log_msg)
+        dem = DEM.from_esri_ascii_raster_gz(grad_meh_dem_filepath)
+        log_msg = f"'{mission.map_name}':   done."
+        LOGGER.info(log_msg)
+
+        log_msg = f"'{mission.map_name}': - rendering water..."
+        LOGGER.info(log_msg)
+        _plot_water(axes=ax, dem=dem)
+        log_msg = f"'{mission.map_name}':   done."
+        LOGGER.info(log_msg)
 
     marker_series = {
         "airports": "A",
