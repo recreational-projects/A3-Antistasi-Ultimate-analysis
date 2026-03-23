@@ -9,6 +9,7 @@ from scripts._common import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
     GRAD_MEH_DIRPATH,
+    LOGGER,
     configure_logging,
     require_dir,
 )
@@ -35,11 +36,18 @@ def analyse_mission(mission_dir: Path) -> str:
         GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
     )
     mission.export_json(DATA_DIRPATH)
-    export_map_render(
-        mission=mission,
-        grad_meh_dem_filepath=GRAD_MEH_DIRPATH / mission.map_name / "dem.asc.gz",
-        export_filepath=DATA_DIRPATH / f"{mission.map_name}_map.png",
-    )
+    map_render_filepath = DATA_DIRPATH / f"{mission.map_name}_map.png"
+    if map_render_filepath.exists():
+        log_msg = f"'{mission.map_name}': map render already exists - skipping."
+        LOGGER.info(log_msg)
+
+    else:
+        export_map_render(
+            mission=mission,
+            grad_meh_dem_filepath=GRAD_MEH_DIRPATH / mission.map_name / "dem.asc.gz",
+            export_filepath=DATA_DIRPATH / f"{mission.map_name}_map.png",
+        )
+
     return mission.map_name
 
 
