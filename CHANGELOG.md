@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Update for AU v11.9.7, which adds Drakovac, Green Sea 2023
 - New `scripts/analyse_mission.py`: analyse a single mission
 - Improve path handling
 - Improve handling of new missions in AU source and excluded missions 
