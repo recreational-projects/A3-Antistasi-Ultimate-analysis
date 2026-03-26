@@ -9,8 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - New `scripts/analyse_mission.py`: analyse a single mission
-- `scripts/analyse_missions.py`: analyse missions in natural sort order
+- Improve path handling
+- Improve handling of new missions in AU source and excluded missions 
 - 2D positions extracted for military zone markers; not yet used in output
+- `scripts/analyse_missions.py`: analyse missions in natural sort order
 
 ### Changed
 

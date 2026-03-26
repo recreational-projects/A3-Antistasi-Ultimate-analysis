@@ -36,7 +36,8 @@ def analyse_missions() -> None:
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
         map_name = analyse_mission(mission_dir)
-        analysed_map_names.add(map_name)
+        if map_name:
+            analysed_map_names.add(map_name)
 
     log_msg = (
         f"Exported data for {len(analysed_map_names)} missions to '{DATA_DIRPATH}'."

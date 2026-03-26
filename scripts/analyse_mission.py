@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def analyse_mission(mission_dir: Path) -> str:
+def analyse_mission(mission_dir: Path) -> str | None:
     """Analyse a single mission and export intermediate data."""
     for path in AU_MAPS_DIRPATH, GRAD_MEH_DIRPATH:
         require_dir(path)
@@ -31,6 +31,9 @@ def analyse_mission(mission_dir: Path) -> str:
     mission_dir.resolve()
     require_dir(mission_dir)
     mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
+    if mission is None:
+        return None
+
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
     mission.validate_and_correct_towns(
         GRAD_MEH_DIRPATH / mission.map_name / "geojson/locations"
