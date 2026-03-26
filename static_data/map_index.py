@@ -49,6 +49,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
         "display_name": "Chernarus 2020",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169",
     },
+    "drakovac": {  # mod
+        "display_name": "Drakovac",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3523961062",
+    },
     "enoch": {  # DLC: Contact
         "display_name": "Livonia",
         "url": "https://store.steampowered.com/app/1021790",
@@ -72,6 +76,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "green_sea": {  # mod
         "display_name": "Green Sea",  # officially "Green Sea Terrain"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212",
+    },
+    "green_sea_2023": {  # mod
+        "display_name": "Green Sea 2023",  # officially "Green Sea 2023 Terrain"
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3671912728",
     },
     "gulfcoast": {  # mod
         "display_name": "Gulfcoast Islands",  # sic
