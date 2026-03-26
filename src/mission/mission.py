@@ -199,17 +199,18 @@ class Mission:
         return ratio
 
     @classmethod
-    def from_data(cls, *, mission_dir: Path, map_index: DictNode) -> Mission:
+    def from_data(cls, *, mission_dir: Path, map_index: DictNode) -> Mission | None:
         """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
             LOGGER.error(log_msg)
-        else:
-            map_lookup = map_index[map_name]
-            map_display_name = map_lookup.get("display_name")
-            map_url = map_lookup.get("url")
-            exclude = map_lookup.get("exclude")
+            return None
+
+        map_lookup = map_index[map_name]
+        map_display_name = map_lookup.get("display_name")
+        map_url = map_lookup.get("url")
+        exclude = map_lookup.get("exclude")
 
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
