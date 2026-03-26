@@ -8,7 +8,7 @@ hide:
 - This site aims to compare missions from the
   [Antistasi Ultimate](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
-- Data is auto-generated from Antistasi Ultimate stable release v11.8.6
+- Data is generated from Antistasi Ultimate stable release v11.9.7
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified
   against in-game information
 - 64 maps total including season variants
@@ -97,4 +97,4 @@ hide:
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md);
   [raise a bug, question or feature request](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/issues)
 
-- Version 1.0.1
+- Version 1.1.0
