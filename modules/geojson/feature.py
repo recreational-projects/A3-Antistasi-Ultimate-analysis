@@ -6,7 +6,7 @@ Derived from https://jcristharif.com/msgspec/examples/geojson.html.
 
 import msgspec
 
-from src.types_ import DictNode
+from modules.types_ import DictNode
 
 Position = tuple[float, float]
 

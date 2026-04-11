@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import msgspec
 
-from src.geojson.feature import Feature
+from modules.geojson.feature import Feature
 
 if TYPE_CHECKING:
     from pathlib import Path

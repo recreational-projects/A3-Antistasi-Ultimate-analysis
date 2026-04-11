@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from rich.progress import track
 
+from modules.mission.utils import mission_dirs_in_dir
+from modules.utils import pretty_iterable_of_str
 from scripts._common import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
@@ -12,8 +14,6 @@ from scripts._common import (
     require_dir,
 )
 from scripts.analyse_mission import analyse_mission
-from src.mission.utils import mission_dirs_in_dir
-from src.utils import pretty_iterable_of_str
 from static_data import in_game_data
 from static_data.map_index import MAP_INDEX
 

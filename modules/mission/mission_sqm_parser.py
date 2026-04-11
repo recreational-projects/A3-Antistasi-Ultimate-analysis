@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING, Self
 
 import armaclass
 
-from src.mission.marker import Marker
+from modules.mission.marker import Marker
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from src.types_ import DictNode
+    from modules.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 RELEVANT_MARKER_PREFIXES = {
@@ -27,12 +27,17 @@ RELEVANT_MARKER_PREFIXES = {
 }
 
 
-def _get_entities(node: DictNode) -> list[DictNode]:
-    """Return `node`'s relevant data dict children.."""
-    if "Entities" not in node:
-        return []
+def _collect_markers(node: DictNode) -> list[Marker]:
+    """Return `node`'s relevant descendants as `Marker`s, recursively."""
+    markers = [
+        Marker.from_mission_sqm_data(e)
+        for e in _get_entities(node)
+        if _is_relevant_marker(e)
+    ]
+    for layer_node in _get_child_layers(node):
+        markers.extend(_collect_markers(layer_node))
 
-    return [e for e in node["Entities"].values() if isinstance(e, dict)]
+    return markers
 
 
 def _is_relevant_marker(node: DictNode) -> bool:
@@ -48,17 +53,12 @@ def _get_child_layers(node: DictNode) -> list[DictNode]:
     return [e for e in _get_entities(node) if e.get("dataType") == "Layer"]
 
 
-def _collect_markers(node: DictNode) -> list[Marker]:
-    """Return `node`'s relevant descendants as `Marker`s, recursively."""
-    markers = [
-        Marker.from_mission_sqm_data(e)
-        for e in _get_entities(node)
-        if _is_relevant_marker(e)
-    ]
-    for layer_node in _get_child_layers(node):
-        markers.extend(_collect_markers(layer_node))
+def _get_entities(node: DictNode) -> list[DictNode]:
+    """Return `node`'s relevant data dict children.."""
+    if "Entities" not in node:
+        return []
 
-    return markers
+    return [e for e in node["Entities"].values() if isinstance(e, dict)]
 
 
 @dataclass(kw_only=True)

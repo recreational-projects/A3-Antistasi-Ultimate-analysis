@@ -2,7 +2,7 @@
 
 from cxxheaderparser.simple import parse_string
 
-from src.mission.mapinfo_hpp_parser import (
+from modules.mission.mapinfo_hpp_parser import (
     _get_climate,
     _get_disabled_town_names,
     _get_populations,

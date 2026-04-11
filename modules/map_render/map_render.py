@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from matplotlib import pyplot as plt
 
-from src.map_render.dem import DEM
+from modules.map_render.dem import DEM
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -16,38 +16,11 @@ if TYPE_CHECKING:
 
     from matplotlib.axes import Axes
 
-    from src.mission.mission import Mission
-    from src.mission.position_2d import Position2D
+    from modules.mission.mission import Mission
+    from modules.mission.position_2d import Position2D
 
 LOGGER = logging.getLogger(__name__)
 MAP_IMAGE_SIZE_PX = 1000
-
-
-def _plot_water(axes: Axes, dem: DEM) -> None:
-    """Plot monotone image of sea area; land is transparent."""
-    z = dem.elevation
-    zeros = np.zeros(z.shape)
-    alphas = (z <= 0).astype(float)
-    axes.imshow(
-        zeros,
-        cmap="terrain",
-        extent=(0, dem.extents.x, 0, dem.extents.y),  # order: l, r, btm, top
-        alpha=alphas,
-    )
-
-
-def _plot_series(
-    *,
-    axes: Axes,
-    iterable_: Iterable[Position2D],
-    marker: str | None = None,
-) -> None:
-    """Plot `iterable_` as a scatter series."""
-    axes.scatter(
-        [p.x for p in iterable_],
-        [p.y for p in iterable_],
-        marker=marker,
-    )
 
 
 def export_map_render(
@@ -113,3 +86,30 @@ def export_map_render(
     plt.close()
     log_msg = f"'{mission.map_name}': exported '{export_filepath.name}'."
     LOGGER.info(log_msg)
+
+
+def _plot_water(axes: Axes, dem: DEM) -> None:
+    """Plot monotone image of sea area; land is transparent."""
+    z = dem.elevation
+    zeros = np.zeros(z.shape)
+    alphas = (z <= 0).astype(float)
+    axes.imshow(
+        zeros,
+        cmap="terrain",
+        extent=(0, dem.extents.x, 0, dem.extents.y),  # order: l, r, btm, top
+        alpha=alphas,
+    )
+
+
+def _plot_series(
+    *,
+    axes: Axes,
+    iterable_: Iterable[Position2D],
+    marker: str | None = None,
+) -> None:
+    """Plot `iterable_` as a scatter series."""
+    axes.scatter(
+        [p.x for p in iterable_],
+        [p.y for p in iterable_],
+        marker=marker,
+    )

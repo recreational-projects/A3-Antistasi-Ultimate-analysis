@@ -9,7 +9,7 @@ from attrs import define
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from src.geojson.feature import Point
+    from modules.geojson.feature import Point
 
 
 @define(kw_only=True, frozen=True)

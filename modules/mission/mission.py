@@ -11,17 +11,17 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
-from src.geojson.load import load_towns_from_dir
-from src.mission.mapinfo_hpp_parser import MapInfoHppData
-from src.mission.marker import Marker
-from src.mission.mission_sqm_parser import MissionSqmData
-from src.mission.utils import map_name_from_mission_dir_path
-from src.utils import pretty_iterable_of_str
+from modules.geojson.load import load_towns_from_dir
+from modules.mission.mapinfo_hpp_parser import MapInfoHppData
+from modules.mission.marker import Marker
+from modules.mission.mission_sqm_parser import MissionSqmData
+from modules.mission.utils import map_name_from_mission_dir_path
+from modules.utils import pretty_iterable_of_str
 from static_data import in_game_data
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 if TYPE_CHECKING:
-    from src.types_ import DictNode
+    from modules.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,17 +49,17 @@ def _towns_from_map_info(
     return unique_towns
 
 
-def _normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
-    return name.lower().replace(" ", "")
-
-
 def _normalise_mission_town_name(name: str) -> str:
     """Normalise town name from mission data, for comparison purposes."""
     for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
         name = name.removeprefix(prefix)
 
     return _normalise_town_name(name)
+
+
+def _normalise_town_name(name: str) -> str:
+    """Normalise town name from map data, for comparison purposes."""
+    return name.lower().replace(" ", "")
 
 
 @define(kw_only=True)
@@ -271,39 +271,6 @@ class Mission:
 
         return mission
 
-    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
-        """
-        Return town names from grad_meh data.
-
-        Discards any defined as disabled in mission.
-        """
-        disabled_towns_lookup = {
-            _normalise_mission_town_name(t): t for t in self.disabled_towns
-        }
-        gm_towns_lookup = {}
-
-        if not gm_locations_dir.is_dir():
-            log_msg = f"'{self.map_name}': no grad-meh locations data."
-            LOGGER.warning(log_msg)
-        else:
-            _gm_towns = load_towns_from_dir(gm_locations_dir)
-            gm_towns_lookup = {
-                _normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
-            }
-
-        gm_towns = set()
-        matched_keys = set()
-        for k, v in gm_towns_lookup.items():
-            if k in disabled_towns_lookup:
-                matched_keys.add(k)
-                log_msg = f"Didn't add disabled: '{k}' ('{v}')."
-                LOGGER.debug(log_msg)
-            else:
-                gm_towns.add(v)
-
-        return gm_towns
-
     def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
         """Check against map locations and in-game data."""
         map_name = self.map_name
@@ -350,6 +317,39 @@ class Mission:
                 f"locations data or in-game data."
             )
             LOGGER.error(log_msg)
+
+    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
+        """
+        Return town names from grad_meh data.
+
+        Discards any defined as disabled in mission.
+        """
+        disabled_towns_lookup = {
+            _normalise_mission_town_name(t): t for t in self.disabled_towns
+        }
+        gm_towns_lookup = {}
+
+        if not gm_locations_dir.is_dir():
+            log_msg = f"'{self.map_name}': no grad-meh locations data."
+            LOGGER.warning(log_msg)
+        else:
+            _gm_towns = load_towns_from_dir(gm_locations_dir)
+            gm_towns_lookup = {
+                _normalise_town_name(t.properties["name"]): t.properties["name"]
+                for t in _gm_towns
+            }
+
+        gm_towns = set()
+        matched_keys = set()
+        for k, v in gm_towns_lookup.items():
+            if k in disabled_towns_lookup:
+                matched_keys.add(k)
+                log_msg = f"Didn't add disabled: '{k}' ('{v}')."
+                LOGGER.debug(log_msg)
+            else:
+                gm_towns.add(v)
+
+        return gm_towns
 
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
