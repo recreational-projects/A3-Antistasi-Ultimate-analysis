@@ -12,7 +12,7 @@ dependencies = [
     "matplotlib>=3.10.8",
     "mkdocs-material>=9.7.6",
     "msgspec>=0.20.0",
-    "numpy>=2.4.3",
+    "numpy>=2.4.4",
     "rich>=14.3.2",
 ]
 
