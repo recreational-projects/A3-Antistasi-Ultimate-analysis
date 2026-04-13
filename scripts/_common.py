@@ -28,7 +28,7 @@ def configure_logging() -> None:
 def require_dir(path: Path) -> None:
     """Require that the path is a directory."""
     if not path.is_dir():
-        err_msg = f"No such directory: {AU_MAPS_DIRPATH}"
+        err_msg = f"No such directory: `{path}` (resolves to `{path.resolve()}`)"
         raise RuntimeError(err_msg)
 
 
