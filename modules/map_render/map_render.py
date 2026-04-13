@@ -6,9 +6,8 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
+from arma3_offline_map_lib.dem import DEM
 from matplotlib import pyplot as plt
-
-from modules.map_render.dem import DEM
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
