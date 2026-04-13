@@ -5,6 +5,7 @@ description = "Compare missions from the Antistasi Ultimate mod for Arma 3"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "arma3-offline-map-lib",
     "armaclass>=0.2.2",
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
@@ -18,7 +19,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mypy>=1.20.0",
+    "mypy>=1.20.1",
     "pytest>=9.0.3",
     "ruff>=0.15.10",
 ]
@@ -71,3 +72,6 @@ runtime-evaluated-decorators = ["attrs.define"]
 "src/types.py" = [
    "A005",  # Module shadows a Python standard-library module
 ]
+
+[tool.uv.sources]
+arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.1.0" }
