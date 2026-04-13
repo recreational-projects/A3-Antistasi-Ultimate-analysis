@@ -97,4 +97,4 @@ hide:
   [changelog](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/blob/main/CHANGELOG.md);
   [raise a bug, question or feature request](https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/issues)
 
-- Version 1.1.0
+- Version 1.1.1
