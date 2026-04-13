@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "arma3-offline-map-lib",
     "armaclass>=0.2.2",
-    "attrs>=25.4.0",  # CalVer
+    "attrs>=26.1.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
     "matplotlib>=3.10.8",
