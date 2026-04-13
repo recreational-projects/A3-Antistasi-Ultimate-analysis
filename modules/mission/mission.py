@@ -11,17 +11,17 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
-from modules.geojson.load import load_towns_from_dir
-from modules.mission.mapinfo_hpp_parser import MapInfoHppData
-from modules.mission.marker import Marker
-from modules.mission.mission_sqm_parser import MissionSqmData
-from modules.mission.utils import map_name_from_mission_dir_path
-from modules.utils import pretty_iterable_of_str
 from static_data import in_game_data
 from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
+from .mapinfo_hpp_parser import MapInfoHppData
+from .marker import Marker
+from .mission_sqm_parser import MissionSqmData
+from .towns import load_towns_from_dir
+from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
+
 if TYPE_CHECKING:
-    from modules.types_ import DictNode
+    from .types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 

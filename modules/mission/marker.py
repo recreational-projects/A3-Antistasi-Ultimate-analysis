@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Self
 
 from attrs import define
 
-from modules.mission.position_2d import Position2D
+from .position_2d import Position2D
 
 if TYPE_CHECKING:
-    from modules.types_ import DictNode
+    from .types_ import DictNode
 
 
 @define(kw_only=True, frozen=True)

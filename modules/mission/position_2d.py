@@ -9,7 +9,7 @@ from attrs import define
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from modules.geojson.feature import Point
+    from arma3_offline_map_lib.geojson import Point
 
 
 @define(kw_only=True, frozen=True)

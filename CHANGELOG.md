@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Build:
   - pin Python 3.12
   - use locked dependencies in CI and scripts in README.md
-  - dependencies: bump mkdocs-material to latest
+  - dependencies: add arma3-offline-map-lib 0.2.0, bump mkdocs-material to latest
   - indirect dependencies: bump click, idna, pillow, pymdown-extensions, 
     urllib3 to latest
 

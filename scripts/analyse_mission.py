@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from typing import TYPE_CHECKING
 
-from modules.map_render.map_render import export_map_render
+from modules.map_render import export_map_render
 from modules.mission.mission import Mission
 from scripts._common import (
     AU_MAPS_DIRPATH,
