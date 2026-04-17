@@ -15,6 +15,9 @@ dependencies = [
     "numpy>=2.4.3",
     "rich>=14.3.2",
 ]
+[project.urls]
+homepage = "https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/"
+source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis"
 
 [dependency-groups]
 dev = [

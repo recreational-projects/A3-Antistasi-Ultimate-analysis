@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - tbc
 
+### Added
+
+- URLs to `pyproject.toml`
+
 ### Changed
 
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
 - Build:
+  - pin Python 3.12
+  - use locked dependencies in CI and scripts in README.md
   - dependencies: bump mkdocs-material to latest
   - indirect dependencies: bump click, idna, pillow, pymdown-extensions, 
     urllib3 to latest
