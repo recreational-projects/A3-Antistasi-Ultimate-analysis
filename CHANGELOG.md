@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## UNRELEASED - TBC
+
+### Changed
+
+- Build: deps (transitive): bump pillow to latest
+
+
 ## [1.1.1] - 2026-04-13
 
 ### Changed
 
-- Build: deps: bump pygments, requests to latest
+- Build: deps (transitive): bump pygments, requests to latest
 
 ### Fixed
 
