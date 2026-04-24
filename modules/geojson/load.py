@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
-import gzip
 import logging
 from typing import TYPE_CHECKING
 
-import msgspec
-
-from modules.geojson.feature import Feature
+from arma3_offline_map_lib.geojson import (
+    geojson_gz_files_in_dir,
+    load_features_from_file,
+)
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from arma3_offline_map_lib.geojson import Feature
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,30 +43,3 @@ def load_towns_from_dir(path: Path) -> list[Feature]:
         towns.extend(locations)
 
     return towns
-
-
-def geojson_gz_files_in_dir(path: Path) -> list[Path]:
-    """Return all `*.geojson.gz` files in `path`."""
-    return [p for p in list(path.iterdir()) if p.suffixes == [".geojson", ".gz"]]
-
-
-def load_features_from_file(path: Path) -> list[Feature]:
-    """
-    Load GeoJSON features from a `.geojson.gz` file.
-
-    NB: grad_meh source files are gzipped JSON arrays of GeoJSON features, not GeoJSON
-    compliant files.
-    """
-    with gzip.open(path, "rt", encoding="utf-8") as file:
-        try:
-            features = msgspec.json.decode(file.read(), type=list[Feature])
-        except msgspec.ValidationError as err:
-            err_msg = f"Error decoding JSON: {path}."
-            raise ValueError(err_msg) from err
-
-    if not features:
-        log_msg = f"No valid GeoJSON features in `{path.name}`."
-        LOGGER.warning(log_msg)
-        return []
-
-    return features
