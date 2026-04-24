@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from rich.progress import track
 
-from modules.mission.utils import mission_dirs_in_dir
-from modules.utils import pretty_iterable_of_str
+from modules.mission.utils import pretty_iterable_of_str
+from modules.utils import mission_dirs_in_dir
 from scripts._common import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,

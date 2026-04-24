@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import attrs
 
 from modules.mission.mission import Mission
-from modules.utils import pretty_iterable_of_str
+from modules.mission.utils import pretty_iterable_of_str
 from scripts._common import (
     DATA_DIRPATH,
     DOC_DIRPATH,
