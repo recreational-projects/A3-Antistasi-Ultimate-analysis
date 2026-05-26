@@ -3,7 +3,6 @@ name = "a3-antistasi-ultimate-analysis"
 version = "1.1.1"
 description = "Compare missions from the Antistasi Ultimate mod for Arma 3"
 readme = "README.md"
-urls = { "source" = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis" }
 requires-python = ">=3.12"
 dependencies = [
     "arma3-offline-map-lib",
@@ -17,6 +16,9 @@ dependencies = [
     "numpy>=2.4.3",
     "rich>=14.3.2",
 ]
+[project.urls]
+homepage = "https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/"
+source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis"
 
 [dependency-groups]
 dev = [
