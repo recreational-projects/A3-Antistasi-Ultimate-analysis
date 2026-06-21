@@ -6,9 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - TBC
 
+### Added
+
+- URLs in `pyproject.toml`
+
+
 ### Changed
 
-- Build: deps (transitive): bump pillow to latest
+- Build:
+  - deps: require arma3-offline-map-lib 0.2.0
+  - deps (transitive): bump pillow to latest
 
 
 ## [1.1.1] - 2026-04-13
