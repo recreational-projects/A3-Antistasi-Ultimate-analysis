@@ -32,7 +32,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "arma3-offline-map-lib", git = "https://github.com/recreational-projects/arma3-offline-map-lib.git?rev=v0.2.0" },
+    { name = "arma3-offline-map-lib", git = "https://github.com/recreational-projects/arma3-offline-map-lib.git?rev=v0.5.0" },
     { name = "armaclass", specifier = ">=0.2.2" },
     { name = "attrs", specifier = ">=25.4.0" },
     { name = "cattrs", specifier = ">=26.1.0" },
@@ -53,8 +53,8 @@ dev = [
 
 [[package]]
 name = "arma3-offline-map-lib"
-version = "0.2.0"
-source = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git?rev=v0.2.0#fff74272cab3754b69626498386c7f473b9dbd3d" }
+version = "0.5.0"
+source = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git?rev=v0.5.0#b3fe263ebe074f88a347e4ccf86d1970ae529dd1" }
 dependencies = [
     { name = "attrs" },
     { name = "msgspec" },
