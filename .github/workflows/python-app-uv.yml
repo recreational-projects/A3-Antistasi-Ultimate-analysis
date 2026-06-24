@@ -1,4 +1,4 @@
-name: Python 3.12 application with uv on Ubuntu
+name: Python 3.13 application with uv on Ubuntu
 
 on:
   push:
@@ -25,21 +25,18 @@ jobs:
       # Faster than using uv, as it caches Python on GitHub runner
       uses: actions/setup-python@v6
       with:
-        python-version: "3.12"
-
-    - name: Install project
-      run: uv sync --dev
+        python-version: "3.13"
 
     - name: Lint with ruff
       # by default: exit with error if rule violations
-      run: uv run ruff check --output-format=github
+      run: uv run --locked ruff check --output-format=github
 
     - name: Lint format with ruff
       # by default: exit with error if rule violations
-      run: uv run ruff format
+      run: uv run --locked ruff format
 
     - name: Type check with mypy
-      run: uv run mypy .
+      run: uv run --locked mypy .
 
     - name: Test with pytest
-      run: uv run pytest
+      run: uv run --locked pytest
