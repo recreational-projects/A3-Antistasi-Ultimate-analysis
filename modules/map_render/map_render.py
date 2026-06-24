@@ -13,10 +13,10 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
+    from arma3_offline_map_lib.position_2d import Position2D
     from matplotlib.axes import Axes
 
     from modules.mission.mission import Mission
-    from modules.mission.position_2d import Position2D
 
 LOGGER = logging.getLogger(__name__)
 MAP_IMAGE_SIZE_PX = 1000
