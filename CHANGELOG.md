@@ -10,19 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - URLs in `pyproject.toml`
 
-
 ### Changed
 
 - Build:
-  - deps: require arma3-offline-map-lib 0.2.0
-  - deps (transitive): bump pillow to latest
+  - deps: require arma3-offline-map-lib 0.5.0
+  - deps (transitive): bump idna, pillow, urllib3 to latest
+- CI: upgrade to Python 3.13; use existing lockfile
 
 
 ## [1.1.1] - 2026-04-13
 
 ### Changed
 
-- Build: deps (transitive): bump pygments, requests to latest
+- Build:
+  - deps: require arma3-offline-map-lib
+  - deps (transitive): bump pygments, requests to latest
 
 ### Fixed
 
