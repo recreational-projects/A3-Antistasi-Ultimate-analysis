@@ -36,7 +36,7 @@ requires-dist = [
     { name = "armaclass", specifier = ">=0.2.2" },
     { name = "attrs", specifier = ">=25.4.0" },
     { name = "cattrs", specifier = ">=26.1.0" },
-    { name = "cxxheaderparser", specifier = ">=1.7.0" },
+    { name = "cxxheaderparser", specifier = ">=1.9.0" },
     { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "mkdocs-material", specifier = ">=9.7.6" },
     { name = "msgspec", specifier = ">=0.20.0" },
@@ -310,11 +310,11 @@ wheels = [
 
 [[package]]
 name = "cxxheaderparser"
-version = "1.7.0"
+version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d3/ad/652fa2e26afffc1ec0fff168973c41acf0893025dd401b0a056b8f108666/cxxheaderparser-1.7.0.tar.gz", hash = "sha256:2d0282e6f3cc25484acb2d737b3b5a646b947ae48cc0060242c50925d402f2ed", size = 52906, upload-time = "2026-01-07T03:11:41.236Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/16/afec8a74c0b778ba4d9465ad7891b73de083c894971eda40ed91a86c3bb9/cxxheaderparser-1.9.0.tar.gz", hash = "sha256:3363e8a9ad9bdeda9924944c3fd08ef1d68c55205dc10315d5f5b4b7373ba8f5", size = 55858, upload-time = "2026-06-26T16:55:53.678Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/c4/d09b7f302bcd88391f29b6e1c8236660f01891d8a9b7b9c631bade404862/cxxheaderparser-1.7.0-py3-none-any.whl", hash = "sha256:3c8ade60cc0c102bdd3eeb26fbc9ae30c3ae9b74ce881fab91e8fe8647b1a5f4", size = 59295, upload-time = "2026-01-07T03:11:39.953Z" },
+    { url = "https://files.pythonhosted.org/packages/71/26/307a0a9baf319f3c33be375a5cc99462f487e075ad84f2b6718676968855/cxxheaderparser-1.9.0-py3-none-any.whl", hash = "sha256:495e1cca0508ddef8845f4ba1706976955151c630400952892c74f811b1c21c4", size = 62407, upload-time = "2026-06-26T16:55:52.349Z" },
 ]
 
 [[package]]
