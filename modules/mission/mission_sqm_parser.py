@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING, Self
 
 import armaclass
 
-from .marker import Marker
+from modules.mission.marker import Marker
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from .types_ import DictNode
+    from modules.types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
 RELEVANT_MARKER_PREFIXES = {

@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Self
 
-from arma3_offline_map_lib.position_2d import Position2D
 from attrs import define
 
+from modules.mission.position_2d import Position2D
+
 if TYPE_CHECKING:
-    from .types_ import DictNode
+    from modules.types_ import DictNode
 
 
 @define(kw_only=True, frozen=True)

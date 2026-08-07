@@ -1,4 +1,4 @@
-name: Python 3.14 application with uv on Ubuntu
+name: Python 3.12 application with uv on Ubuntu
 
 on:
   push:
@@ -16,27 +16,30 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v7
+      uses: actions/checkout@v6
 
     - name: Install uv - latest if not defined in `pyproject.toml`
       uses: astral-sh/setup-uv@v7
 
     - name: Setup Python
       # Faster than using uv, as it caches Python on GitHub runner
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@v6
       with:
-        python-version: "3.14"
+        python-version: "3.12"
+
+    - name: Install project
+      run: uv sync --dev
 
     - name: Lint with ruff
       # by default: exit with error if rule violations
-      run: uv run --locked ruff check --output-format=github
+      run: uv run ruff check --output-format=github
 
     - name: Lint format with ruff
       # by default: exit with error if rule violations
-      run: uv run --locked ruff format
+      run: uv run ruff format
 
     - name: Type check with mypy
-      run: uv run --locked mypy .
+      run: uv run mypy .
 
     - name: Test with pytest
-      run: uv run --locked pytest
+      run: uv run pytest
