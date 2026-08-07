@@ -37,7 +37,7 @@ Run Python script:
 ```shell
 uv run --frozen --module scripts.analyse_missions
 ```
-or equivalent to generate data from each AU mission, compare with reference data and
+to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
 
 - Analyses the mission's `mission.sqm` using
@@ -60,7 +60,7 @@ export temporary JSON files to `working_data/`.
   ```shell
   uv run --frozen --module scripts.build_docs
   ```
-  or equivalent to load intermediate data and generate a single Markdown file
+  to load intermediate data and generate a single Markdown file
   in `docs/`.
 
   - Logs info and warnings
@@ -69,7 +69,7 @@ export temporary JSON files to `working_data/`.
 ### Generate static site from Markdown and preview locally in browser
 
 ```shell
-mkdocs serve
+uv run --frozen mkdocs serve
 ```
 
 ## License
