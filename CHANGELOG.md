@@ -4,26 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## UNRELEASED - TBC
-
-### Added
-
-- URLs in `pyproject.toml`
-- Build: deps: upgrade arma3-offline-map-lib to 0.7.0
-
-### Changed
-
-- Build:
-  - require Python >= 3.14 (and pin == 3.14)
-  - deps (transitive): bump idna, pillow, urllib3 to latest
-- CI: upgrade to Python 3.14; don't allow lockfile changes; bump actions deps
-
-
 ## [1.1.1] - 2026-04-13
 
 ### Changed
 
-- Build: deps (transitive): bump pygments, requests to latest
+- Build: deps: bump pygments, requests to latest
 
 ### Fixed
 

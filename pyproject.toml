@@ -3,28 +3,24 @@ name = "a3-antistasi-ultimate-analysis"
 version = "1.1.1"
 description = "Compare missions from the Antistasi Ultimate mod for Arma 3"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = [
-    "arma3-offline-map-lib",
     "armaclass>=0.2.2",
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
     "matplotlib>=3.10.8",
-    "mkdocs-material>=9.7.7",
+    "mkdocs-material>=9.7.6",
     "msgspec>=0.20.0",
     "numpy>=2.4.3",
     "rich>=14.3.2",
 ]
-[project.urls]
-homepage = "https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/"
-source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis"
 
 [dependency-groups]
 dev = [
-    "mypy>=2.3.0",
-    "pytest>=9.1.1",
-    "ruff>=0.16.2",
+    "mypy>=1.20.0",
+    "pytest>=9.0.3",
+    "ruff>=0.15.10",
 ]
 
 [tool.mypy]
@@ -38,6 +34,7 @@ no_implicit_optional = true  # Don't assume arguments with default values of Non
 # Untyped modules
 module = [
     "armaclass.*",
+    "mdutils.*"
 ]
 ignore_missing_imports = true
 
@@ -47,7 +44,6 @@ select = ["ALL"]
 ignore = [
     # Rules that conflict with Ruff formatter, or conflict with other rules:
     "COM812",  # Trailing comma missing
-    "CPY001",  # missing-copyright-notice
     "D203",    # incorrect-blank-line-before-class
     "D212",    # multi-line-summary-first-line
 ]
@@ -75,6 +71,3 @@ runtime-evaluated-decorators = ["attrs.define"]
 "src/types.py" = [
    "A005",  # Module shadows a Python standard-library module
 ]
-
-[tool.uv.sources]
-arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.7.0" }

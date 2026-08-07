@@ -6,17 +6,18 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from arma3_offline_map_lib.dem import DEM
 from matplotlib import pyplot as plt
+
+from modules.map_render.dem import DEM
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
-    from arma3_offline_map_lib.position_2d import Position2D
     from matplotlib.axes import Axes
 
     from modules.mission.mission import Mission
+    from modules.mission.position_2d import Position2D
 
 LOGGER = logging.getLogger(__name__)
 MAP_IMAGE_SIZE_PX = 1000
@@ -89,8 +90,9 @@ def export_map_render(
 
 def _plot_water(axes: Axes, dem: DEM) -> None:
     """Plot monotone image of sea area; land is transparent."""
-    zeros = np.zeros(dem.elevation.shape)
-    alphas = np.invert(dem.land).astype(float)
+    z = dem.elevation
+    zeros = np.zeros(z.shape)
+    alphas = (z <= 0).astype(float)
     axes.imshow(
         zeros,
         cmap="terrain",
