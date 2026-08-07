@@ -21,9 +21,9 @@ source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysi
 
 [dependency-groups]
 dev = [
-    "mypy>=1.20.0",
-    "pytest>=9.0.3",
-    "ruff>=0.15.10",
+    "mypy>=2.3.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.2",
 ]
 
 [tool.mypy]
@@ -35,10 +35,7 @@ no_implicit_optional = true  # Don't assume arguments with default values of Non
 
 [[tool.mypy.overrides]]
 # Untyped modules
-module = [
-    "armaclass.*",
-    "mdutils.*"
-]
+module = ["armaclass.*"]
 ignore_missing_imports = true
 
 [tool.ruff.lint]
@@ -49,6 +46,8 @@ ignore = [
     "COM812",  # Trailing comma missing
     "D203",    # incorrect-blank-line-before-class
     "D212",    # multi-line-summary-first-line
+    # Other:
+    "CPY001",  # missing-copyright-notice
 ]
 # Allow applying these 'unsafe' fixes without the `--unsafe-fixes` flag:
 extend-safe-fixes = [
