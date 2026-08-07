@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - URLs in `pyproject.toml`
-- Build: deps: require arma3-offline-map-lib 0.5.0
+- Build: deps: upgrade arma3-offline-map-lib to 0.7.0
 
 ### Changed
 
