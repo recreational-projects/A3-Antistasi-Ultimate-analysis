@@ -14,9 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Build:
-  - require Python >= 3.13; pin == 3.13
+  - require Python >= 3.14 (and pin == 3.14)
   - deps (transitive): bump idna, pillow, urllib3 to latest
-- CI: upgrade to Python 3.13; don't allow lockfile changes; bump actions deps
+- CI: upgrade to Python 3.14; don't allow lockfile changes; bump actions deps
 
 
 ## [1.1.1] - 2026-04-13
