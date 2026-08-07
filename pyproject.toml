@@ -22,9 +22,9 @@ source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysi
 
 [dependency-groups]
 dev = [
-    "mypy>=2.1.0",
+    "mypy>=2.3.0",
     "pytest>=9.1.1",
-    "ruff>=0.15.19",
+    "ruff>=0.16.2",
 ]
 
 [tool.mypy]
@@ -47,6 +47,7 @@ select = ["ALL"]
 ignore = [
     # Rules that conflict with Ruff formatter, or conflict with other rules:
     "COM812",  # Trailing comma missing
+    "CPY001",  # missing-copyright-notice
     "D203",    # incorrect-blank-line-before-class
     "D212",    # multi-line-summary-first-line
 ]
