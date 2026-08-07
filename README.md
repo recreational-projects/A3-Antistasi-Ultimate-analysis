@@ -26,10 +26,9 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 ### Initial setup/configuration
 
 - Clone/download this repo and set up a Python environment
-- Edit `scripts/config.toml`:
-  - `AU_SOURCE_DIR_RELATIVE`: relative path to AU source's `A3A/addons/maps` directory
-  - `GRAD_MEH_DATA_DIR_RELATIVE`: relative path to a folder where grad_meh data will be 
-    put later
+- Copy `scripts/config_dist.toml` to `scripts/config.toml` and edit as required:
+  - `AU_SOURCE_DIR_RELATIVE`: relative path to AU source directory
+  - `GRAD_MEH_DATA_DIR_RELATIVE`: relative path to a folder with grad_meh data
 
 ### Analyse missions and export data
 
@@ -50,6 +49,7 @@ export temporary JSON files to `working_data/`.
 - Verifies the number of military zones (not towns) against information derived from
   Antistasi Ultimate's in-game screenshots from `static_data/in_game_data.py`
 - Logs info and warnings
+- Should take around 60 seconds to complete
 
 ### Generate Markdown from data
 
@@ -64,6 +64,7 @@ export temporary JSON files to `working_data/`.
   in `docs/`.
 
   - Logs info and warnings
+  - Should take around one second to complete
 
 ### Generate static site from Markdown and preview locally in browser
 
