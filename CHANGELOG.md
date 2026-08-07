@@ -9,13 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
+- Build: dependencies: bump mkdocs-material to latest
 
 
 ## [1.1.1] - 2026-04-13
 
 ### Changed
 
-- Build: deps: bump pygments, requests to latest
+- Build: indirect dependencies: bump pygments, requests to latest
 
 ### Fixed
 
