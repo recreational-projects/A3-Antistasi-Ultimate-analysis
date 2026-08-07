@@ -35,7 +35,7 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 Run Python script:
 
 ```shell
-python -m scripts.analyse_missions
+uv run --frozen --module scripts.analyse_missions
 ```
 or equivalent to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
@@ -58,7 +58,7 @@ export temporary JSON files to `working_data/`.
 - Run Python script:
 
   ```shell
-  python -m scripts.build_docs
+  uv run --frozen --module scripts.build_docs
   ```
   or equivalent to load intermediate data and generate a single Markdown file
   in `docs/`.

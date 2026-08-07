@@ -27,19 +27,16 @@ jobs:
       with:
         python-version: "3.12"
 
-    - name: Install project
-      run: uv sync --dev
-
     - name: Lint with ruff
       # by default: exit with error if rule violations
-      run: uv run ruff check --output-format=github
+      run: uv run --frozen ruff check --output-format=github
 
     - name: Lint format with ruff
       # by default: exit with error if rule violations
-      run: uv run ruff format
+      run: uv run --frozen ruff format
 
     - name: Type check with mypy
-      run: uv run mypy .
+      run: uv run --frozen mypy .
 
     - name: Test with pytest
-      run: uv run pytest
+      run: uv run --frozen pytest
