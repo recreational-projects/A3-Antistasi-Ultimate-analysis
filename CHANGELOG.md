@@ -14,11 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
 - Build:
-  - pin Python 3.12
+  - upgrade to Python 3.14 and regenerate lockfile
   - use locked dependencies in CI and scripts in README.md
-  - dependencies: add arma3-offline-map-lib 0.2.0, bump mkdocs-material to latest
-  - indirect dependencies: bump click, idna, pillow, pymdown-extensions, 
-    urllib3 to latest
+  - dependencies: add arma3-offline-map-lib 0.2.0
 
 
 ## [1.1.1] - 2026-04-13
