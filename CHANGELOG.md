@@ -15,8 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
 - Build:
   - upgrade to Python 3.14 and regenerate lockfile
+  - dependencies: add arma3-offline-map-lib 0.4.1
   - use locked dependencies in CI and scripts in README.md
-  - dependencies: add arma3-offline-map-lib 0.2.0
 
 
 ## [1.1.1] - 2026-04-13
