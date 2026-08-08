@@ -89,14 +89,12 @@ def export_map_render(
 
 def _plot_water(axes: Axes, dem: DEM) -> None:
     """Plot monotone image of sea area; land is transparent."""
-    z = dem.elevation
-    zeros = np.zeros(z.shape)
-    alphas = (z <= 0).astype(float)
+    zeros = np.zeros(dem.elevation.shape)
     axes.imshow(
         zeros,
         cmap="terrain",
         extent=(0, dem.extents.x, 0, dem.extents.y),  # order: l, r, btm, top
-        alpha=alphas,
+        alpha=np.invert(dem.land),
     )
 
 
