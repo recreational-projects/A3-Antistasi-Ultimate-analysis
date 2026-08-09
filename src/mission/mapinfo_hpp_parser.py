@@ -18,6 +18,36 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+@dataclass(kw_only=True)
+class MapInfoHppData:
+    """Data from a mission's `mapInfo.hpp` file."""
+
+    climate: str
+    populations: list[tuple[str, int]]
+    disabled_town_names: list[str]
+
+    @classmethod
+    def from_file(cls, filepath: Path) -> Self:
+        """Parse a `mapInfo.hpp` file."""
+        with filepath.open() as fp:
+            data = fp.read()
+
+        log_msg = f"Parsing `{filepath}`."
+        LOGGER.debug(log_msg)
+        return cls.from_str(data)
+
+    @classmethod
+    def from_str(cls, str_: str) -> Self:
+        """Parse str of file contents."""
+        parsed_data = parse_string(str_)
+        class_scope = parsed_data.namespace.classes[0]
+        return cls(
+            climate=_get_climate(class_scope),
+            populations=_get_populations(class_scope),
+            disabled_town_names=_get_disabled_town_names(class_scope),
+        )
+
+
 def _get_climate(class_scope: ClassScope) -> str:
     """Get climate value."""
     value = _field_lookup(field_name="climate", class_scope=class_scope)
@@ -43,12 +73,6 @@ def _field_lookup(*, field_name: str, class_scope: ClassScope) -> str | None:
     raise ValueError(err_msg)
 
 
-def _get_disabled_town_names(class_scope: ClassScope) -> list[str]:
-    """Get disabled towns."""
-    tokens = _field_array_lookup(field_name="disabledTowns", class_scope=class_scope)
-    return _filter_tokens(tokens)
-
-
 def _get_populations(class_scope: ClassScope) -> list[tuple[str, int]]:
     """
     Get population names and values.
@@ -64,6 +88,18 @@ def _get_populations(class_scope: ClassScope) -> list[tuple[str, int]]:
         )
         for pair in _pairwise(values)
     ]
+
+
+def _pairwise(t: Iterable[str | int]) -> Iterable[tuple[str | int, str | int]]:
+    """Return pairs."""
+    it = iter(t)
+    return zip(it, it, strict=True)
+
+
+def _get_disabled_town_names(class_scope: ClassScope) -> list[str]:
+    """Get disabled towns."""
+    tokens = _field_array_lookup(field_name="disabledTowns", class_scope=class_scope)
+    return _filter_tokens(tokens)
 
 
 def _field_array_lookup(*, field_name: str, class_scope: ClassScope) -> list[Token]:
@@ -93,39 +129,3 @@ def _filter_tokens(tokens: Iterable[Token]) -> list[str]:
 def _unquote(value: str) -> str:
     """Remove double quotes from a string."""
     return value.strip('"')
-
-
-def _pairwise(t: Iterable[str | int]) -> Iterable[tuple[str | int, str | int]]:
-    """Return pairs."""
-    it = iter(t)
-    return zip(it, it, strict=True)
-
-
-@dataclass(kw_only=True)
-class MapInfoHppData:
-    """Data from a mission's `mapInfo.hpp` file."""
-
-    climate: str
-    populations: list[tuple[str, int]]
-    disabled_town_names: list[str]
-
-    @classmethod
-    def from_file(cls, filepath: Path) -> Self:
-        """Parse a `mapInfo.hpp` file."""
-        with filepath.open() as fp:
-            data = fp.read()
-
-        log_msg = f"Parsing `{filepath}`."
-        LOGGER.debug(log_msg)
-        return cls.from_str(data)
-
-    @classmethod
-    def from_str(cls, str_: str) -> Self:
-        """Parse str of file contents."""
-        parsed_data = parse_string(str_)
-        class_scope = parsed_data.namespace.classes[0]
-        return cls(
-            climate=_get_climate(class_scope),
-            populations=_get_populations(class_scope),
-            disabled_town_names=_get_disabled_town_names(class_scope),
-        )

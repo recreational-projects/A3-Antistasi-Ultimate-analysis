@@ -9,26 +9,30 @@ from typing import TYPE_CHECKING
 
 import attrs
 
-from modules.mission.mission import Mission
-from modules.mission.utils import pretty_iterable_of_str
-from scripts._common import (
+from ._docs_includes import COLUMNS, INTRO_MARKDOWN, OUTRO_MARKDOWN
+from ._utils import (
     DATA_DIRPATH,
     DOC_DIRPATH,
     LOGGER,
     configure_logging,
     require_dir,
 )
-from scripts._docs_includes import COLUMNS, INTRO_MARKDOWN, OUTRO_MARKDOWN
+from .mission.mission import Mission
+from .mission.utils import pretty_iterable_of_str
 
 if TYPE_CHECKING:
     from collections.abc import Sequence, Sized
 
 
-def build_docs() -> None:
-    """Generate the Markdown doc representing site content."""
-    for path in DATA_DIRPATH, DOC_DIRPATH:
-        require_dir(path)
+def main() -> None:
+    """
+    Script entry point.
 
+    Generate the Markdown doc representing site content.
+    """
+    configure_logging()
+    require_dir(DATA_DIRPATH)
+    DOC_DIRPATH.mkdir(parents=True, exist_ok=True)
     project_version_ = _project_version()
     log_msg = f"Project version {project_version_}"
     LOGGER.info(log_msg)
@@ -174,5 +178,4 @@ def _sort_missions_by_points(mission: Mission) -> int:
 
 
 if __name__ == "__main__":
-    configure_logging()
-    build_docs()
+    main()

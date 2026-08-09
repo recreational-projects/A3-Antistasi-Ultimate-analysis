@@ -26,7 +26,7 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 ### Initial setup/configuration
 
 - Clone/download this repo and set up a Python environment
-- Copy `scripts/config_dist.toml` to `scripts/config.toml` and edit as required:
+- Copy `config_dist.toml` to `config.toml` and edit as required:
   - `AU_SOURCE_DIR_RELATIVE`: relative path to AU source directory
   - `GRAD_MEH_DATA_DIR_RELATIVE`: relative path to a folder with grad_meh data
 
@@ -35,7 +35,7 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 Run Python script:
 
 ```shell
-uv run --frozen --module scripts.analyse_missions
+uv run --frozen --module src.analyse_missions
 ```
 to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
@@ -43,22 +43,22 @@ export temporary JSON files to `working_data/`.
 - Analyses the mission's `mission.sqm` using
   [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
 - Gets each mission's friendly map name and download URL from
-  `static_data/map_index.py`
+  `src/static_data/map_index.py`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
   and the mission doesn't explicitly define the towns used 
 - Verifies the number of military zones (not towns) against information derived from
-  Antistasi Ultimate's in-game screenshots from `static_data/in_game_data.py`
+  Antistasi Ultimate's in-game screenshots from `src/static_data/in_game_data.py`
 - Logs info and warnings
 - Should take around 60 seconds to complete
 
 ### Generate Markdown from data
 
-- Edit `scripts/docs_includes.py` with relevant AU version number
+- Edit `src/docs_includes.py` with relevant AU version number
 
 - Run Python script:
 
   ```shell
-  uv run --frozen --module scripts.build_docs
+  uv run --frozen --module src.build_docs
   ```
   to load intermediate data and generate a single Markdown file
   in `docs/`.
@@ -74,7 +74,7 @@ uv run --frozen mkdocs serve
 
 ## License
 
-`static_data/` contains data derived from Antistasi Ultimate assets and from 
+`src/static_data/` contains data derived from Antistasi Ultimate assets and from 
 other parties. See individual files for  licensing information.
 
 Otherwise, the [MIT licence](/LICENSE) applies - the same as

@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
+- Improved path handling
 - Build:
   - upgrade to Python 3.14 and regenerate lockfile
   - dependencies: add arma3-offline-map-lib 0.4.1

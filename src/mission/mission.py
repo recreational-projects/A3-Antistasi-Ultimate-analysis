@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING, Self
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
-from static_data import in_game_data
-from static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
+from src.static_data import in_game_data
+from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 from .mapinfo_hpp_parser import MapInfoHppData
 from .marker import Marker
@@ -24,42 +24,6 @@ if TYPE_CHECKING:
     from .types_ import DictNode
 
 LOGGER = logging.getLogger(__name__)
-
-
-def _towns_from_map_info(
-    map_info: MapInfoHppData, map_name: str
-) -> Mapping[str, int | None]:
-    towns = [
-        p for p in map_info.populations if p[0] not in map_info.disabled_town_names
-    ]
-    unique_towns = dict(towns)
-
-    if len(unique_towns) != len(towns):
-        duplicated_town_names = [p[0] for p in towns]
-        for t in unique_towns:
-            duplicated_town_names.remove(t)
-
-        log_msg = (
-            f"'{map_name}': {len(towns)} in mission but "
-            f"{len(unique_towns)} unique.\n"
-            f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
-        )
-        LOGGER.warning(log_msg)
-
-    return unique_towns
-
-
-def _normalise_mission_town_name(name: str) -> str:
-    """Normalise town name from mission data, for comparison purposes."""
-    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
-        name = name.removeprefix(prefix)
-
-    return _normalise_town_name(name)
-
-
-def _normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
-    return name.lower().replace(" ", "")
 
 
 @define(kw_only=True)
@@ -383,3 +347,39 @@ class Mission:
                 else:
                     log_msg = f"'{self.map_name}': `{field}` matches in-game data."
                     LOGGER.debug(log_msg)
+
+
+def _towns_from_map_info(
+    map_info: MapInfoHppData, map_name: str
+) -> Mapping[str, int | None]:
+    towns = [
+        p for p in map_info.populations if p[0] not in map_info.disabled_town_names
+    ]
+    unique_towns = dict(towns)
+
+    if len(unique_towns) != len(towns):
+        duplicated_town_names = [p[0] for p in towns]
+        for t in unique_towns:
+            duplicated_town_names.remove(t)
+
+        log_msg = (
+            f"'{map_name}': {len(towns)} in mission but "
+            f"{len(unique_towns)} unique.\n"
+            f"{pretty_iterable_of_str(duplicated_town_names)} duplicated."
+        )
+        LOGGER.warning(log_msg)
+
+    return unique_towns
+
+
+def _normalise_mission_town_name(name: str) -> str:
+    """Normalise town name from mission data, for comparison purposes."""
+    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
+        name = name.removeprefix(prefix)
+
+    return _normalise_town_name(name)
+
+
+def _normalise_town_name(name: str) -> str:
+    """Normalise town name from map data, for comparison purposes."""
+    return name.lower().replace(" ", "")
