@@ -176,5 +176,5 @@ cython_debug/
 .pypirc
 
 # Project specific
-scripts/config.toml
+config.toml
 working_data/

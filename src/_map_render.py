@@ -15,8 +15,8 @@ if TYPE_CHECKING:
 
     from matplotlib.axes import Axes
 
-    from modules.mission.mission import Mission
-    from modules.mission.position_2d import Position2D
+    from src.mission.mission import Mission
+    from src.mission.position_2d import Position2D
 
 LOGGER = logging.getLogger(__name__)
 MAP_IMAGE_SIZE_PX = 1000

@@ -4,25 +4,27 @@ from __future__ import annotations
 
 from rich.progress import track
 
-from modules.mission.utils import pretty_iterable_of_str
-from modules.utils import mission_dirs_in_dir
-from scripts._common import (
+from ._utils import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
+    GRAD_MEH_DIRPATH,
     LOGGER,
     configure_logging,
+    mission_dirs_in_dir,
     require_dir,
 )
-from scripts.analyse_mission import analyse_mission
-from static_data import in_game_data
-from static_data.map_index import MAP_INDEX
+from .analyse_mission import analyse_mission
+from .mission.utils import map_name_from_mission_dir_path, pretty_iterable_of_str
+from .static_data import in_game_data
+from .static_data.map_index import MAP_INDEX
 
 
-def analyse_missions() -> None:
-    """Analyse all missions."""
+def main() -> None:
+    """Script entry point."""
+    configure_logging()
     require_dir(AU_MAPS_DIRPATH)
+    require_dir(GRAD_MEH_DIRPATH)
     DATA_DIRPATH.mkdir(parents=True, exist_ok=True)
-
     mission_dirs = sorted(
         mission_dirs_in_dir(AU_MAPS_DIRPATH), key=lambda path: path.stem.lower()
     )
@@ -35,7 +37,11 @@ def analyse_missions() -> None:
 
     analysed_map_names = set()
     for mission_dir in track(mission_dirs, description="Analysing missions..."):
-        map_name = analyse_mission(mission_dir)
+        map_name = analyse_mission(
+            mission_dir=mission_dir,
+            grad_meh_dir=GRAD_MEH_DIRPATH / map_name_from_mission_dir_path(mission_dir),
+            export_dir=DATA_DIRPATH,
+        )
         if map_name:
             analysed_map_names.add(map_name)
 
@@ -64,5 +70,4 @@ def analyse_missions() -> None:
 
 
 if __name__ == "__main__":
-    configure_logging()
-    analyse_missions()
+    main()

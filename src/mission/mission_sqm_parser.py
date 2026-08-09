@@ -27,6 +27,39 @@ RELEVANT_MARKER_PREFIXES = {
 }
 
 
+@dataclass(kw_only=True)
+class MissionSqmData:
+    """Data from a mission's `mission.sqm` file."""
+
+    military_zone_markers: dict[str, list[Marker]]
+
+    @classmethod
+    def from_file(cls, filepath: Path) -> Self | None:
+        """Parse a `mission.sqm` file."""
+        with filepath.open(errors="ignore") as f:
+            data = f.read()
+
+        try:
+            mission = armaclass.parse(data)
+            log_msg = f"Parsed `{filepath}`."
+            LOGGER.debug(log_msg)
+        except armaclass.ParseError:
+            log_msg = f"Couldn't parse `{filepath}`; may be binarized."
+            LOGGER.warning(log_msg)
+            return None
+
+        marker_list = _collect_markers(mission["Mission"])
+        markers: dict[str, list[Marker]] = {
+            prefix: [] for prefix in RELEVANT_MARKER_PREFIXES
+        }
+        for marker in marker_list:
+            for prefix, list_ in markers.items():
+                if marker.name.lower().startswith(prefix):
+                    list_.append(marker)
+
+        return cls(military_zone_markers=markers)
+
+
 def _collect_markers(node: DictNode) -> list[Marker]:
     """Return `node`'s relevant descendants as `Marker`s, recursively."""
     markers = [
@@ -59,36 +92,3 @@ def _get_entities(node: DictNode) -> list[DictNode]:
         return []
 
     return [e for e in node["Entities"].values() if isinstance(e, dict)]
-
-
-@dataclass(kw_only=True)
-class MissionSqmData:
-    """Data from a mission's `mission.sqm` file."""
-
-    military_zone_markers: dict[str, list[Marker]]
-
-    @classmethod
-    def from_file(cls, filepath: Path) -> Self | None:
-        """Parse a `mission.sqm` file."""
-        with filepath.open(errors="ignore") as f:
-            data = f.read()
-
-        try:
-            mission = armaclass.parse(data)
-            log_msg = f"Parsed `{filepath}`."
-            LOGGER.debug(log_msg)
-        except armaclass.ParseError:
-            log_msg = f"Couldn't parse `{filepath}`; may be binarized."
-            LOGGER.warning(log_msg)
-            return None
-
-        marker_list = _collect_markers(mission["Mission"])
-        markers: dict[str, list[Marker]] = {
-            prefix: [] for prefix in RELEVANT_MARKER_PREFIXES
-        }
-        for marker in marker_list:
-            for prefix, list_ in markers.items():
-                if marker.name.lower().startswith(prefix):
-                    list_.append(marker)
-
-        return cls(military_zone_markers=markers)
