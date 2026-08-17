@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## UNRELEASED - tbc
+## [1.2.0] - 2026-08-17
 
 ### Added
 
@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Scripts moved to `src/`
 - Change config paths, template as `config_dist.toml` and remove `config.toml`
 - Improved path handling
 - Build:
@@ -279,6 +280,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release
 
+[1.2.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.0.0...v1.0.1
