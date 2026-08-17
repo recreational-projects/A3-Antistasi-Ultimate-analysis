@@ -77,9 +77,6 @@ class Mission:
     resources: list[Marker] = Factory(list)
     """From `mission.sqm`."""
 
-    exclude: bool = False
-    """Omit this mission from the final output."""
-
     @property
     def airports_count(self) -> int:
         """Enumerate airports."""
@@ -174,8 +171,6 @@ class Mission:
         map_lookup = map_index[map_name]
         map_display_name = map_lookup.get("display_name")
         map_url = map_lookup.get("url")
-        exclude = map_lookup.get("exclude")
-
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
             LOGGER.error(log_msg)
@@ -197,7 +192,6 @@ class Mission:
             climate=parsed_map_info.climate,
             towns=towns,
             disabled_towns=parsed_map_info.disabled_town_names,
-            exclude=exclude,
         )
         if parsed_mission_sqm:
             markers_ = parsed_mission_sqm.military_zone_markers
