@@ -19,6 +19,7 @@ from ._utils import (
 )
 from .mission.mission import Mission
 from .mission.utils import pretty_iterable_of_str
+from .static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from collections.abc import Sequence, Sized
@@ -76,10 +77,17 @@ def _missions_from_json(path: Path) -> list[Mission]:
     log_msg = f"Found {len(json_files)} files in {path}."
     LOGGER.info(log_msg)
 
-    missions = [Mission.from_json(fp) for fp in json_files]
-    filtered_missions = [m for m in missions if not m.exclude]
-    log_msg = f"Loaded data for {len(filtered_missions)} missions; "
-    log_msg += f"{len(missions) - len(filtered_missions)} excluded."
+    missions = []
+    for fp in json_files:
+        map_name = fp.stem
+        if MAP_INDEX[map_name].get("exclude"):
+            log_msg = f"Excluded `{map_name}`."
+            LOGGER.info(log_msg)
+            continue
+
+        missions.append(Mission.from_json(fp))
+
+    log_msg = f"Loaded data for {len(missions)} missions."
     LOGGER.info(log_msg)
 
     required_fields = {
@@ -87,14 +95,14 @@ def _missions_from_json(path: Path) -> list[Mission]:
         for field in attrs.fields(Mission)
         if field.name not in ["disabled_towns", "waterports", "exclude"]
     }
-    for mission in filtered_missions:
+    for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}
         if empty_fields:
             log_msg = f"{mission.map_name}: "
             log_msg += f"no {pretty_iterable_of_str(empty_fields)} value."
             LOGGER.error(log_msg)
 
-    return sorted(filtered_missions, key=attrgetter("map_name"))
+    return sorted(missions, key=attrgetter("map_name"))
 
 
 def _markdown_total_missions(missions: Sized) -> str:
