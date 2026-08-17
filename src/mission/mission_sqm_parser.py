@@ -13,7 +13,7 @@ from .marker import Marker
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from .types_ import DictNode
+    from .types_ import MappingNode
 
 LOGGER = logging.getLogger(__name__)
 RELEVANT_MARKER_PREFIXES = {
@@ -60,7 +60,7 @@ class MissionSqmData:
         return cls(military_zone_markers=markers)
 
 
-def _collect_markers(node: DictNode) -> list[Marker]:
+def _collect_markers(node: MappingNode) -> list[Marker]:
     """Return `node`'s relevant descendants as `Marker`s, recursively."""
     markers = [
         Marker.from_mission_sqm_data(e)
@@ -73,7 +73,7 @@ def _collect_markers(node: DictNode) -> list[Marker]:
     return markers
 
 
-def _is_relevant_marker(node: DictNode) -> bool:
+def _is_relevant_marker(node: MappingNode) -> bool:
     """Check if the node represents a relevant marker."""
     return node.get("dataType") == "Marker" and any(
         node.get("name", "").lower().startswith(prefix)
@@ -81,12 +81,12 @@ def _is_relevant_marker(node: DictNode) -> bool:
     )
 
 
-def _get_child_layers(node: DictNode) -> list[DictNode]:
+def _get_child_layers(node: MappingNode) -> list[MappingNode]:
     """Return `node`'s child layers."""
     return [e for e in _get_entities(node) if e.get("dataType") == "Layer"]
 
 
-def _get_entities(node: DictNode) -> list[DictNode]:
+def _get_entities(node: MappingNode) -> list[MappingNode]:
     """Return `node`'s relevant data dict children.."""
     if "Entities" not in node:
         return []

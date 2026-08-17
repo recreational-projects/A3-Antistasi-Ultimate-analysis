@@ -21,7 +21,7 @@ from .towns import load_towns_from_dir
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
 
 if TYPE_CHECKING:
-    from .types_ import DictNode
+    from .types_ import MappingNode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -160,7 +160,7 @@ class Mission:
         return ratio
 
     @classmethod
-    def from_data(cls, *, mission_dir: Path, map_index: DictNode) -> Mission | None:
+    def from_data(cls, *, mission_dir: Path, map_index: MappingNode) -> Mission | None:
         """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
@@ -219,15 +219,19 @@ class Mission:
 
     @classmethod
     def from_json(cls, file_path: Path) -> Self:
-        """Load previously-exported `Mission` data from `path`."""
+        """Load `Mission` from previously-exported JSON file."""
         with Path.open(file_path, "r", encoding="utf-8") as file:
             try:
-                mission = structure(json.load(file), cls)
+                mission = cls._from_json_data(json.load(file))
             except ClassValidationError as err:
                 err_msg = f"Error creating `Mission` from JSON: {file_path}."
                 raise ValueError(err_msg) from err
 
         return mission
+
+    @classmethod
+    def _from_json_data(cls, data: MappingNode) -> Self:
+        return structure(data, cls)
 
     def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
         """Check against map locations and in-game data."""

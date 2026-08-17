@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Self
 
+from arma3_offline_map_lib.position_2d import Position2D
 from attrs import define
 
-from .position_2d import Position2D
-
 if TYPE_CHECKING:
-    from .types_ import DictNode
+    from .types_ import MappingNode
 
 
 @define(kw_only=True, frozen=True)
@@ -20,7 +19,7 @@ class Marker:
     position: Position2D
 
     @classmethod
-    def from_mission_sqm_data(cls, data: DictNode) -> Self:
+    def from_mission_sqm_data(cls, data: MappingNode) -> Self:
         """Construct `Marker` from data parsed from `mission.sqm`."""
         return cls(
             name=data["name"],
