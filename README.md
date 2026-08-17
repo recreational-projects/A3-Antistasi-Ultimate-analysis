@@ -5,9 +5,8 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 - Aims to compare missions from the
   [Antistasi Ultimate ('AU')](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
-- Information is generated from
-  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
-  and reference data, and verified against in-game data
+- Information is generated from static analysis of the
+  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate), along with reference data, and verified against in-game data
 - NB: this is mostly a Python learning project
 
 
