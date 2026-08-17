@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - upgrade to Python 3.14 and regenerate lockfile
   - dependencies: add arma3-offline-map-lib 0.4.1, upgrade to numpy 2.5.1 (latest)
   - use locked dependencies in CI and scripts in README.md
+- CI: bump GitHub Action dependencies
 
 
 ## [1.1.1] - 2026-04-13
