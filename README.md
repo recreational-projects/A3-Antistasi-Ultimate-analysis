@@ -6,7 +6,7 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
   [Antistasi Ultimate ('AU')](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
 - Information is generated from
-  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate)
+  [AU source code](https://github.com/Antistasi-Ultimate-Community/A3-Antistasi-Ultimate)
   and reference data, and verified against in-game data
 - NB: this is mostly a Python learning project
 
@@ -16,12 +16,11 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 ### Pre-requisites 
 
 - Cloned/downloaded copy of current
-  [AU source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate).
-  
-  Only the contents of `A3A/addons/maps` folder is required (~ 120 MB)
-
-- Arma 3 installation with
+  [AU source code](https://github.com/Antistasi-Ultimate-Community/A3-Antistasi-Ultimate)
+- Arma 3 map data exported with
   [Gruppe Adler Map Exporter ('grad_meh`)](https://github.com/gruppe-adler/grad_meh) mod
+
+- These instructions assume you have [uv](http://docs.astral.sh/uv/) installed.
 
 ### Initial setup/configuration
 
@@ -40,8 +39,7 @@ uv run --frozen --module src.analyse_missions
 to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
 
-- Analyses the mission's `mission.sqm` using
-  [Armaclass library](https://github.com/overfl0/Armaclass) and `mapInfo.hpp` using a custom [pyparsing](https://github.com/pyparsing/pyparsing) parser
+- Analyses the mission's `mission.sqm` and `mapInfo.hpp`
 - Gets each mission's friendly map name and download URL from
   `src/static_data/map_index.py`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
@@ -49,7 +47,7 @@ export temporary JSON files to `working_data/`.
 - Verifies the number of military zones (not towns) against information derived from
   Antistasi Ultimate's in-game screenshots from `src/static_data/in_game_data.py`
 - Logs info and warnings
-- Should take around 60 seconds to complete
+- Should take around 5–10 seconds to complete
 
 ### Generate Markdown from data
 

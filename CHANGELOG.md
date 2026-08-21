@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+## [UNRELEASED] - TBC
+
+### Removed
+
+- Unused map rendering code
+
+### Changed
+
+- Docs: README.md update
+- Build: dependencies: upgrade to arma3-offline-map-lib 0.8.0
+
+
 ## [1.2.0] - 2026-08-17
 
 ### Added
