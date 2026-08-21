@@ -72,6 +72,9 @@ runtime-evaluated-decorators = ["attrs.define"]
 "src/types.py" = [
    "A005",  # Module shadows a Python standard-library module
 ]
+"src/static_data/in_game_data.py" = [
+    "ERA001",  # Commented-out code
+]
 
 [tool.uv.sources]
 arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.8.0" }

@@ -21,6 +21,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
         "display_name": "Vidda",  # a.k.a. r"Vidda \| legacy version"
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647",
     },
+    "bornholm": {  # mod
+        "display_name": "Bornholm [R]",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2914536900",
+    },
     "brf_sumava": {  # mod
         "display_name": "Šumava",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
@@ -52,6 +56,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "drakovac": {  # mod
         "display_name": "Drakovac",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3523961062",
+    },
+    "egl_laghisola": {  # mod
+        "display_name": "Laghisola",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2175069333",
     },
     "enoch": {  # DLC: Contact
         "display_name": "Livonia",
@@ -237,6 +245,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "tembelan": {  # mod
         "display_name": "Tembelan Island",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296",
+    },
+    "umb_armavir": {  # mod
+        "display_name": "Armavir",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2636365838",
     },
     "umb_colombia": {  # mod
         "display_name": "UMB Colombia",
