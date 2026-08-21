@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [UNRELEASED] - TBC
 
+### Added
+
+- Update for AU v12.0.3, which adds Armavir, Bornholm, Laghisola and changes Saint Kapaulio, UMB Colombia
+
 ### Removed
 
 - Unused map rendering code and dependencies matplotlib, numpy

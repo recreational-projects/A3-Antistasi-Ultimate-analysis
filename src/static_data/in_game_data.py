@@ -18,6 +18,7 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "blud_vidda": {
         "total_military_zones_count": 39
     },  # image filename (37) is incorrect
+    "bornholm": {},
     "brf_sumava": {"total_military_zones_count": 48},  # image (30) is outdated
     "cam_lao_nam": {"total_military_zones_count": 75},
     "chernarus": {"total_military_zones_count": 44},
@@ -25,6 +26,7 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "chernarus_winter": {"total_military_zones_count": 44},
     "chernarusredux": {"total_military_zones_count": 64},
     "cup_chernarus_a3": {"total_military_zones_count": 54},  # 2020
+    "egl_laghisola": {},
     "enoch": {"total_military_zones_count": 51},
     "esseker": {"total_military_zones_count": 24},
     "fapovo": {"total_military_zones_count": 48},  # image filename (56) is incorrect
@@ -38,7 +40,7 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "gulfcoast": {"total_military_zones_count": 67},
     "iron_excelsior_tobruk": {"total_military_zones_count": 21},
     "isladuala3": {"total_military_zones_count": 61},  # not in AU data
-    "kapaulio": {"total_military_zones_count": 99},
+    # "kapaulio": {"total_military_zones_count": 99},  # outdated
     "kunduz": {"total_military_zones_count": 17},
     "kunduz_valley": {"total_military_zones_count": 40},
     "lingor3": {"total_military_zones_count": 48},  # image filename (49) is incorrect
@@ -73,7 +75,7 @@ MILITARY_ZONES_COUNT: dict[str, dict[str, int]] = {
     "tem_chernarusw": {"total_military_zones_count": 46},
     "tem_kujari": {"total_military_zones_count": 42},
     "tembelan": {"total_military_zones_count": 36},
-    "umb_colombia": {"total_military_zones_count": 96},
+    "umb_armavir": {},
     "vn_khe_sanh": {"total_military_zones_count": 32},
     "vtf_korsac": {},
     "vtf_korsac_winter": {},

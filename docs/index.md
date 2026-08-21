@@ -8,23 +8,25 @@ hide:
 - This site aims to compare missions from the
   [Antistasi Ultimate](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
-- Data is generated from Antistasi Ultimate stable release v11.9.7
+- Data is generated from Antistasi Ultimate stable release v12.0.3
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified
   against in-game information
-- 64 maps total including season variants
+- 67 maps total including season variants
 
 | Map <br>| Climate <br>| Airports <br>| Bases <br>| Sea/<br>riverports <br>| Outposts <br>| Factories <br>| Resources <br>| Total<br>military<br>zones[^1] <br>| Towns <br>| Total<br>War Level<br>points[^2]<br>ratio<br> |
 | --- | --- | ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:|
 | [Green Sea 2023](https://steamcommunity.com/sharedfiles/filedetails/?id=3671912728) | temperate | 7 | 8 | 12 | 59 | 18 | 22 | 126 | 98 | 1.00 |
-| [UMB Colombia](https://steamcommunity.com/sharedfiles/filedetails/?id=2266710560) | tropical | 5 | 3 | 13 | 41 | 11 | 23 | 96 | 40 | 0.67 |
+| [Armavir](https://steamcommunity.com/sharedfiles/filedetails/?id=2636365838) | temperate | 5 | 6 | 14 | 42 | 15 | 19 | 101 | 42 | 0.73 |
+| [Saint Kapaulio](https://steamcommunity.com/sharedfiles/filedetails/?id=939686262) | tropical | 3 | 6 | 4 | 77 | 10 | 15 | 115 | 42 | 0.72 |
+| [UMB Colombia](https://steamcommunity.com/sharedfiles/filedetails/?id=2266710560) | tropical | 5 | 4 | 13 | 45 | 12 | 23 | 102 | 40 | 0.71 |
 | [Altis](https://store.steampowered.com/app/107410) | arid | 6 | 5 | 6 | 50 | 13 | 12 | 92 | 47 | 0.67 |
-| [Saint Kapaulio](https://steamcommunity.com/sharedfiles/filedetails/?id=939686262) | tropical | 3 | 6 | 3 | 70 | 10 | 7 | 99 | 43 | 0.65 |
 | [Mehland](https://steamcommunity.com/sharedfiles/filedetails/?id=3317364155) | temperate | 3 | 5 | 8 | 24 | 8 | 11 | 59 | 101 | 0.61 |
 | [Cam Lao Nam](https://store.steampowered.com/app/1227700) | tropical | 4 | 6 | 5 | 39 | 4 | 17 | 75 | 60 | 0.60 |
 | [Yulakia](https://steamcommunity.com/sharedfiles/filedetails/?id=2950257727) | temperate | 4 | 7 | 7 | 35 | 11 | 12 | 76 | 44 | 0.58 |
 | [Green Sea](https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212) | temperate | 7 | 3 | 10 | 29 | 8 | 11 | 68 | 48 | 0.58 |
 | [Gulfcoast Islands](https://steamcommunity.com/sharedfiles/filedetails/?id=1617004814) | arid | 5 | 5 | 10 | 23 | 9 | 15 | 67 | 54 | 0.58 |
 | [Phuoc Tuy](https://steamcommunity.com/sharedfiles/filedetails/?id=943001311) | tropical | 2 | 2 | 9 | 25 | 4 | 9 | 51 | 112 | 0.56 |
+| [Bornholm [R]](https://steamcommunity.com/sharedfiles/filedetails/?id=2914536900) | temperate | 3 | 3 | 7 | 43 | 14 | 15 | 85 | 36 | 0.56 |
 | [Normandy](https://store.steampowered.com/app/1175380) | temperate | 5 | 3 | 0 | 21 | 8 | 15 | 52 | 92 | 0.53 |
 | [Isla Duala](https://steamcommunity.com/sharedfiles/filedetails/?id=714149065) | arid | 6 | 1 | 5 | 25 | 10 | 14 | 61 | 55 | 0.51 |
 | [Chernarus 2020](https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169) | temperate | 3 | 4 | 5 | 22 | 10 | 10 | 54 | 71 | 0.50 |
@@ -56,6 +58,7 @@ hide:
 | [Tembelan Island](https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296) | temperate | 5 | 1 | 5 | 12 | 3 | 10 | 36 | 33 | 0.33 |
 | [Stubbhult](https://steamcommunity.com/sharedfiles/filedetails/?id=3353189981) | temperate | 3 | 3 | 5 | 13 | 6 | 7 | 37 | 33 | 0.33 |
 | [Sehreno](https://steamcommunity.com/sharedfiles/filedetails/?id=2876540929) | temperate | 4 | 4 | 3 | 12 | 4 | 4 | 31 | 35 | 0.32 |
+| [Laghisola](https://steamcommunity.com/sharedfiles/filedetails/?id=2175069333) | Tropical | 2 | 5 | 2 | 23 | 7 | 6 | 45 | 13 | 0.31 |
 | [Lythium](https://steamcommunity.com/sharedfiles/filedetails/?id=909547724) | arid | 2 | 3 | 0 | 18 | 4 | 11 | 38 | 37 | 0.31 |
 | [Island Panthera (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=708278910) | arctic | 4 | 2 | 3 | 14 | 4 | 6 | 33 | 30 | 0.30 |
 | [Kunduz River](https://steamcommunity.com/sharedfiles/filedetails/?id=3078351739) | arid | 2 | 4 | 0 | 23 | 4 | 7 | 40 | 25 | 0.30 |
