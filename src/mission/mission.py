@@ -315,21 +315,14 @@ class Mission:
 
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
-        map_name = self.map_name
-        if map_name not in data:
-            log_msg = (
-                f"'{map_name}': military zone verification issue: "
-                f"key '{map_name}' not found."
-            )
-            LOGGER.error(log_msg)
-
         in_game_lookup = data.get(self.map_name)
         if not in_game_lookup:
             log_msg = (
-                f"'{self.map_name}': military zone verification issue: no data, "
-                "so zone counts can't be verified."
+                f"'{self.map_name}': "
+                "no data in `src.static_data.in_game_data`, "
+                "so military zone counts can't be verified."
             )
-            LOGGER.error(log_msg)
+            LOGGER.warning(log_msg)
 
         else:
             for field in in_game_lookup:
