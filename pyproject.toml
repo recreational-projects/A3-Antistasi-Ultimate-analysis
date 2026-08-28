@@ -10,7 +10,9 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.2.1",  # CalVer
     "cxxheaderparser>=2.2.0",
+    "matplotlib>=3.11.2",
     "msgspec>=0.22.0",
+    "pillow>=12.3.0",
     "rich>=14.3.2",
 ]
 

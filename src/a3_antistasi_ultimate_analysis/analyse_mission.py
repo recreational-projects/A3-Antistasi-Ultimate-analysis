@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from typing import TYPE_CHECKING
 
+from ._map_render import export_map_render
 from .mission.mission import Mission
 from .mission.towns import validate_and_correct_towns
 from .static_data import in_game_data
@@ -53,6 +54,11 @@ def analyse_mission(
         mission=mission, gm_locations_dir=grad_meh_dir / "geojson/locations"
     )
     mission.export_json(export_dir)
+    export_map_render(
+        mission=mission,
+        grad_meh_mission_dir=GRAD_MEH_DIRPATH / mission.map_name,
+        export_dir=export_dir,
+    )
     return mission.map_name
 
 
