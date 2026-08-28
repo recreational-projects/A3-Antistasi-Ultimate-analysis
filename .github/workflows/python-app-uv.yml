@@ -25,18 +25,21 @@ jobs:
       # Faster than using uv, as it caches Python on GitHub runner
       uses: actions/setup-python@v7
       with:
-        python-version: "3.14"
+        python-version-file: ".python-version"
+
+    - name: Install the project
+      run: uv sync --locked
 
     - name: Lint with ruff
       # by default: exit with error if rule violations
-      run: uv run --frozen ruff check --output-format=github
+      run: uv run ruff check --output-format=github
 
     - name: Lint format with ruff
       # by default: exit with error if rule violations
-      run: uv run --frozen ruff format
+      run: uv run ruff format --output-format=github
 
     - name: Type check with mypy
-      run: uv run --frozen mypy .
+      run: uv run mypy .
 
     - name: Test with pytest
-      run: uv run --frozen pytest
+      run: uv run pytest
