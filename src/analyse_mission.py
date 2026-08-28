@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from typing import TYPE_CHECKING
 
+from ._map_render import export_map_render
 from ._utils import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
@@ -53,6 +54,11 @@ def analyse_mission(
         mission=mission, gm_locations_dir=grad_meh_dir / "geojson/locations"
     )
     mission.export_json(export_dir)
+    export_map_render(
+        mission=mission,
+        grad_meh_mission_dir=GRAD_MEH_DIRPATH / mission.map_name,
+        export_dir=export_dir,
+    )
     return mission.map_name
 
 
