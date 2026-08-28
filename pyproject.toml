@@ -10,6 +10,7 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
+    "matplotlib>=3.11.1",
     "mkdocs-material>=9.7.7",
     "msgspec>=0.20.0",
     "rich>=14.3.2",
@@ -77,4 +78,4 @@ runtime-evaluated-decorators = ["attrs.define"]
 ]
 
 [tool.uv.sources]
-arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.9.0" }
+arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.9.0"}

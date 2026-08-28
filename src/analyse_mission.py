@@ -5,10 +5,12 @@ from __future__ import annotations
 import argparse
 from typing import TYPE_CHECKING
 
+from ._map_render import export_map_render
 from ._utils import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
     GRAD_MEH_DIRPATH,
+    LOGGER,
     configure_logging,
     require_dir,
 )
@@ -50,6 +52,18 @@ def analyse_mission(
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
     mission.validate_and_correct_towns(grad_meh_dir / "geojson/locations")
     mission.export_json(export_dir)
+    map_render_filepath = export_dir / f"{mission.map_name}_map.png"
+    if map_render_filepath.exists():
+        log_msg = f"'{mission.map_name}': map render already exists - skipping."
+        LOGGER.info(log_msg)
+
+    else:
+        export_map_render(
+            mission=mission,
+            grad_meh_dem_filepath=GRAD_MEH_DIRPATH / mission.map_name / "dem.asc.gz",
+            export_filepath=map_render_filepath,
+        )
+
     return mission.map_name
 
 
