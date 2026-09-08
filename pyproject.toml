@@ -12,6 +12,7 @@ dependencies = [
     "cxxheaderparser>=1.7.0",
     "mkdocs-material>=9.7.7",
     "msgspec>=0.20.0",
+    "pyrefly>=1.2.0",
     "rich>=14.3.2",
 ]
 [project.urls]
@@ -75,6 +76,12 @@ runtime-evaluated-decorators = ["attrs.define"]
 "src/static_data/in_game_data.py" = [
     "ERA001",  # Commented-out code
 ]
+
+[tool.pyrefly]
+project-includes = ["**/*.py*"]
+disable-search-path-heuristics = true  # code outside `src` requires this
+search-path = ["."]
+preset = "strict"
 
 [tool.uv.sources]
 arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.9.0" }

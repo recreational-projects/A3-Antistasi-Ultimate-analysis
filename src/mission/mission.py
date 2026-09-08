@@ -236,9 +236,14 @@ class Mission:
     def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
         """Check against map locations and in-game data."""
         map_name = self.map_name
-        gm_towns = self._get_gm_towns(gm_locations_dir)
-        in_game_towns_count = in_game_data.TOWNS_COUNT.get(map_name)
+        gm_towns = None
+        if not gm_locations_dir.is_dir():
+            log_msg = f"'{self.map_name}': no grad-meh locations data."
+            LOGGER.warning(log_msg)
+        else:
+            gm_towns = self._get_gm_towns(gm_locations_dir)
 
+        in_game_towns_count = in_game_data.TOWNS_COUNT.get(map_name)
         if self.towns and gm_towns:
             if self.towns_count == len(gm_towns):
                 log_msg = (
@@ -259,6 +264,7 @@ class Mission:
                 f"no map locations data."
             )
             LOGGER.info(log_msg)
+
         elif gm_towns:
             self.towns = dict.fromkeys(gm_towns)
             log_msg = (
@@ -266,6 +272,7 @@ class Mission:
                 f"from map locations data."
             )
             LOGGER.info(log_msg)
+
         elif in_game_towns_count:
             self.towns = {f"UNKNOWN_{i}": 0 for i in range(in_game_towns_count)}
             log_msg = (
@@ -273,6 +280,7 @@ class Mission:
                 f"used {self.towns_count} towns from in-game data."
             )
             LOGGER.warning(log_msg)
+
         else:
             log_msg = (
                 f"'{map_name}': 0 towns defined in mission, retrieved from map "
@@ -286,21 +294,14 @@ class Mission:
 
         Discards any defined as disabled in mission.
         """
+        _gm_towns = load_towns_from_dir(gm_locations_dir)
+        gm_towns_lookup = {
+            _normalise_town_name(t.properties["name"]): t.properties["name"]
+            for t in _gm_towns
+        }
         disabled_towns_lookup = {
             _normalise_mission_town_name(t): t for t in self.disabled_towns
         }
-        gm_towns_lookup = {}
-
-        if not gm_locations_dir.is_dir():
-            log_msg = f"'{self.map_name}': no grad-meh locations data."
-            LOGGER.warning(log_msg)
-        else:
-            _gm_towns = load_towns_from_dir(gm_locations_dir)
-            gm_towns_lookup = {
-                _normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
-            }
-
         gm_towns = set()
         matched_keys = set()
         for k, v in gm_towns_lookup.items():
