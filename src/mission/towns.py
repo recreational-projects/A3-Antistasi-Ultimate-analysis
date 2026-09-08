@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from arma3_offline_map_lib.geojson import (
+from arma3_offline_map_lib.grad_meh.geojson import (
     geojson_gz_files_in_dir,
     load_features_from_file,
 )
@@ -13,7 +13,7 @@ from arma3_offline_map_lib.geojson import (
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from arma3_offline_map_lib.geojson import Feature
+    from arma3_offline_map_lib.grad_meh.geojson import Feature
 
 
 LOGGER = logging.getLogger(__name__)
