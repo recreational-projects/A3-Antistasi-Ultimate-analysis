@@ -8,7 +8,6 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
-from arma3_offline_map_lib.mission.mission_sqm import Marker, MissionSqm
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
@@ -16,7 +15,8 @@ from src.static_data import in_game_data
 from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 from .mapinfo_hpp_parser import MapInfoHppData
-from .marker_filtering import military_zone_markers
+from .marker import Marker
+from .mission_sqm_parser import MissionSqmData
 from .towns import load_towns_from_dir
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
 
@@ -180,7 +180,7 @@ class Mission:
             LOGGER.error(log_msg)
 
         parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
-        parsed_mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
+        parsed_mission_sqm = MissionSqmData.from_file(mission_dir / "mission.sqm")
         log_msg = f"'{map_name}': parsed AU source data."
         LOGGER.info(log_msg)
 
@@ -194,7 +194,7 @@ class Mission:
             disabled_towns=parsed_map_info.disabled_town_names,
         )
         if parsed_mission_sqm:
-            markers_ = military_zone_markers(parsed_mission_sqm.markers)
+            markers_ = parsed_mission_sqm.military_zone_markers
             mission.airports = markers_["airport"]
             mission.bases = markers_["milbase"]
             mission.waterports = markers_["seaport"]
