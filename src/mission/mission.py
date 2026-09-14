@@ -8,6 +8,8 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+from arma3_offline_map_lib.mission.mission_sqm import Marker, MissionSqm
+from armaclass import ParseError
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
@@ -15,8 +17,6 @@ from src.static_data import in_game_data
 from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 from .mapinfo_hpp_parser import MapInfoHppData
-from .marker import Marker
-from .mission_sqm_parser import MissionSqmData
 from .towns import load_towns_from_dir
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
 
@@ -24,6 +24,16 @@ if TYPE_CHECKING:
     from .types_ import MappingNode
 
 LOGGER = logging.getLogger(__name__)
+
+_RELEVANT_MARKER_PREFIXES = {
+    # case-insensitive
+    "airport",
+    "factory",
+    "milbase",
+    "outpost",
+    "resource",
+    "seaport",
+}
 
 
 @define(kw_only=True)
@@ -180,7 +190,12 @@ class Mission:
             LOGGER.error(log_msg)
 
         parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
-        parsed_mission_sqm = MissionSqmData.from_file(mission_dir / "mission.sqm")
+        try:
+            mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
+        except ParseError:
+            log_msg = f"'{map_name}': couldn't parse `mission.sqm`. Is it binarized?"
+            LOGGER.warning(log_msg)
+
         log_msg = f"'{map_name}': parsed AU source data."
         LOGGER.info(log_msg)
 
@@ -193,14 +208,14 @@ class Mission:
             towns=towns,
             disabled_towns=parsed_map_info.disabled_town_names,
         )
-        if parsed_mission_sqm:
-            markers_ = parsed_mission_sqm.military_zone_markers
-            mission.airports = markers_["airport"]
-            mission.bases = markers_["milbase"]
-            mission.waterports = markers_["seaport"]
-            mission.outposts = markers_["outpost"]
-            mission.factories = markers_["factory"]
-            mission.resources = markers_["resource"]
+        if mission_sqm:
+            military_markers = _military_zone_markers(mission_sqm.markers)
+            mission.airports = military_markers["airport"]
+            mission.bases = military_markers["milbase"]
+            mission.waterports = military_markers["seaport"]
+            mission.outposts = military_markers["outpost"]
+            mission.factories = military_markers["factory"]
+            mission.resources = military_markers["resource"]
 
         return mission
 
@@ -374,3 +389,16 @@ def _normalise_mission_town_name(name: str) -> str:
 def _normalise_town_name(name: str) -> str:
     """Normalise town name from map data, for comparison purposes."""
     return name.lower().replace(" ", "")
+
+
+def _military_zone_markers(marker_list: list[Marker]) -> dict[str, list[Marker]]:
+    """Derive military zone markers from a list of markers."""
+    marker_dict: dict[str, list[Marker]] = {
+        prefix: [] for prefix in _RELEVANT_MARKER_PREFIXES
+    }
+    for marker in marker_list:
+        for prefix, list_ in marker_dict.items():
+            if marker.name and marker.name.lower().startswith(prefix):
+                list_.append(marker)
+
+    return marker_dict
