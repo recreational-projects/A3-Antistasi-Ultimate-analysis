@@ -243,11 +243,11 @@ wheels = [
 
 [[package]]
 name = "cxxheaderparser"
-version = "1.9.2"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b2/1c/bf780fd8ed400c9c85e0f91fb72c11a496a297fcc15463d92077567d8941/cxxheaderparser-1.9.2.tar.gz", hash = "sha256:709b3739fecffc9b363e8e9d8326748e0c56beabc79c13290dde424b2abac9d2", size = 56194, upload-time = "2026-07-20T05:21:26.661Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/09/a6c4058b713b9b719e2561eb7e76f4c266ef1fe4084cb4af3b5e75a3bd27/cxxheaderparser-2.0.0.tar.gz", hash = "sha256:6298f40fcedf8a3a7dbec679c4e88686f24f34edb5bdc1fdca65c1802a4205ab", size = 57357, upload-time = "2026-08-26T02:52:24.993Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/5d/43e242d090569ac95edd0fa5ff67c9998a04333fd246bb4ff244a88b7843/cxxheaderparser-1.9.2-py3-none-any.whl", hash = "sha256:db2abd1467c43a03d4e1c3b357ba87095aee6d673b7284538d8e0d82adc83637", size = 62735, upload-time = "2026-07-20T05:21:25.292Z" },
+    { url = "https://files.pythonhosted.org/packages/81/61/f97b3552ba7502921b4ae075c0d5068db6452e62c279363566870a2cd938/cxxheaderparser-2.0.0-py3-none-any.whl", hash = "sha256:d545e6e627bc7d305204a9fe1e9ea4f88983419ec3a6c0fec1e3f419c3006a07", size = 63859, upload-time = "2026-08-26T02:52:23.616Z" },
 ]
 
 [[package]]
