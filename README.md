@@ -29,12 +29,10 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
   - `AU_SOURCE_DIR_RELATIVE`: relative path to AU source directory
   - `GRAD_MEH_DATA_DIR_RELATIVE`: relative path to a folder with grad_meh data
 
-### Analyse missions and export data
-
-Run Python script:
+### Analyse missions and export intermediate data
 
 ```shell
-uv run --frozen --module src.analyse_missions
+uv run --module src.analyse_missions
 ```
 to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
@@ -48,18 +46,21 @@ export temporary JSON files to `working_data/`.
   Antistasi Ultimate's in-game screenshots from `src/static_data/in_game_data.py`
 - Logs info and warnings
 - Should take around 5–10 seconds to complete
-
-### Generate Markdown from data
-
-- Edit `src/docs_includes.py` with relevant AU version number
-
-- Run Python script:
-
+- To run for a single mission, e.g. for testing, use:
+ 
   ```shell
-  uv run --frozen --module src.build_docs
+  uv run --module src.analyse_mission MAPNAME  # e.g. altis
   ```
-  to load intermediate data and generate a single Markdown file
-  in `docs/`.
+
+### Generate Markdown from intermediate data
+
+Edit `src/docs_includes.py` with relevant AU version number.
+
+```shell
+uv run --module src.build_docs
+```
+to load intermediate data and generate a single Markdown file
+in `docs/`.
 
   - Logs info and warnings
   - Should take around one second to complete
@@ -67,7 +68,7 @@ export temporary JSON files to `working_data/`.
 ### Generate static site from Markdown and preview locally in browser
 
 ```shell
-uv run --frozen mkdocs serve
+uv run mkdocs serve
 ```
 
 ## License
