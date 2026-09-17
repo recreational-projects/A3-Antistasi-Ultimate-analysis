@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from itertools import batched
 from typing import TYPE_CHECKING, Self
 
 from cxxheaderparser.simple import parse_string
@@ -20,7 +21,7 @@ LOGGER = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class MapInfoHppData:
-    """Data from a mission's `mapInfo.hpp` file."""
+    """Data from an AU mission's `mapInfo.hpp` file."""
 
     climate: str
     populations: list[tuple[str, int]]
@@ -34,10 +35,10 @@ class MapInfoHppData:
 
         log_msg = f"Parsing `{filepath}`."
         LOGGER.debug(log_msg)
-        return cls.from_str(data)
+        return cls._from_str(data)
 
     @classmethod
-    def from_str(cls, str_: str) -> Self:
+    def _from_str(cls, str_: str) -> Self:
         """Parse str of file contents."""
         parsed_data = parse_string(str_)
         class_scope = parsed_data.namespace.classes[0]
@@ -81,19 +82,7 @@ def _get_populations(class_scope: ClassScope) -> list[tuple[str, int]]:
     """
     tokens = _field_array_lookup(field_name="population", class_scope=class_scope)
     values = _filter_tokens(tokens)
-    return [
-        (
-            str(pair[0]),
-            int(pair[1]),
-        )
-        for pair in _pairwise(values)
-    ]
-
-
-def _pairwise(t: Iterable[str | int]) -> Iterable[tuple[str | int, str | int]]:
-    """Return pairs."""
-    it = iter(t)
-    return zip(it, it, strict=True)
+    return [(str(pair[0]), int(pair[1])) for pair in batched(values, 2, strict=True)]
 
 
 def _get_disabled_town_names(class_scope: ClassScope) -> list[str]:
