@@ -12,11 +12,7 @@ from arma3_offline_map_lib.mission.mission_sqm import Marker, MissionSqm
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
-from src.static_data import in_game_data
-from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
-
 from .mapinfo_hpp_parser import MapInfoHppData
-from .towns import load_towns_from_dir
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
 
 if TYPE_CHECKING:
@@ -268,86 +264,6 @@ class Mission:
     def _from_json_data(cls, data: MappingNode) -> Self:
         return structure(data, cls)
 
-    def validate_and_correct_towns(self, gm_locations_dir: Path) -> None:
-        """Check against map locations and in-game data."""
-        map_name = self.map_name
-        gm_towns = self._get_gm_towns(gm_locations_dir)
-        in_game_towns_count = in_game_data.TOWNS_COUNT.get(map_name)
-
-        if self.towns and gm_towns:
-            if self.towns_count == len(gm_towns):
-                log_msg = (
-                    f"'{map_name}': used {self.towns_count} towns defined in mission; "
-                    f"matches map locations data."
-                )
-                LOGGER.info(log_msg)
-            else:
-                log_msg = (
-                    f"'{map_name}': used {self.towns_count} towns defined in mission; "
-                    f"doesn't match {len(gm_towns)} in map locations data."
-                )
-                LOGGER.warning(log_msg)
-
-        elif self.towns:
-            log_msg = (
-                f"'{map_name}': {self.towns_count} towns defined in mission; "
-                f"no map locations data."
-            )
-            LOGGER.info(log_msg)
-        elif gm_towns:
-            self.towns = dict.fromkeys(gm_towns)
-            log_msg = (
-                f"'{map_name}': 0 towns defined in mission; used {self.towns_count} "
-                f"from map locations data."
-            )
-            LOGGER.info(log_msg)
-        elif in_game_towns_count:
-            self.towns = {f"UNKNOWN_{i}": 0 for i in range(in_game_towns_count)}
-            log_msg = (
-                f"'{map_name}': 0 towns defined in mission or map locations data; "
-                f"used {self.towns_count} towns from in-game data."
-            )
-            LOGGER.warning(log_msg)
-        else:
-            log_msg = (
-                f"'{map_name}': 0 towns defined in mission, retrieved from map "
-                f"locations data or in-game data."
-            )
-            LOGGER.error(log_msg)
-
-    def _get_gm_towns(self, gm_locations_dir: Path) -> set[str]:
-        """
-        Return town names from grad_meh data.
-
-        Discards any defined as disabled in mission.
-        """
-        disabled_towns_lookup = {
-            _normalise_mission_town_name(t): t for t in self.disabled_towns
-        }
-        gm_towns_lookup = {}
-
-        if not gm_locations_dir.is_dir():
-            log_msg = f"'{self.map_name}': no grad-meh locations data."
-            LOGGER.warning(log_msg)
-        else:
-            _gm_towns = load_towns_from_dir(gm_locations_dir)
-            gm_towns_lookup = {
-                _normalise_town_name(t.properties["name"]): t.properties["name"]
-                for t in _gm_towns
-            }
-
-        gm_towns = set()
-        matched_keys = set()
-        for k, v in gm_towns_lookup.items():
-            if k in disabled_towns_lookup:
-                matched_keys.add(k)
-                log_msg = f"Didn't add disabled: '{k}' ('{v}')."
-                LOGGER.debug(log_msg)
-            else:
-                gm_towns.add(v)
-
-        return gm_towns
-
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
         in_game_lookup = data.get(self.map_name)
@@ -396,19 +312,6 @@ def _towns_from_map_info(
         LOGGER.warning(log_msg)
 
     return unique_towns
-
-
-def _normalise_mission_town_name(name: str) -> str:
-    """Normalise town name from mission data, for comparison purposes."""
-    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
-        name = name.removeprefix(prefix)
-
-    return _normalise_town_name(name)
-
-
-def _normalise_town_name(name: str) -> str:
-    """Normalise town name from map data, for comparison purposes."""
-    return name.lower().replace(" ", "")
 
 
 def _markers_by_prefix(marker_list: list[Marker]) -> dict[str, list[Marker]]:

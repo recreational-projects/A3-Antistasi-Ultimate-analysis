@@ -13,6 +13,7 @@ from ._utils import (
     require_dir,
 )
 from .mission.mission import Mission
+from .mission.towns import validate_and_correct_towns
 from .static_data import in_game_data
 from .static_data.map_index import MAP_INDEX
 
@@ -48,7 +49,9 @@ def analyse_mission(
         return None
 
     mission.validate_military_zones(in_game_data.MILITARY_ZONES_COUNT)
-    mission.validate_and_correct_towns(grad_meh_dir / "geojson/locations")
+    validate_and_correct_towns(
+        mission=mission, gm_locations_dir=grad_meh_dir / "geojson/locations"
+    )
     mission.export_json(export_dir)
     return mission.map_name
 
