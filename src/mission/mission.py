@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
 from arma3_offline_map_lib.mission.mission_sqm import Marker, MissionSqm
-from armaclass import ParseError
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
@@ -25,14 +24,17 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_RELEVANT_MARKER_PREFIXES = {
-    # case-insensitive
-    "airport",
-    "factory",
-    "milbase",
-    "outpost",
-    "resource",
-    "seaport",
+_ATTRIBUTES_TO_MARKER_PREFIXES = {
+    # Case-insensitive. Values are used to filter markers of interest.
+    "airports": "airport",
+    "factories": "factory",
+    "bases": "milbase",
+    "outposts": "outpost",
+    "resources": "resource",
+    "waterports": "seaport",
+    "redfor_support_corridor": "csat_carrier",
+    "_nato_carrier": "nato_carrier",  # not attribute
+    "_respawn_west": "respawn_west",  # not attribute
 }
 
 
@@ -43,16 +45,19 @@ class Mission:
     map_name: str
     """
     Derived from directory name and normalised to lower case.
+
     Assumed unique; used as primary key."""
 
     map_display_name: str | None
     """
     Full name of map, generally as it appears in Steam app/workshop titles/text.
+
     From static reference data. `None` if not available."""
 
     map_url: str | None
     """
     URL at which the map can be downloaded.
+
     From static reference data. `None` if not available."""
 
     climate: str
@@ -71,21 +76,26 @@ class Mission:
 
     disabled_towns: list[str] = Factory(list)
     """Towns defined in the mission as not used.
+
     Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
     to the map!"""
 
     airports: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
+    """Airport markers from `mission.sqm`."""
     factories: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
+    """Factory markers from `mission.sqm."""
     bases: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
+    """Base markers from `mission.sqm."""
     outposts: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
-    waterports: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
+    """Outpost markers from `mission.sqm."""
     resources: list[Marker] = Factory(list)
-    """From `mission.sqm`."""
+    """Resource markers from `mission.sqm`."""
+    waterports: list[Marker] = Factory(list)
+    """Waterport (sea/river port) markers from `mission.sqm`."""
+    blufor_support_corridor: Marker
+    """BLUFOR support corridor marker from `mission.sqm`."""
+    redfor_support_corridor: Marker
+    """REDFOR support corridor marker from `mission.sqm`."""
 
     @property
     def airports_count(self) -> int:
@@ -190,47 +200,57 @@ class Mission:
             LOGGER.error(log_msg)
 
         parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
-        try:
-            mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
-        except ParseError:
-            log_msg = f"'{map_name}': couldn't parse `mission.sqm`. Is it binarized?"
-            LOGGER.warning(log_msg)
-
+        mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
         log_msg = f"'{map_name}': parsed AU source data."
         LOGGER.info(log_msg)
 
         towns = _towns_from_map_info(parsed_map_info, map_name)
-        mission = cls(
+        markers = _markers_by_prefix(mission_sqm.markers)
+        if markers["nato_carrier"]:
+            blufor_support_corridor_marker = markers["nato_carrier"][0]
+        elif markers["respawn_west"]:  # handles 'abramia' special case
+            blufor_support_corridor_marker = markers["respawn_west"][0]
+            log_msg = f"'{map_name}': BLUFOR support corridor marker is 'respawn_west'."
+            LOGGER.warning(log_msg)
+        else:
+            err_msg = f"'{map_name}': BLUFOR support corridor marker not found."
+            raise ValueError(err_msg)
+
+        return cls(
             map_name=map_name,
             map_display_name=map_display_name,
             map_url=map_url,
             climate=parsed_map_info.climate,
             towns=towns,
             disabled_towns=parsed_map_info.disabled_town_names,
+            airports=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["airports"]],
+            bases=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["bases"]],
+            waterports=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["waterports"]],
+            outposts=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["outposts"]],
+            factories=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["factories"]],
+            resources=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["resources"]],
+            blufor_support_corridor=blufor_support_corridor_marker,
+            redfor_support_corridor=markers[
+                _ATTRIBUTES_TO_MARKER_PREFIXES["redfor_support_corridor"]
+            ][0],
         )
-        if mission_sqm:
-            military_markers = _military_zone_markers(mission_sqm.markers)
-            mission.airports = military_markers["airport"]
-            mission.bases = military_markers["milbase"]
-            mission.waterports = military_markers["seaport"]
-            mission.outposts = military_markers["outpost"]
-            mission.factories = military_markers["factory"]
-            mission.resources = military_markers["resource"]
-
-        return mission
 
     def export_json(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
-            json.dump(
-                asdict(self),
-                file,
-                ensure_ascii=False,
-                indent=4,
-            )
-            log_msg = f"'{self.map_name}': exported '{export_filename}'."
-            LOGGER.info(log_msg)
+            try:
+                json.dump(
+                    asdict(self),
+                    file,
+                    ensure_ascii=False,
+                    indent=4,
+                )
+                log_msg = f"'{self.map_name}': exported '{export_filename}'."
+                LOGGER.info(log_msg)
+            except Exception as err:
+                err_msg = f"Error exporting '{self.map_name}': {err}"
+                LOGGER.exception(err_msg)
 
     @classmethod
     def from_json(cls, file_path: Path) -> Self:
@@ -391,14 +411,14 @@ def _normalise_town_name(name: str) -> str:
     return name.lower().replace(" ", "")
 
 
-def _military_zone_markers(marker_list: list[Marker]) -> dict[str, list[Marker]]:
-    """Derive military zone markers from a list of markers."""
+def _markers_by_prefix(marker_list: list[Marker]) -> dict[str, list[Marker]]:
+    """Derive `dict` of relevant markers, keyed by prefix."""
     marker_dict: dict[str, list[Marker]] = {
-        prefix: [] for prefix in _RELEVANT_MARKER_PREFIXES
+        prefix: [] for prefix in _ATTRIBUTES_TO_MARKER_PREFIXES.values()
     }
     for marker in marker_list:
-        for prefix, list_ in marker_dict.items():
+        for prefix, markers in marker_dict.items():
             if marker.name and marker.name.lower().startswith(prefix):
-                list_.append(marker)
+                markers.append(marker)
 
     return marker_dict

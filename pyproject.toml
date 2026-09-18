@@ -10,8 +10,10 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.1.0",  # CalVer
     "cxxheaderparser>=1.7.0",
+    "matplotlib>=3.11.2",
     "mkdocs-material>=9.7.7",
     "msgspec>=0.20.0",
+    "pillow>=12.3.0",
     "rich>=14.3.2",
 ]
 [project.urls]
@@ -22,7 +24,7 @@ source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysi
 dev = [
     "mypy>=2.3.1",
     "pytest>=9.1.1",
-    "ruff>=0.16.5",
+    "ruff>=0.16.8",
 ]
 
 [tool.mypy]
