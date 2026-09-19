@@ -3,20 +3,16 @@
 from __future__ import annotations
 
 import logging
+from itertools import chain
 from typing import TYPE_CHECKING
 
-from arma3_offline_map_lib.grad_meh.geojson import (
-    geojson_gz_files_in_dir,
-    load_features_from_file,
-)
+from arma3_offline_map_lib.grad_meh.geojson import Feature, geojson_gz_files_in_dir
 
 from src.static_data import in_game_data
 from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from arma3_offline_map_lib.grad_meh.geojson import Feature
 
     from .mission import Mission
 
@@ -117,19 +113,14 @@ def _load_towns_from_dir(path: Path) -> list[Feature]:
          `path/{FILENAME_STEM}.geojson.gz`.
 
     """
-    towns: list[Feature] = []
-
     filepaths = [
         fp
         for fp in geojson_gz_files_in_dir(path)
         if fp.stem.removesuffix(".geojson")
         in ("namecitycapital", "namecity", "namevillage")
     ]
-    for fp in filepaths:
-        locations = load_features_from_file(fp)
-        towns.extend(locations)
-
-    return towns
+    feature_lists = [Feature.list_from_file(fp) for fp in filepaths]
+    return list(chain(*feature_lists))
 
 
 def _normalise_mission_town_name(name: str) -> str:

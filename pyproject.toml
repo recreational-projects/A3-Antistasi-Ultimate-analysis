@@ -32,11 +32,6 @@ strict = true
 disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
 no_implicit_optional = true  # Don't assume arguments with default values of None are Optional
 
-[[tool.mypy.overrides]]
-# Untyped modules
-module = ["armaclass.*"]
-ignore_missing_imports = true
-
 [tool.ruff.lint]
 future-annotations = true
 select = ["ALL"]
@@ -77,4 +72,4 @@ runtime-evaluated-decorators = ["attrs.define"]
 ]
 
 [tool.uv.sources]
-arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.11.0" }
+arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", rev = "v0.12.0a1" }
