@@ -8,7 +8,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
-from arma3_offline_map_lib.mission.mission_sqm import Marker, MissionSqm
+from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
 from attrs import Factory, asdict, define
 from cattrs import ClassValidationError, structure
 
