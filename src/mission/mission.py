@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
 from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
-from attrs import Factory, asdict, define
-from cattrs import ClassValidationError, structure
+from attrs import Factory, define
+from cattrs import ClassValidationError, structure, unstructure
 
 from .mapinfo_hpp_parser import MapInfoHppData
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
@@ -235,13 +235,9 @@ class Mission:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+            data = unstructure(self)
             try:
-                json.dump(
-                    asdict(self),
-                    file,
-                    ensure_ascii=False,
-                    indent=4,
-                )
+                json.dump(data, file, indent=4)
                 log_msg = f"'{self.map_name}': exported '{export_filename}'."
                 LOGGER.info(log_msg)
             except Exception as err:
@@ -253,7 +249,7 @@ class Mission:
         """Load `Mission` from previously-exported JSON file."""
         with Path.open(file_path, "r", encoding="utf-8") as file:
             try:
-                mission = cls._from_json_data(json.load(file))
+                mission = cls._from_json_str(json.load(file))
             except ClassValidationError as err:
                 err_msg = f"Error creating `Mission` from JSON: {file_path}."
                 raise ValueError(err_msg) from err
@@ -261,7 +257,12 @@ class Mission:
         return mission
 
     @classmethod
-    def _from_json_data(cls, data: MappingNode) -> Self:
+    def _from_json_str(cls, data: MappingNode) -> Self:
+        """
+        Create `Mission` from JSON data.
+
+        Exists to test `Mission` structuring without file handling.
+        """
         return structure(data, cls)
 
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:

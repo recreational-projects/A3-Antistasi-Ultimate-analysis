@@ -53,6 +53,6 @@ def test_from_json_data() -> None:
     # arrange
     mission_dict = json.loads(INTERMEDIATE_DATA_JSON)
     # act
-    mission = Mission._from_json_data(mission_dict)
+    mission = Mission._from_json_str(mission_dict)
     # assert
     assert mission.map_name == "stratis"
