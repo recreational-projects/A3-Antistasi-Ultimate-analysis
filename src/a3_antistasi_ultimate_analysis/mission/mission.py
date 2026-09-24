@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
 import armaclass
+import orjson
 from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
 from attrs import define, field
 from attrs.validators import deep_iterable, deep_mapping, instance_of
@@ -310,15 +311,11 @@ class Mission:
     def export_json(self, dir_: Path) -> None:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
-        with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
-            data = unstructure(self)
-            try:
-                json.dump(data, file, indent=4)
-                log_msg = f"'{self.map_name}': exported '{export_filename}'."
-                LOGGER.info(log_msg)
-            except Exception as err:
-                err_msg = f"Error exporting '{self.map_name}': {err}"
-                LOGGER.exception(err_msg)
+        data_str = orjson.dumps(unstructure(self), option=orjson.OPT_INDENT_2)
+        with Path.open(dir_ / export_filename, "wb") as file:
+            file.write(data_str)
+            log_msg = f"'{self.map_name}': exported '{export_filename}'."
+            LOGGER.info(log_msg)
 
     @classmethod
     def from_json_file(cls, file_path: Path) -> Self:
