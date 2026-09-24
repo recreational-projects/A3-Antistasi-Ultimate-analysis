@@ -9,7 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Build: dependencies: upgrade to arma3-offline-map-lib 0.11.0
+- Refactors
+- Docs: README.md update
+- Build: dependencies: upgrade to arma3-offline-map-lib 0.12.0.a1, remove redundant dependencies matplotlib, pillow
 
 
 ## [1.3.0] - 2026-09-08
