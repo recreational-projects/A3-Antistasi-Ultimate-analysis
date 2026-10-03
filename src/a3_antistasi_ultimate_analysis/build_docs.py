@@ -28,6 +28,9 @@ from a3_antistasi_ultimate_analysis.utils import (
 if TYPE_CHECKING:
     from collections.abc import Sized
 
+_OPTIONAL_FIELDS = {"disabled_towns", "waterports", "land_area"}
+"""`Mission` fields that may be `None` without raising error."""
+
 
 def main() -> None:
     """
@@ -90,7 +93,7 @@ def _missions_from_json(path: Path) -> list[Mission]:
     required_fields = {
         field.name
         for field in attrs.fields(Mission)
-        if field.name not in ["disabled_towns", "waterports", "exclude"]
+        if field.name not in _OPTIONAL_FIELDS
     }
     for mission in missions:
         empty_fields = {f for f in required_fields if not getattr(mission, f)}

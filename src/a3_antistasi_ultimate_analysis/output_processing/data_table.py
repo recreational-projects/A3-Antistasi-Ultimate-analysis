@@ -15,45 +15,44 @@ if TYPE_CHECKING:
 _COLUMN_CONFIG_DATA: dict[str, Any] = {
     "map_name": {
         "display_heading": "Map",
+        "text_align": "LEFT",
     },
-    "climate": {
-        "display_heading": "Climate",
-    },
+    # "climate": {
+    #     "display_heading": "Climate",
+    #     "text_align": "LEFT",
+    # },
     "airports_count": {
         "display_heading": "Airports",
-        "text_align": "RIGHT",
     },
     "bases_count": {
         "display_heading": "Bases",
-        "text_align": "RIGHT",
     },
     "waterports_count": {
         "display_heading": "Sea/<br>riverports",
-        "text_align": "RIGHT",
     },
     "outposts_count": {
         "display_heading": "Outposts",
-        "text_align": "RIGHT",
     },
     "factories_count": {
         "display_heading": "Factories",
-        "text_align": "RIGHT",
     },
     "resources_count": {
         "display_heading": "Resources",
-        "text_align": "RIGHT",
     },
     "total_military_zones_count": {
         "display_heading": "Total<br>military<br>zones[^1]",
-        "text_align": "RIGHT",
     },
     "towns_count": {
         "display_heading": "Towns",
-        "text_align": "RIGHT",
     },
     "war_level_points_ratio_dynamic": {
         "display_heading": "Total<br>War Level<br>points[^2]<br>ratio<br>",
-        "text_align": "RIGHT",
+    },
+    "land_area": {
+        "display_heading": "Land area km^2",
+    },
+    "war_level_points_density": {
+        "display_heading": "War Level points / km^2",
     },
 }
 
@@ -63,7 +62,7 @@ class _ColumnConfig:
     display_heading: str | None = field(default=None)
     """Column display heading. If `None`, the column name will be used."""
     text_align: Literal["LEFT", "RIGHT"] = field(
-        default="LEFT", validator=in_(("LEFT", "RIGHT"))
+        default="RIGHT", validator=in_(("LEFT", "RIGHT"))
     )
 
     @classmethod
@@ -116,30 +115,46 @@ def _table_row(
     tr = ""
     for col in column_configs:
         if col == "map_name":
-            td_value = _map_name_cell_value(mission)
+            value = _map_name_display_value(mission)
         elif col == "war_level_points_ratio_dynamic":
-            td_value = _war_level_points_ratio_cell_value(mission, max_war_level_points)
+            value = _war_level_points_ratio_display_value(mission, max_war_level_points)
+        elif col == "land_area":
+            value = _land_area_display_value(mission)
+        elif col == "war_level_points_density":
+            value = _war_level_points_density_display_value(mission)
         else:
-            td_value = _markdown_handle_missing_value(getattr(mission, col))
+            value = _markdown_handle_missing_value(getattr(mission, col))
 
-        tr += f"| {td_value} "
+        tr += f"| {value} "
 
     tr += "|\n"
     return tr
 
 
-def _map_name_cell_value(mission: Mission) -> str:
+def _map_name_display_value(mission: Mission) -> str:
     if mission.map_url:
         return f"[{mission.map_display_name}]({mission.map_url})"
 
     return f"{mission.map_display_name}"
 
 
-def _war_level_points_ratio_cell_value(
+def _war_level_points_ratio_display_value(
     mission: Mission, max_war_level_points: int
 ) -> str:
     ratio = mission.war_level_points_ratio(max_war_level_points)
-    return f"{ratio:.2f}" if ratio else ""
+    return f"{ratio:.2f}" if ratio is not None else ""
+
+
+def _land_area_display_value(mission: Mission) -> str:
+    return f"{mission.land_area:.0f}" if mission.land_area is not None else ""
+
+
+def _war_level_points_density_display_value(mission: Mission) -> str:
+    return (
+        f"{mission.war_level_points_density:.2f}"
+        if mission.war_level_points_density is not None
+        else ""
+    )
 
 
 def _markdown_handle_missing_value(val: int | str | None) -> str:

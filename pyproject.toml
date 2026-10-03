@@ -47,6 +47,7 @@ ignore = [
     "D212",    # multi-line-summary-first-line
     # Other:
     "CPY001",  # missing-copyright-notice
+    "ERA001",  # commented-out-code
 ]
 # Allow applying these 'unsafe' fixes without the `--unsafe-fixes` flag:
 extend-safe-fixes = [

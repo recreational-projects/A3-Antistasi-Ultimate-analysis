@@ -42,9 +42,11 @@ def analyse_mission(
 ) -> str | None:
     """Analyse a single mission and export data."""
     require_dir(mission_dir)
-    # NB: doesn't require `grad_meh_dir`.
+    # NB: doesn't require `grad_meh_dir`; may not be available.
     # Warnings are emitted by individual functions that use grad_meh data.
-    mission = Mission.from_data(mission_dir=mission_dir, map_index=MAP_INDEX)
+    mission = Mission.from_data(
+        mission_dir=mission_dir, grad_meh_dir=grad_meh_dir, map_index=MAP_INDEX
+    )
     if mission is None:
         return None
 

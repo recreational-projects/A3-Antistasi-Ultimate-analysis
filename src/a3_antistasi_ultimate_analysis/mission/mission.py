@@ -8,6 +8,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+from arma3_offline_map_lib.grad_meh.dem import DEM
 from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
 from attrs import define, field
 from attrs.validators import deep_iterable, deep_mapping, instance_of
@@ -109,6 +110,13 @@ class Mission:
     """BLUFOR support corridor marker from mission's `mission.sqm`."""
     redfor_support_corridor: Marker
     """REDFOR support corridor marker from mission's `mission.sqm`."""
+    land_area: float | None = field(
+        default=None,
+        validator=instance_of(float | None),
+    )
+    """Land area in square km.
+
+     From grad-meh DEM data. `None` if not available."""
 
     @property
     def airports_count(self) -> int:
@@ -192,8 +200,18 @@ class Mission:
 
         return ratio
 
+    @property
+    def war_level_points_density(self) -> float | None:
+        """War level points / land area."""
+        if not self.war_level_points or not self.land_area:
+            return None
+
+        return self.war_level_points / self.land_area
+
     @classmethod
-    def from_data(cls, *, mission_dir: Path, map_index: MappingNode) -> Mission | None:
+    def from_data(
+        cls, *, mission_dir: Path, grad_meh_dir: Path, map_index: MappingNode
+    ) -> Mission | None:
         """Return instance from AU mission data and reference map index."""
         map_name = map_name_from_mission_dir_path(mission_dir)
         if map_name not in map_index:
@@ -203,32 +221,33 @@ class Mission:
 
         map_lookup = map_index[map_name]
         map_display_name = map_lookup.get("display_name")
-        map_url = map_lookup.get("url")
         if not map_display_name:
             log_msg = f"'{map_name}': map index issue: no `map_display_name`."
             LOGGER.error(log_msg)
 
+        map_url = map_lookup.get("url")
         if not map_url:
             log_msg = f"'{map_name}': map index issue: no `map_url`."
             LOGGER.error(log_msg)
 
         parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
-        mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
-        log_msg = f"'{map_name}': parsed AU source data."
-        LOGGER.info(log_msg)
-
         towns = _towns_from_map_info(parsed_map_info, map_name)
+        mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
         markers = _markers_by_prefix(mission_sqm.markers)
-        if markers["nato_carrier"]:
-            blufor_support_corridor_marker = markers["nato_carrier"][0]
-        elif markers["respawn_west"]:  # handles 'abramia' special case
+        if markers["respawn_west"]:  # handles 'abramia' special case
             blufor_support_corridor_marker = markers["respawn_west"][0]
             log_msg = f"'{map_name}': BLUFOR support corridor marker is 'respawn_west'."
             LOGGER.warning(log_msg)
+        elif markers["nato_carrier"]:
+            blufor_support_corridor_marker = markers["nato_carrier"][0]
         else:
             err_msg = f"'{map_name}': BLUFOR support corridor marker not found."
             raise ValueError(err_msg)
 
+        log_msg = f"'{map_name}': parsed AU source data."
+        LOGGER.info(log_msg)
+
+        land_area = _get_land_area(grad_meh_dir=grad_meh_dir, map_name=map_name)
         return cls(
             map_name=map_name,
             map_display_name=map_display_name,
@@ -246,6 +265,7 @@ class Mission:
             redfor_support_corridor=markers[
                 _MARKER_PREFIXES["redfor_support_corridor"]
             ][0],
+            land_area=land_area,
         )
 
     def export_json(self, dir_: Path) -> None:
@@ -307,6 +327,21 @@ class Mission:
                 else:
                     log_msg = f"'{self.map_name}': `{field}` matches in-game data."
                     LOGGER.debug(log_msg)
+
+
+def _get_land_area(*, grad_meh_dir: Path, map_name: str) -> float | None:
+    dem_path = grad_meh_dir / "dem.asc.gz"
+    if not dem_path.is_file():
+        log_msg = f"'{map_name}': no DEM file."
+        land_area = None
+        LOGGER.warning(log_msg)
+    else:
+        dem = DEM.from_esri_ascii_raster_gz(dem_path)
+        land_area = dem.land_area / 1000000
+        log_msg = f"'{map_name}': loaded DEM."
+        LOGGER.info(log_msg)
+
+    return land_area
 
 
 def _towns_from_map_info(
