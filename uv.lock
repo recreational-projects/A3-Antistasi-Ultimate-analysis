@@ -9,7 +9,7 @@ resolution-markers = [
 [[package]]
 name = "a3-antistasi-ultimate-analysis"
 version = "1.3.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "arma3-offline-map-lib" },
     { name = "armaclass" },

@@ -2,7 +2,7 @@
 
 import json
 
-from src.mission.mission import Mission
+from a3_antistasi_ultimate_analysis.mission.mission import Mission
 
 INTERMEDIATE_DATA_JSON = """{
     "map_name": "stratis",

@@ -10,7 +10,7 @@ from attrs.validators import in_
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from .mission.mission import Mission
+    from a3_antistasi_ultimate_analysis.mission.mission import Mission
 
 _COLUMN_CONFIG_DATA: dict[str, Any] = {
     "map_name": {
