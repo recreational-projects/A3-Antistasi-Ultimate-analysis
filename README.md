@@ -32,32 +32,32 @@ Source code for https://recreational-projects.github.io/A3-Antistasi-Ultimate-an
 ### Analyse missions and export intermediate data
 
 ```shell
-uv run --module src.analyse_missions
+uv run --module a3_antistasi_ultimate_analysis.analyse_missions
 ```
 to generate data from each AU mission, compare with reference data and
 export temporary JSON files to `working_data/`.
 
 - Analyses the mission's `mission.sqm` and `mapInfo.hpp`
 - Gets each mission's friendly map name and download URL from
-  `src/static_data/map_index.py`
+  `src/a3_antistasi_ultimate_analysis`
 - Gets towns from [grad_meh](https://github.com/gruppe-adler/grad_meh) data if available
   and the mission doesn't explicitly define the towns used 
 - Verifies the number of military zones (not towns) against information derived from
-  Antistasi Ultimate's in-game screenshots from `src/static_data/in_game_data.py`
+  Antistasi Ultimate's in-game screenshots from `src/a3_antistasi_ultimate_analysis`
 - Logs info and warnings
 - Should take around 5–10 seconds to complete
 - To run for a single mission, e.g. for testing, use:
  
   ```shell
-  uv run --module src.analyse_mission MAPNAME  # e.g. altis
+  uv run --module a3_antistasi_ultimate_analysis.analyse_mission MAPNAME  # e.g. altis
   ```
 
 ### Generate Markdown from intermediate data
 
-Edit `src/docs_includes.py` with relevant AU version number.
+Edit `src/docs_includes.py` with the relevant AU version number.
 
 ```shell
-uv run --module src.build_docs
+uv run --module a3_antistasi_ultimate_analysis.build_docs
 ```
 to load intermediate data and generate a single Markdown file
 in `docs/`.
@@ -73,7 +73,7 @@ uv run mkdocs serve
 
 ## License
 
-`src/static_data/` contains data derived from Antistasi Ultimate assets and from 
+`src/a3_antistasi_ultimate_analysis` contains data derived from Antistasi Ultimate assets and from 
 other parties. See individual files for  licensing information.
 
 Otherwise, the [MIT licence](/LICENSE) applies - the same as

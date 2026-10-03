@@ -9,8 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
 from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
-from attrs import Factory, asdict, define
-from cattrs import ClassValidationError, structure
+from attrs import define, field
+from attrs.validators import deep_iterable, deep_mapping, instance_of
+from cattrs import ClassValidationError, structure, unstructure
 
 from .mapinfo_hpp_parser import MapInfoHppData
 from .utils import map_name_from_mission_dir_path, pretty_iterable_of_str
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_ATTRIBUTES_TO_MARKER_PREFIXES = {
+_MARKER_PREFIXES = {
     # Case-insensitive. Values are used to filter markers of interest.
     "airports": "airport",
     "factories": "factory",
@@ -29,8 +30,8 @@ _ATTRIBUTES_TO_MARKER_PREFIXES = {
     "resources": "resource",
     "waterports": "seaport",
     "redfor_support_corridor": "csat_carrier",
-    "_nato_carrier": "nato_carrier",  # not attribute
-    "_respawn_west": "respawn_west",  # not attribute
+    "_nato_carrier": "nato_carrier",  # usually -> `blufor_support_corridor`
+    "_respawn_west": "respawn_west",  # special case  -> `blufor_support_corridor`
 }
 
 
@@ -38,28 +39,41 @@ _ATTRIBUTES_TO_MARKER_PREFIXES = {
 class Mission:
     """Information about a mission."""
 
-    map_name: str
+    map_name: str = field(
+        validator=instance_of(str),
+    )
     """
     Derived from directory name and normalised to lower case.
 
     Assumed unique; used as primary key."""
 
-    map_display_name: str | None
+    map_display_name: str | None = field(
+        validator=instance_of(str | None),
+    )
     """
     Full name of map, generally as it appears in Steam app/workshop titles/text.
 
     From static reference data. `None` if not available."""
 
-    map_url: str | None
+    map_url: str | None = field(
+        validator=instance_of(str | None),
+    )
     """
     URL at which the map can be downloaded.
 
     From static reference data. `None` if not available."""
 
-    climate: str
-    """From `mapinfo.hpp`."""
+    climate: str = field(
+        validator=instance_of(str),
+    )
+    """From mission's `mapinfo.hpp`."""
 
-    towns: Mapping[str, int | None] = Factory(Mapping)
+    towns: Mapping[str, int | None] = field(
+        factory=Mapping,
+        validator=deep_mapping(
+            key_validator=instance_of(str), value_validator=instance_of(int | None)
+        ),
+    )
     """Towns in the mission, with population if known.
 
     If the mission defines a `populations` array in `mapinfo.hpp`, it will be used to
@@ -70,28 +84,31 @@ class Mission:
     won't include population values, which will be set to `None`.
     """
 
-    disabled_towns: list[str] = Factory(list)
+    disabled_towns: list[str] = field(
+        factory=list,
+        validator=deep_iterable(member_validator=instance_of(str)),
+    )
     """Towns defined in the mission as not used.
 
-    Derived from `disabledTowns` array in `mapinfo.hpp`. NB: not necessarily relevant
-    to the map!"""
+    Derived from `disabledTowns` array in AU's `mapinfo.hpp`.
+    NB: not necessarily relevant to the map!"""
 
-    airports: list[Marker] = Factory(list)
-    """Airport markers from `mission.sqm`."""
-    factories: list[Marker] = Factory(list)
-    """Factory markers from `mission.sqm."""
-    bases: list[Marker] = Factory(list)
-    """Base markers from `mission.sqm."""
-    outposts: list[Marker] = Factory(list)
-    """Outpost markers from `mission.sqm."""
-    resources: list[Marker] = Factory(list)
-    """Resource markers from `mission.sqm`."""
-    waterports: list[Marker] = Factory(list)
-    """Waterport (sea/river port) markers from `mission.sqm`."""
+    airports: list[Marker] = field(factory=list)
+    """Airport markers from mission's `mission.sqm`."""
+    factories: list[Marker] = field(factory=list)
+    """Factory markers from mission's `mission.sqm."""
+    bases: list[Marker] = field(factory=list)
+    """Base markers from mission's `mission.sqm."""
+    outposts: list[Marker] = field(factory=list)
+    """Outpost markers from mission's `mission.sqm."""
+    resources: list[Marker] = field(factory=list)
+    """Resource markers from mission's `mission.sqm`."""
+    waterports: list[Marker] = field(factory=list)
+    """Waterport (sea/river port) markers from mission's `mission.sqm`."""
     blufor_support_corridor: Marker
-    """BLUFOR support corridor marker from `mission.sqm`."""
+    """BLUFOR support corridor marker from mission's `mission.sqm`."""
     redfor_support_corridor: Marker
-    """REDFOR support corridor marker from `mission.sqm`."""
+    """REDFOR support corridor marker from mission's `mission.sqm`."""
 
     @property
     def airports_count(self) -> int:
@@ -219,15 +236,15 @@ class Mission:
             climate=parsed_map_info.climate,
             towns=towns,
             disabled_towns=parsed_map_info.disabled_town_names,
-            airports=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["airports"]],
-            bases=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["bases"]],
-            waterports=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["waterports"]],
-            outposts=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["outposts"]],
-            factories=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["factories"]],
-            resources=markers[_ATTRIBUTES_TO_MARKER_PREFIXES["resources"]],
+            airports=markers[_MARKER_PREFIXES["airports"]],
+            bases=markers[_MARKER_PREFIXES["bases"]],
+            waterports=markers[_MARKER_PREFIXES["waterports"]],
+            outposts=markers[_MARKER_PREFIXES["outposts"]],
+            factories=markers[_MARKER_PREFIXES["factories"]],
+            resources=markers[_MARKER_PREFIXES["resources"]],
             blufor_support_corridor=blufor_support_corridor_marker,
             redfor_support_corridor=markers[
-                _ATTRIBUTES_TO_MARKER_PREFIXES["redfor_support_corridor"]
+                _MARKER_PREFIXES["redfor_support_corridor"]
             ][0],
         )
 
@@ -235,13 +252,9 @@ class Mission:
         """Export the mission as a JSON file."""
         export_filename = f"{self.map_name}.json"
         with Path.open(dir_ / export_filename, "w", encoding="utf-8") as file:
+            data = unstructure(self)
             try:
-                json.dump(
-                    asdict(self),
-                    file,
-                    ensure_ascii=False,
-                    indent=4,
-                )
+                json.dump(data, file, indent=4)
                 log_msg = f"'{self.map_name}': exported '{export_filename}'."
                 LOGGER.info(log_msg)
             except Exception as err:
@@ -253,7 +266,7 @@ class Mission:
         """Load `Mission` from previously-exported JSON file."""
         with Path.open(file_path, "r", encoding="utf-8") as file:
             try:
-                mission = cls._from_json_data(json.load(file))
+                mission = cls._from_json_str(json.load(file))
             except ClassValidationError as err:
                 err_msg = f"Error creating `Mission` from JSON: {file_path}."
                 raise ValueError(err_msg) from err
@@ -261,7 +274,12 @@ class Mission:
         return mission
 
     @classmethod
-    def _from_json_data(cls, data: MappingNode) -> Self:
+    def _from_json_str(cls, data: MappingNode) -> Self:
+        """
+        Create `Mission` from JSON data.
+
+        Exists to test `Mission` structuring without file handling.
+        """
         return structure(data, cls)
 
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
@@ -317,7 +335,7 @@ def _towns_from_map_info(
 def _markers_by_prefix(marker_list: list[Marker]) -> dict[str, list[Marker]]:
     """Derive `dict` of relevant markers, keyed by prefix."""
     marker_dict: dict[str, list[Marker]] = {
-        prefix: [] for prefix in _ATTRIBUTES_TO_MARKER_PREFIXES.values()
+        prefix: [] for prefix in _MARKER_PREFIXES.values()
     }
     for marker in marker_list:
         for prefix, markers in marker_dict.items():

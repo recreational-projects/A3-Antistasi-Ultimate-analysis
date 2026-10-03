@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING
 
 from arma3_offline_map_lib.grad_meh.geojson import Feature, geojson_gz_files_in_dir
 
-from src.static_data import in_game_data
-from src.static_data.au_mission_overrides import DISABLED_TOWNS_IGNORED_PREFIXES
+from a3_antistasi_ultimate_analysis.static_data import in_game_data
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -18,6 +17,20 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+_DISABLED_TOWNS_IGNORED_PREFIXES = [
+    # Ignored when comparing against canonical names
+    "castle_",
+    "Castle_",
+    "Insel_",
+    "Island_",
+    "LandMark_",
+    "Malden_C_",
+    "Malden_L_",
+    "Malden_V_",
+    "mil_",
+    "pass_",
+]
 
 
 def validate_and_correct_towns(*, mission: Mission, gm_locations_dir: Path) -> None:
@@ -125,7 +138,7 @@ def _load_towns_from_dir(path: Path) -> list[Feature]:
 
 def _normalise_mission_town_name(name: str) -> str:
     """Normalise town name from mission data, for comparison purposes."""
-    for prefix in DISABLED_TOWNS_IGNORED_PREFIXES:
+    for prefix in _DISABLED_TOWNS_IGNORED_PREFIXES:
         name = name.removeprefix(prefix)
 
     return _normalise_town_name(name)

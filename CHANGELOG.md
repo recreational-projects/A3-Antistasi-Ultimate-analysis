@@ -9,8 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Build: dependencies: upgrade to arma3-offline-map-lib 0.11.0
-
+- Build: 
+  - dependencies: upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
+  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
+- CI: bump GitHub Action dependencies and use exact versions
 
 ## [1.3.0] - 2026-09-08
 
@@ -26,7 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Simplify log messages for military zone verification
 - Docs: README.md update
-- Build: dependencies: upgrade to arma3-offline-map-lib 0.8.0
+- Build: dependencies: upgrade arma3-offline-map-lib to 0.8.0
 
 
 ## [1.2.0] - 2026-08-17

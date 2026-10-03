@@ -16,14 +16,15 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7.0.1
 
     - name: Install uv - latest if not defined in `pyproject.toml`
-      uses: astral-sh/setup-uv@v7
+      # Action version does not determine which uv version to install
+      uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
 
     - name: Setup Python
       # Faster than using uv, as it caches Python on GitHub runner
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@v7.0.0
       with:
         python-version-file: ".python-version"
 

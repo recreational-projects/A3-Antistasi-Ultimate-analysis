@@ -5,17 +5,17 @@ from __future__ import annotations
 import argparse
 from typing import TYPE_CHECKING
 
-from ._utils import (
+from a3_antistasi_ultimate_analysis.mission.mission import Mission
+from a3_antistasi_ultimate_analysis.mission.towns import validate_and_correct_towns
+from a3_antistasi_ultimate_analysis.static_data import in_game_data
+from a3_antistasi_ultimate_analysis.static_data.map_index import MAP_INDEX
+from a3_antistasi_ultimate_analysis.utils import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
     GRAD_MEH_DIRPATH,
     configure_logging,
     require_dir,
 )
-from .mission.mission import Mission
-from .mission.towns import validate_and_correct_towns
-from .static_data import in_game_data
-from .static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from pathlib import Path
