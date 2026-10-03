@@ -45,7 +45,8 @@ INTERMEDIATE_DATA_JSON = """{
         },
         "marker_type": null,
         "type_": "flag_CSAT"
-    }
+    },
+    "land_area": 19231072.0
 }
 """
 
