@@ -112,37 +112,58 @@ class Mission:
 
     @property
     def airports_count(self) -> int:
-        """Enumerate airports."""
+        """Enumerate airports.
+
+        Used in data table output.
+        """
         return len(self.airports)
 
     @property
     def waterports_count(self) -> int:
-        """Enumerate sea/river ports."""
+        """Enumerate sea/river ports.
+
+        Used in data table output.
+        """
         return len(self.waterports)
 
     @property
     def bases_count(self) -> int:
-        """Enumerate bases."""
+        """Enumerate bases.
+
+        Used in data table output.
+        """
         return len(self.bases)
 
     @property
     def outposts_count(self) -> int:
-        """Enumerate outposts."""
+        """Enumerate outposts.
+
+        Used in data table output.
+        """
         return len(self.outposts)
 
     @property
     def factories_count(self) -> int:
-        """Enumerate factories."""
+        """Enumerate factories.
+
+        Used in data table output.
+        """
         return len(self.factories)
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources."""
+        """Enumerate resources.
+
+        Used in data table output.
+        """
         return len(self.resources)
 
     @property
     def total_military_zones_count(self) -> int:
-        """Count total military zones (not towns)."""
+        """Count total military zones (not towns).
+
+        Used in data table output.
+        """
         return sum(
             (
                 self.airports_count,
@@ -156,7 +177,10 @@ class Mission:
 
     @property
     def towns_count(self) -> int | None:
-        """Enumerate towns."""
+        """Enumerate towns.
+
+        Used in data table output.
+        """
         if not self.towns:
             return None
 
@@ -164,7 +188,10 @@ class Mission:
 
     @property
     def war_level_points(self) -> int | None:
-        """Count total war level points."""
+        """Count total war level points.
+
+        Used in data table output.
+        """
         if not self.towns:
             return None
 
@@ -181,7 +208,10 @@ class Mission:
         )
 
     def war_level_points_ratio(self, max_value: int) -> float | None:
-        """Fraction of `max_value`."""
+        """Fraction of `max_value`.
+
+        Used in data table output.
+        """
         if not self.war_level_points:
             return None
 
