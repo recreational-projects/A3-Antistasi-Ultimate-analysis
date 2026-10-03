@@ -10,8 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Build: 
-  - dependencies: upgrade arma3-offline-map-lib to 0.12.0
-  - indirect dependencies: upgrade urllib3 to 2.8.0 latest
+  - dependencies: upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
+  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
 - CI: bump GitHub Action dependencies and use exact versions
 
 ## [1.3.0] - 2026-09-08

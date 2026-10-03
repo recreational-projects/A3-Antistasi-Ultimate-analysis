@@ -8,10 +8,10 @@ dependencies = [
     "arma3-offline-map-lib",
     "armaclass>=0.2.2",
     "attrs>=25.4.0",  # CalVer
-    "cattrs>=26.1.0",  # CalVer
-    "cxxheaderparser>=1.7.0",
+    "cattrs>=26.2.1",  # CalVer
+    "cxxheaderparser>=2.0.0",
     "mkdocs-material>=9.7.7",
-    "msgspec>=0.20.0",
+    "msgspec>=0.22.0",
     "rich>=14.3.2",
 ]
 
