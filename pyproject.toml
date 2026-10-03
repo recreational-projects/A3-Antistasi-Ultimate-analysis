@@ -14,9 +14,14 @@ dependencies = [
     "msgspec>=0.20.0",
     "rich>=14.3.2",
 ]
+
 [project.urls]
 homepage = "https://recreational-projects.github.io/A3-Antistasi-Ultimate-analysis/"
 source = "https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis"
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
@@ -61,13 +66,10 @@ runtime-evaluated-decorators = ["attrs.define"]
     "S101",  # Use of assert detected
     "SLF001",  # Private member accessed
 ]
-"src/_docs_includes.py" = [
+"src/a3_antistasi_ultimate_analysis/output_processing/docs_includes.py" = [
    "RUF001",  # String contains ambiguous Unicode character - `×`
 ]
-"src/types.py" = [
-   "A005",  # Module shadows a Python standard-library module
-]
-"src/static_data/in_game_data.py" = [
+"src/a3_antistasi_ultimate_analysis/static_data/in_game_data.py" = [
     "ERA001",  # Commented-out code
 ]
 

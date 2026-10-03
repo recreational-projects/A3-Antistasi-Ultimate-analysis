@@ -6,7 +6,7 @@ from pathlib import Path
 
 from rich.logging import RichHandler
 
-from .mission.utils import map_name_from_mission_dir_path
+from a3_antistasi_ultimate_analysis.mission.utils import map_name_from_mission_dir_path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,8 +34,8 @@ def _load_config(path: Path) -> dict[str, str]:
         return tomllib.load(fp)
 
 
-_BASE_PATH = Path(__file__).resolve().parent
-_CONFIG = _load_config(_BASE_PATH.parent / "config.toml")
+_BASE_PATH = Path(__file__).resolve().parent.parent.parent
+_CONFIG = _load_config(_BASE_PATH / "config.toml")
 
 AU_MAPS_DIRPATH = Path(_CONFIG["AU_SOURCE_DIR_RELATIVE"]) / "A3A/addons/maps"
 GRAD_MEH_DIRPATH = Path(_CONFIG["GRAD_MEH_DATA_DIR_RELATIVE"])

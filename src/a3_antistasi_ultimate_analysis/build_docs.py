@@ -9,18 +9,21 @@ from typing import TYPE_CHECKING
 
 import attrs
 
-from ._data_table import markdown_table
-from ._docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
-from ._utils import (
+from a3_antistasi_ultimate_analysis.mission.mission import Mission
+from a3_antistasi_ultimate_analysis.mission.utils import pretty_iterable_of_str
+from a3_antistasi_ultimate_analysis.output_processing.data_table import markdown_table
+from a3_antistasi_ultimate_analysis.output_processing.docs_includes import (
+    INTRO_MARKDOWN,
+    OUTRO_MARKDOWN,
+)
+from a3_antistasi_ultimate_analysis.static_data.map_index import MAP_INDEX
+from a3_antistasi_ultimate_analysis.utils import (
     DATA_DIRPATH,
     DOC_DIRPATH,
     LOGGER,
     configure_logging,
     require_dir,
 )
-from .mission.mission import Mission
-from .mission.utils import pretty_iterable_of_str
-from .static_data.map_index import MAP_INDEX
 
 if TYPE_CHECKING:
     from collections.abc import Sized
@@ -59,7 +62,7 @@ def main() -> None:
 
 def _project_version() -> str:
     """Get project version from `pyproject.toml`."""
-    filepath = Path(__file__).resolve().parent / "../pyproject.toml"
+    filepath = Path(__file__).resolve().parent.parent / "../pyproject.toml"
     with filepath.open("rb") as fp:
         version = tomllib.load(fp).get("project", {}).get("version")
         return str(version)
