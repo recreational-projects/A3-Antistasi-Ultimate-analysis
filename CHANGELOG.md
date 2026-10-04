@@ -7,10 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## UNRELEASED - tbc
 
+### Added
+
+- Support carrier markers; not yet used in output
+- Improve import/export robustness
+
 ### Changed
 
+- Package as application, changes commands
+- Docs: README.md update
 - Build: 
-  - dependencies: upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
+  - dependencies:
+    - upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
+    - remove redundant matplotlib, pillow>=12.3.0
   - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
 - CI: bump GitHub Action dependencies and use exact versions
 
@@ -19,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Update for AU v12.0.3, which adds Armavir, Bornholm, Laghisola and changes Saint Kapaulio, UMB Colombia
+- Docs: README.md update
 
 ### Removed
 
@@ -27,7 +37,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Simplify log messages for military zone verification
-- Docs: README.md update
 - Build: dependencies: upgrade arma3-offline-map-lib to 0.8.0
 
 
