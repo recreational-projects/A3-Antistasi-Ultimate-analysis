@@ -23,6 +23,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
 - CI: bump GitHub Action dependencies and use exact versions
 
+### Fixed
+
+- UMB Armavir display name
+
+
 ## [1.3.0] - 2026-09-08
 
 ### Added
