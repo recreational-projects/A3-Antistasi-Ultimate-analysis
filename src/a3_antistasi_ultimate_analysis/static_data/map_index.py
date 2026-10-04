@@ -247,7 +247,7 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296",
     },
     "umb_armavir": {  # mod
-        "display_name": "Armavir",
+        "display_name": "UMB Armavir",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2636365838",
     },
     "umb_colombia": {  # mod

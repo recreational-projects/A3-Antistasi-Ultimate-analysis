@@ -16,7 +16,7 @@ hide:
 | Map <br>| Climate <br>| Airports <br>| Bases <br>| Sea/<br>riverports <br>| Outposts <br>| Factories <br>| Resources <br>| Total<br>military<br>zones[^1] <br>| Towns <br>| Total<br>War Level<br>points[^2]<br>ratio<br> |
 | --- | --- | ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:|
 | [Green Sea 2023](https://steamcommunity.com/sharedfiles/filedetails/?id=3671912728) | temperate | 7 | 8 | 12 | 59 | 18 | 22 | 126 | 98 | 1.00 |
-| [Armavir](https://steamcommunity.com/sharedfiles/filedetails/?id=2636365838) | temperate | 5 | 6 | 14 | 42 | 15 | 19 | 101 | 42 | 0.73 |
+| [UMB Armavir](https://steamcommunity.com/sharedfiles/filedetails/?id=2636365838) | temperate | 5 | 6 | 14 | 42 | 15 | 19 | 101 | 42 | 0.73 |
 | [Saint Kapaulio](https://steamcommunity.com/sharedfiles/filedetails/?id=939686262) | tropical | 3 | 6 | 4 | 77 | 10 | 15 | 115 | 42 | 0.72 |
 | [UMB Colombia](https://steamcommunity.com/sharedfiles/filedetails/?id=2266710560) | tropical | 5 | 4 | 13 | 45 | 12 | 23 | 102 | 40 | 0.71 |
 | [Altis](https://store.steampowered.com/app/107410) | arid | 6 | 5 | 6 | 50 | 13 | 12 | 92 | 47 | 0.67 |
