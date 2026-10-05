@@ -71,7 +71,7 @@ class _ColumnConfig:
         return {col_config: cls(**data[col_config]) for col_config in data}
 
 
-def markdown_table(missions: Iterable[Mission]) -> str:
+def mission_table_md(missions: Iterable[Mission]) -> str:
     """Create Markdown table."""
     missions = sorted(missions, key=_sort_missions_by_points, reverse=True)
     max_war_level_points = max(

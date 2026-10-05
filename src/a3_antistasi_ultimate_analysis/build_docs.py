@@ -11,7 +11,7 @@ import attrs
 
 from a3_antistasi_ultimate_analysis.mission.mission import Mission
 from a3_antistasi_ultimate_analysis.mission.utils import pretty_iterable_of_str
-from a3_antistasi_ultimate_analysis.output_processing.data_table import markdown_table
+from a3_antistasi_ultimate_analysis.output_processing.data_table import mission_table_md
 from a3_antistasi_ultimate_analysis.output_processing.docs_includes import (
     INTRO_MARKDOWN,
     OUTRO_MARKDOWN,
@@ -26,7 +26,7 @@ from a3_antistasi_ultimate_analysis.utils import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Sized
+    from collections.abc import Iterable, Sized
 
 
 def main() -> None:
@@ -45,10 +45,11 @@ def main() -> None:
     missions = _missions_from_json(DATA_DIRPATH)
     markdown_content = [
         INTRO_MARKDOWN,
-        _markdown_total_missions(missions),
-        markdown_table(missions),
+        _total_missions_md(missions),
+        mission_table_md(missions),
         OUTRO_MARKDOWN,
-        _markdown_project_version(project_version_),
+        _project_version_md(project_version_),
+        _map_authors_md(missions),
     ]
     LOGGER.info("Generated Markdown.")
 
@@ -58,11 +59,6 @@ def main() -> None:
 
     log_msg = f"Markdown saved to {doc_filepath}."
     LOGGER.info(log_msg)
-
-
-def _project_version() -> str:
-    """Get project version."""
-    return importlib.metadata.version("a3-antistasi-ultimate-analysis")
 
 
 def _missions_from_json(path: Path) -> list[Mission]:
@@ -99,14 +95,24 @@ def _missions_from_json(path: Path) -> list[Mission]:
     return sorted(missions, key=attrgetter("map_name"))
 
 
-def _markdown_total_missions(missions: Sized) -> str:
+def _project_version() -> str:
+    """Get project version."""
+    return importlib.metadata.version("a3-antistasi-ultimate-analysis")
+
+
+def _total_missions_md(missions: Sized) -> str:
     """Create Markdown total missions line."""
     return f"- {len(missions)} maps total including season variants\n"
 
 
-def _markdown_project_version(v: str) -> str:
+def _project_version_md(v: str) -> str:
     """Create Markdown project version line."""
-    return f"\n- Version {v}\n"
+    return f"\n- Version {v}\n\n"
+
+
+def _map_authors_md(missions: Iterable[Mission]) -> str:
+    text = [f"{m.map_display_name}: {m.map_name}" for m in missions]
+    return f"## Map authors\n\n {', '.join(text)} \n"
 
 
 if __name__ == "__main__":
