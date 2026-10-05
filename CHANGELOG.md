@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Build: dependencies: upgrade arma3-offline-map-lib to 0.13.0
+- CI: add Windows
 
 
 ## [1.4.0] - 2026-10-04
