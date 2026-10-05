@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [UNRELEASED] - tbc
+
+### Changed
+
+- Build: dependencies: upgrade arma3-offline-map-lib to 0.13.0
+
 
 ## [1.4.0] - 2026-10-04
 
