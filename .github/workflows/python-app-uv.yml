@@ -1,4 +1,4 @@
-name: Python 3.14 application with uv on Ubuntu
+name: Python 3.14 application with uv
 
 on:
   push:
@@ -10,9 +10,12 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  ci:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout repo
