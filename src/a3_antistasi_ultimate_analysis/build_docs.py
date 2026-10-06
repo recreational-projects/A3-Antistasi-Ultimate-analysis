@@ -79,7 +79,7 @@ def _missions_from_json(path: Path) -> list[Mission]:
             LOGGER.info(log_msg)
             continue
 
-        missions.append(Mission.from_json(fp))
+        missions.append(Mission.from_json_file(fp))
 
     log_msg = f"Loaded data for {len(missions)} missions."
     LOGGER.info(log_msg)
