@@ -2,6 +2,8 @@
 
 import json
 
+from cattrs import structure
+
 from a3_antistasi_ultimate_analysis.mission.mission import Mission
 
 INTERMEDIATE_DATA_JSON = """{
@@ -53,6 +55,6 @@ def test_from_json_data() -> None:
     # arrange
     mission_dict = json.loads(INTERMEDIATE_DATA_JSON)
     # act
-    mission = Mission._from_json_str(mission_dict)
+    mission = structure(mission_dict, Mission)
     # assert
     assert mission.map_name == "stratis"

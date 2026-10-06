@@ -262,25 +262,16 @@ class Mission:
                 LOGGER.exception(err_msg)
 
     @classmethod
-    def from_json(cls, file_path: Path) -> Self:
+    def from_json_file(cls, file_path: Path) -> Self:
         """Load `Mission` from previously-exported JSON file."""
         with Path.open(file_path, "r", encoding="utf-8") as file:
             try:
-                mission = cls._from_json_str(json.load(file))
+                mission = structure(json.load(file), cls)
             except ClassValidationError as err:
                 err_msg = f"Error creating `Mission` from JSON: {file_path}."
                 raise ValueError(err_msg) from err
 
         return mission
-
-    @classmethod
-    def _from_json_str(cls, data: MappingNode) -> Self:
-        """
-        Create `Mission` from JSON data.
-
-        Exists to test `Mission` structuring without file handling.
-        """
-        return structure(data, cls)
 
     def validate_military_zones(self, data: dict[str, dict[str, int]]) -> None:
         """Check against in-game data; log issues."""
