@@ -10,7 +10,7 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.2.1",  # CalVer
     "cxxheaderparser>=2.0.0",
-    "mkdocs-material>=9.7.7",
+    "mkdocs-material==9.8.0",
     "msgspec>=0.22.0",
     "rich>=14.3.2",
 ]
