@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import tomllib
+import importlib.metadata
 from operator import attrgetter
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -61,11 +61,8 @@ def main() -> None:
 
 
 def _project_version() -> str:
-    """Get project version from `pyproject.toml`."""
-    filepath = Path(__file__).resolve().parent.parent / "../pyproject.toml"
-    with filepath.open("rb") as fp:
-        version = tomllib.load(fp).get("project", {}).get("version")
-        return str(version)
+    """Get project version."""
+    return importlib.metadata.version("a3-antistasi-ultimate-analysis")
 
 
 def _missions_from_json(path: Path) -> list[Mission]:
