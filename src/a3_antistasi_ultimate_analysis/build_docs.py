@@ -9,15 +9,12 @@ from typing import TYPE_CHECKING
 
 import attrs
 
-from a3_antistasi_ultimate_analysis.mission.mission import Mission
-from a3_antistasi_ultimate_analysis.mission.utils import pretty_iterable_of_str
-from a3_antistasi_ultimate_analysis.output_processing.data_table import markdown_table
-from a3_antistasi_ultimate_analysis.output_processing.docs_includes import (
-    INTRO_MARKDOWN,
-    OUTRO_MARKDOWN,
-)
-from a3_antistasi_ultimate_analysis.static_data.map_index import MAP_INDEX
-from a3_antistasi_ultimate_analysis.utils import (
+from .mission.mission import Mission
+from .mission.utils import pretty_iterable_of_str
+from .output_processing.data_table import markdown_table
+from .output_processing.docs_includes import INTRO_MARKDOWN, OUTRO_MARKDOWN
+from .static_data.map_index import MAP_INDEX
+from .utils import (
     DATA_DIRPATH,
     DOC_DIRPATH,
     LOGGER,
