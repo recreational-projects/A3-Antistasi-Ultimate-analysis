@@ -6,9 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [UNRELEASED] - tbc
 
+### Added
+
+- Improve JSON import and project version retrieval
+
 ### Changed
 
-- Build: dependencies: upgrade arma3-offline-map-lib to 0.14.0
+- Build:
+  - dependencies: upgrade arma3-offline-map-lib to 0.14.0, mkdocs material to 9.8.0
+  - indirect dependencies: upgrade certifi, pillow to latest
+  - upgrade uv_build to 0.13.x
 - CI: add Windows
 
 
@@ -26,8 +33,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Build: 
   - dependencies:
     - upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
-    - remove redundant matplotlib, pillow>=12.3.0
-  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
+    - remove redundant matplotlib, pillow
+  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest), pillow to 12.3.0 (latest)
 - CI: bump GitHub Action dependencies and use exact versions
 
 ### Fixed
