@@ -4,12 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [UNRELEASED] - tbc
+## [1.5.0] - 2026-11-25
+
+### Added
+
+- Improve JSON import
+- Improve `mission.sqm` parse error handling
+- Improve logging messages
+- Improve project version retrieval
 
 ### Changed
 
-- Build: dependencies: upgrade arma3-offline-map-lib to 0.14.0
-- CI: add Windows
+- Build:
+  - dependencies: upgrade arma3-offline-map-lib to 0.14.0
+  - upgrade mkdocs-material to 9.8.1 and move to development dependencies
+  - indirect dependencies: upgrade certifi, pillow to latest
+  - add dependency cooldown
+  - upgrade uv_build to 0.13.x
+- CI: 
+  - add Windows
+  - replace mypy with pyrefly for type checking
+  - upgrade GitHub Action dependencies
 
 
 ## [1.4.0] - 2026-10-04
@@ -26,8 +41,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Build: 
   - dependencies:
     - upgrade arma3-offline-map-lib to 0.12.0, cattrs, cxxheaderparser, msgspec to latest
-    - remove redundant matplotlib, pillow>=12.3.0
-  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest)
+    - remove redundant matplotlib, pillow
+  - indirect dependencies: upgrade urllib3 to 2.8.0 (latest), pillow to 12.3.0 (latest)
 - CI: bump GitHub Action dependencies and use exact versions
 
 ### Fixed
@@ -39,10 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Update for AU v12.0.3, which adds Isla Pera, District 41 Ruegen, Sumava Winter
-  and changes Staszow, Staszow Winter, Stubbhult
-- Update for AU v12.4.1, which adds Armavir, Bornholm, Laghisola
-  and changes Saint Kapaulio, UMB Colombia
+- Update for AU v12.0.3, which adds Armavir, Bornholm, Laghisola and changes Saint Kapaulio, UMB Colombia
 - Docs: README.md update
 
 ### Removed
@@ -331,6 +343,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release
 
+[1.5.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.4.0..v1.5.0
 [1.4.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.3.0..v1.4.0
 [1.3.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.2.0..v1.3.0
 [1.2.0]: https://github.com/recreational-projects/A3-Antistasi-Ultimate-analysis/compare/v1.1.1...v1.2.0
