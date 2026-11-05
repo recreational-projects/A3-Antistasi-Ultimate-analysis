@@ -73,8 +73,13 @@ uv run mkdocs serve
 
 ## License
 
-`src/a3_antistasi_ultimate_analysis` contains data derived from Antistasi Ultimate assets and from 
-other parties. See individual files for  licensing information.
+`src/a3_antistasi_ultimate_analysis/static_data`
+contains data derived from Antistasi Ultimate assets and from other parties.
+See individual files for licensing information.
+
+Otherwise, the [MIT licence](/LICENSE) applies - the same as
+[Antistasi Ultimate source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate).
+
 
 Otherwise, the [MIT licence](/LICENSE) applies - the same as
 [Antistasi Ultimate source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate).
