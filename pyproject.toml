@@ -10,7 +10,6 @@ dependencies = [
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.2.1",  # CalVer
     "cxxheaderparser>=2.0.0",
-    "mkdocs-material==9.8.0",
     "msgspec>=0.22.0",
     "rich>=14.3.2",
 ]
@@ -25,6 +24,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "mkdocs-material>=9.8.1",
     "mypy==2.3.1",
     "pytest==9.1.1",
     "ruff==0.16.10",
