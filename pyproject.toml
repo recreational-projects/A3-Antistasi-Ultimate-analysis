@@ -9,7 +9,7 @@ dependencies = [
     "armaclass>=0.2.2",
     "attrs>=25.4.0",  # CalVer
     "cattrs>=26.2.1",  # CalVer
-    "cxxheaderparser>=2.0.0",
+    "cxxheaderparser>=2.2.0",
     "msgspec>=0.22.0",
     "rich>=14.3.2",
 ]
@@ -25,9 +25,9 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "mkdocs-material>=9.8.1",
-    "mypy==2.3.1",
-    "pytest==9.1.1",
-    "ruff==0.16.10",
+    "mypy==2.4.1",
+    "pytest==9.2.0",
+    "ruff==0.17.4",
 ]
 
 [tool.mypy]
@@ -72,6 +72,9 @@ runtime-evaluated-decorators = ["attrs.define"]
 "src/a3_antistasi_ultimate_analysis/static_data/in_game_data.py" = [
     "ERA001",  # Commented-out code
 ]
+
+[tool.uv]
+exclude-newer = "7 days"
 
 [tool.uv.sources]
 arma3-offline-map-lib = { git = "https://github.com/recreational-projects/arma3-offline-map-lib.git", tag = "v0.14.0" }
