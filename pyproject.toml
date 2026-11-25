@@ -25,7 +25,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "mkdocs-material>=9.8.1",
-    "mypy==2.4.1",
+    "pyrefly>=1.4.1",
     "pytest==9.2.0",
     "ruff==0.17.5",
 ]
@@ -36,6 +36,19 @@ warn_unused_configs = true
 strict = true
 disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
 no_implicit_optional = true  # Don't assume arguments with default values of None are Optional
+
+[tool.pyrefly]
+preset = "legacy"
+check-unannotated-defs = true
+infer-return-types = "never"
+
+[tool.pyrefly.errors]
+redundant-cast = "warn"
+implicit-any-parameter = "error"
+method-assign = "error"
+implicit-any = "error"
+unannotated-return = "error"
+no-any-return = "error"
 
 [tool.ruff.lint]
 future-annotations = true

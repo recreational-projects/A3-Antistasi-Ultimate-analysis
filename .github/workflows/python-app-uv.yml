@@ -42,8 +42,8 @@ jobs:
       # by default: exit with error if rule violations
       run: uv run ruff format --output-format=github
 
-    - name: Type check with mypy
-      run: uv run mypy .
+    - name: Type check with pyrefly
+      run: uv run pyrefly check
 
     - name: Test with pytest
       run: uv run pytest
