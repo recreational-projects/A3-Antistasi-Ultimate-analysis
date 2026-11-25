@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Update for AU >= v12.4.2, which adds 'District 41 - Rügen', 'Isla Pera', 'Šumava Winter'
+  and changes 'Staszow', 'Staszow (Winter)', 'Stubbhult', 'Vidda'
 - Improve JSON import
 - Improve `mission.sqm` parse error handling
 - Improve logging messages
@@ -54,7 +56,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Update for AU v12.0.3, which adds Armavir, Bornholm, Laghisola and changes Saint Kapaulio, UMB Colombia
+- Update for AU v12.0.3, which adds 'Armavir', 'Bornholm', 'Laghisola'
+  and changes 'Saint Kapaulio', 'UMB Colombia'
 - Docs: README.md update
 
 ### Removed
