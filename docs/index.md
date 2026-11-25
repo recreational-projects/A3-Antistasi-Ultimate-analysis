@@ -26,7 +26,7 @@ hide:
 | [Green Sea](https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212) | temperate | 7 | 3 | 10 | 29 | 8 | 11 | 68 | 48 | 0.58 |
 | [Gulfcoast Islands](https://steamcommunity.com/sharedfiles/filedetails/?id=1617004814) | arid | 5 | 5 | 10 | 23 | 9 | 15 | 67 | 54 | 0.58 |
 | [Phuoc Tuy](https://steamcommunity.com/sharedfiles/filedetails/?id=943001311) | tropical | 2 | 2 | 9 | 25 | 4 | 9 | 51 | 112 | 0.56 |
-| [District 41 - Rügen](https://steamcommunity.com/sharedfiles/filedetails/?id=835257174) | temperate | 3 | 4 | 12 | 28 | 10 | 13 | 70 | 53 | 0.56 |
+| [Distrikt 41 - Rügen](https://steamcommunity.com/sharedfiles/filedetails/?id=835257174) | temperate | 3 | 4 | 12 | 28 | 10 | 13 | 70 | 53 | 0.56 |
 | [Bornholm [R]](https://steamcommunity.com/sharedfiles/filedetails/?id=2914536900) | temperate | 3 | 3 | 7 | 43 | 14 | 15 | 85 | 36 | 0.56 |
 | [Normandy](https://store.steampowered.com/app/1175380) | temperate | 5 | 3 | 0 | 21 | 8 | 15 | 52 | 92 | 0.53 |
 | [Isla Duala](https://steamcommunity.com/sharedfiles/filedetails/?id=714149065) | arid | 6 | 1 | 5 | 25 | 10 | 14 | 61 | 55 | 0.51 |
@@ -37,7 +37,7 @@ hide:
 | [Sahrani](https://steamcommunity.com/sharedfiles/filedetails/?id=583544987) | arid | 5 | 2 | 9 | 19 | 5 | 17 | 57 | 41 | 0.47 |
 | [Khe Sanh](https://store.steampowered.com/app/1227700) | tropical | 3 | 5 | 3 | 14 | 2 | 5 | 32 | 92 | 0.45 |
 | [Tanoa](https://store.steampowered.com/app/395180) | tropical | 5 | 2 | 6 | 17 | 4 | 8 | 42 | 56 | 0.42 |
-| [Fapovo](https://steamcommunity.com/sharedfiles/filedetails/?id=1910457930) | temperate | 3 | 5 | 8 | 18 | 5 | 9 | 48 | 39 | 0.42 |
+| [Fapovo Island](https://steamcommunity.com/sharedfiles/filedetails/?id=1910457930) | temperate | 3 | 5 | 8 | 18 | 5 | 9 | 48 | 39 | 0.42 |
 | [Napf Island A3](https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364) | temperate | 3 | 2 | 7 | 18 | 7 | 6 | 43 | 61 | 0.42 |
 | [Napf Island A3 (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364) | arctic | 3 | 2 | 7 | 18 | 7 | 6 | 43 | 61 | 0.42 |
 | [Drakovac](https://steamcommunity.com/sharedfiles/filedetails/?id=3523961062) | temperate | 2 | 4 | 5 | 23 | 9 | 10 | 53 | 39 | 0.41 |
