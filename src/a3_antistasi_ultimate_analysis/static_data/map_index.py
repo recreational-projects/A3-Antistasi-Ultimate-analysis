@@ -6,7 +6,12 @@ Manually compiled.
 This should have an entry for every Antistasi Utimate mission.
 """
 
-MAP_INDEX: dict[str, dict[str, str | bool]] = {
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+MAP_INDEX: dict[str, Mapping[str, str | bool]] = {
     # key: `map_name`, derived from directory name and normalised to lower case.
     #   `display_name` as per Steam app/workshop titles/text except where noted.
     "abramia": {  # mod
@@ -28,6 +33,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "brf_sumava": {  # mod
         "display_name": "Šumava",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994",
+    },
+    "brf_sumava_winter": {
+        "display_name": "Šumava Winter",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=3834003487",
     },
     "cam_lao_nam": {  # creator DLC: S.O.G. Prairie Fire
         "display_name": "Cam Lao Nam",
@@ -52,6 +61,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "cup_chernarus_a3": {  # mod: CUP Terrains - Maps 2.0
         "display_name": "Chernarus 2020",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169",
+    },
+    "d41_ruegen": {  # mod
+        "display_name": "District 41 - Rügen",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=835257174",
     },
     "drakovac": {  # mod
         "display_name": "Drakovac",
@@ -100,6 +113,10 @@ MAP_INDEX: dict[str, dict[str, str | bool]] = {
     "isladuala3": {  # mod
         "display_name": "Isla Duala",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=714149065",
+    },
+    "islapera": {  # mod: Global Ops Terrains
+        "display_name": "Isla Pera",
+        "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2917444360",
     },
     "kapaulio": {  # mod
         "display_name": "Saint Kapaulio",

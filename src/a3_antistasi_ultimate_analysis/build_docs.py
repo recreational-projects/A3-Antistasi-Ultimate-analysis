@@ -98,7 +98,7 @@ def _missions_from_json(path: Path) -> list[Mission]:
 
 def _markdown_total_missions(missions: Sized) -> str:
     """Create Markdown total missions line."""
-    return f"- {len(missions)} maps total including season variants\n"
+    return f"- {len(missions)} maps total, including season variants\n"
 
 
 def _markdown_project_version(v: str) -> str:
