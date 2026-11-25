@@ -63,7 +63,7 @@ MAP_INDEX: dict[str, Mapping[str, str | bool]] = {
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1981964169",
     },
     "d41_ruegen": {  # mod
-        "display_name": "District 41 - Rügen",
+        "display_name": "Distrikt 41 - Rügen",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=835257174",
     },
     "drakovac": {  # mod
@@ -83,7 +83,7 @@ MAP_INDEX: dict[str, Mapping[str, str | bool]] = {
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=2712204589",
     },
     "fapovo": {  # mod
-        "display_name": "Fapovo",
+        "display_name": "Fapovo Island",
         "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1910457930",
     },
     "gm_weferlingen_summer": {  # CDLC: Global Mobilization - Cold War Germany
