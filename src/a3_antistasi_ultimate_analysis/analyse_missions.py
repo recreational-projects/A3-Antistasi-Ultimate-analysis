@@ -4,14 +4,11 @@ from __future__ import annotations
 
 from rich.progress import track
 
-from a3_antistasi_ultimate_analysis.analyse_mission import analyse_mission
-from a3_antistasi_ultimate_analysis.mission.utils import (
-    map_name_from_mission_dir_path,
-    pretty_iterable_of_str,
-)
-from a3_antistasi_ultimate_analysis.static_data import in_game_data
-from a3_antistasi_ultimate_analysis.static_data.map_index import MAP_INDEX
-from a3_antistasi_ultimate_analysis.utils import (
+from .analyse_mission import analyse_mission
+from .mission.utils import map_name_from_mission_dir_path, pretty_iterable_of_str
+from .static_data import in_game_data
+from .static_data.map_index import MAP_INDEX
+from .utils import (
     AU_MAPS_DIRPATH,
     DATA_DIRPATH,
     GRAD_MEH_DIRPATH,

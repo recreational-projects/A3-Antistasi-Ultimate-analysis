@@ -90,8 +90,7 @@ def _get_gm_towns(*, mission: Mission, gm_locations_dir: Path) -> set[str]:
     disabled_towns_lookup = {
         _normalise_mission_town_name(t): t for t in mission.disabled_towns
     }
-    gm_towns_lookup = {}
-
+    gm_towns_lookup: dict[str, str] = {}
     if not gm_locations_dir.is_dir():
         log_msg = f"'{mission.map_name}': no grad-meh locations data."
         LOGGER.warning(log_msg)

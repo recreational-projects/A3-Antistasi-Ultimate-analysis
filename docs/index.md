@@ -8,10 +8,10 @@ hide:
 - This site aims to compare missions from the
   [Antistasi Ultimate](https://antistasiultimate.com/) mod for
   [Arma 3](https://arma3.com/)
-- Data is generated from Antistasi Ultimate stable release v12.0.3
+- Data is generated from Antistasi Ultimate stable release v12.4.2
   [source code](https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate) and verified
   against in-game information
-- 67 maps total including season variants
+- 70 maps total, including season variants
 
 | Map <br>| Climate <br>| Airports <br>| Bases <br>| Sea/<br>riverports <br>| Outposts <br>| Factories <br>| Resources <br>| Total<br>military<br>zones[^1] <br>| Towns <br>| Total<br>War Level<br>points[^2]<br>ratio<br> |
 | --- | --- | ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:| ---:|
@@ -26,6 +26,7 @@ hide:
 | [Green Sea](https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212) | temperate | 7 | 3 | 10 | 29 | 8 | 11 | 68 | 48 | 0.58 |
 | [Gulfcoast Islands](https://steamcommunity.com/sharedfiles/filedetails/?id=1617004814) | arid | 5 | 5 | 10 | 23 | 9 | 15 | 67 | 54 | 0.58 |
 | [Phuoc Tuy](https://steamcommunity.com/sharedfiles/filedetails/?id=943001311) | tropical | 2 | 2 | 9 | 25 | 4 | 9 | 51 | 112 | 0.56 |
+| [District 41 - Rügen](https://steamcommunity.com/sharedfiles/filedetails/?id=835257174) | temperate | 3 | 4 | 12 | 28 | 10 | 13 | 70 | 53 | 0.56 |
 | [Bornholm [R]](https://steamcommunity.com/sharedfiles/filedetails/?id=2914536900) | temperate | 3 | 3 | 7 | 43 | 14 | 15 | 85 | 36 | 0.56 |
 | [Normandy](https://store.steampowered.com/app/1175380) | temperate | 5 | 3 | 0 | 21 | 8 | 15 | 52 | 92 | 0.53 |
 | [Isla Duala](https://steamcommunity.com/sharedfiles/filedetails/?id=714149065) | arid | 6 | 1 | 5 | 25 | 10 | 14 | 61 | 55 | 0.51 |
@@ -40,7 +41,10 @@ hide:
 | [Napf Island A3](https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364) | temperate | 3 | 2 | 7 | 18 | 7 | 6 | 43 | 61 | 0.42 |
 | [Napf Island A3 (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=1425442364) | arctic | 3 | 2 | 7 | 18 | 7 | 6 | 43 | 61 | 0.42 |
 | [Drakovac](https://steamcommunity.com/sharedfiles/filedetails/?id=3523961062) | temperate | 2 | 4 | 5 | 23 | 9 | 10 | 53 | 39 | 0.41 |
+| [Staszow](https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937) | temperate | 4 | 3 | 0 | 21 | 3 | 8 | 39 | 67 | 0.40 |
+| [Staszow (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937) | arctic | 4 | 3 | 0 | 21 | 3 | 8 | 39 | 67 | 0.40 |
 | [Šumava](https://steamcommunity.com/sharedfiles/filedetails/?id=2947655994) | temperate | 4 | 4 | 0 | 20 | 8 | 12 | 48 | 39 | 0.39 |
+| [Šumava Winter](https://steamcommunity.com/sharedfiles/filedetails/?id=3834003487) | temperate | 4 | 4 | 0 | 20 | 8 | 12 | 48 | 39 | 0.39 |
 | [Virolahti - Valtatie 7](https://steamcommunity.com/sharedfiles/filedetails/?id=1926513010) | temperate | 3 | 2 | 5 | 20 | 6 | 14 | 50 | 39 | 0.39 |
 | [Kujari](https://steamcommunity.com/sharedfiles/filedetails/?id=1726494027) | arid | 2 | 3 | 1 | 20 | 3 | 13 | 42 | 60 | 0.38 |
 | [Kingdom of Regero](https://steamcommunity.com/sharedfiles/filedetails/?id=2278254320) | arid | 6 | 1 | 7 | 18 | 3 | 8 | 43 | 28 | 0.38 |
@@ -50,22 +54,21 @@ hide:
 | [Chernarus (Summer)](https://steamcommunity.com/sharedfiles/filedetails/?id=583544987) | temperate | 3 | 1 | 5 | 21 | 5 | 9 | 44 | 46 | 0.37 |
 | [Chernarus (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=583544987) | arctic | 3 | 1 | 5 | 21 | 5 | 9 | 44 | 46 | 0.37 |
 | [Livonia](https://store.steampowered.com/app/1021790) | temperate | 2 | 5 | 2 | 21 | 9 | 12 | 51 | 28 | 0.37 |
+| [Stubbhult](https://steamcommunity.com/sharedfiles/filedetails/?id=3353189981) | temperate | 3 | 4 | 6 | 15 | 6 | 8 | 42 | 33 | 0.36 |
 | [Weferlingen (Summer)](https://store.steampowered.com/app/1042220) | temperate | 4 | 3 | 0 | 16 | 9 | 6 | 38 | 49 | 0.36 |
 | [Weferlingen (Winter)](https://store.steampowered.com/app/1042220) | arctic | 4 | 3 | 0 | 16 | 9 | 6 | 38 | 49 | 0.36 |
-| [Staszow](https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937) | temperate | 4 | 1 | 0 | 14 | 3 | 8 | 30 | 67 | 0.35 |
-| [Staszow (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=2648308937) | arctic | 4 | 1 | 0 | 14 | 3 | 8 | 30 | 67 | 0.35 |
 | [Gabreta](https://store.steampowered.com/app/1294440) | temperate | 2 | 4 | 1 | 20 | 6 | 7 | 40 | 42 | 0.34 |
 | [Tembelan Island](https://steamcommunity.com/sharedfiles/filedetails/?id=1252091296) | temperate | 5 | 1 | 5 | 12 | 3 | 10 | 36 | 33 | 0.33 |
-| [Stubbhult](https://steamcommunity.com/sharedfiles/filedetails/?id=3353189981) | temperate | 3 | 3 | 5 | 13 | 6 | 7 | 37 | 33 | 0.33 |
 | [Sehreno](https://steamcommunity.com/sharedfiles/filedetails/?id=2876540929) | temperate | 4 | 4 | 3 | 12 | 4 | 4 | 31 | 35 | 0.32 |
 | [Laghisola](https://steamcommunity.com/sharedfiles/filedetails/?id=2175069333) | Tropical | 2 | 5 | 2 | 23 | 7 | 6 | 45 | 13 | 0.31 |
+| [Isla Pera](https://steamcommunity.com/sharedfiles/filedetails/?id=2917444360) | tropical | 3 | 1 | 3 | 27 | 6 | 9 | 49 | 13 | 0.31 |
 | [Lythium](https://steamcommunity.com/sharedfiles/filedetails/?id=909547724) | arid | 2 | 3 | 0 | 18 | 4 | 11 | 38 | 37 | 0.31 |
 | [Island Panthera (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=708278910) | arctic | 4 | 2 | 3 | 14 | 4 | 6 | 33 | 30 | 0.30 |
 | [Kunduz River](https://steamcommunity.com/sharedfiles/filedetails/?id=3078351739) | arid | 2 | 4 | 0 | 23 | 4 | 7 | 40 | 25 | 0.30 |
 | [Anizay](https://steamcommunity.com/sharedfiles/filedetails/?id=1537973181) | arid | 2 | 2 | 0 | 15 | 5 | 14 | 38 | 35 | 0.29 |
 | [Island Panthera](https://steamcommunity.com/sharedfiles/filedetails/?id=708278910) | temperate | 4 | 2 | 3 | 14 | 4 | 6 | 33 | 26 | 0.29 |
 | [Isla Abramia](https://steamcommunity.com/sharedfiles/filedetails/?id=648775794) | temperate | 5 | 2 | 4 | 11 | 4 | 4 | 30 | 22 | 0.29 |
-| [Vidda](https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647) | temperate | 3 | 3 | 0 | 16 | 7 | 10 | 39 | 14 | 0.27 |
+| [Vidda](https://steamcommunity.com/sharedfiles/filedetails/?id=1282716647) | arctic | 3 | 3 | 0 | 16 | 7 | 10 | 39 | 14 | 0.27 |
 | [Takistan](https://steamcommunity.com/sharedfiles/filedetails/?id=583544987) | arid | 2 | 2 | 0 | 17 | 3 | 10 | 34 | 30 | 0.26 |
 | [Korsac](https://steamcommunity.com/sharedfiles/filedetails/?id=3043043427) | temperate | 3 | 2 | 0 | 18 | 6 | 9 | 38 | 14 | 0.26 |
 | [Korsac (Winter)](https://steamcommunity.com/sharedfiles/filedetails/?id=3043043427) | arctic | 3 | 2 | 0 | 18 | 6 | 9 | 38 | 14 | 0.26 |

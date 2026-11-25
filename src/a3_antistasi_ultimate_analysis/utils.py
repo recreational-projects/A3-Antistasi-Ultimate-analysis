@@ -6,7 +6,7 @@ from pathlib import Path
 
 from rich.logging import RichHandler
 
-from a3_antistasi_ultimate_analysis.mission.utils import map_name_from_mission_dir_path
+from .mission.utils import map_name_from_mission_dir_path
 
 LOGGER = logging.getLogger(__name__)
 

@@ -8,6 +8,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+import armaclass
 from arma3_offline_map_lib.mission_sqm import Marker, MissionSqm
 from attrs import define, field
 from attrs.validators import deep_iterable, deep_mapping, instance_of
@@ -112,37 +113,65 @@ class Mission:
 
     @property
     def airports_count(self) -> int:
-        """Enumerate airports."""
+        """
+        Enumerate airports.
+
+        Used in data table output.
+        """
         return len(self.airports)
 
     @property
     def waterports_count(self) -> int:
-        """Enumerate sea/river ports."""
+        """
+        Enumerate sea/river ports.
+
+        Used in data table output.
+        """
         return len(self.waterports)
 
     @property
     def bases_count(self) -> int:
-        """Enumerate bases."""
+        """
+        Enumerate bases.
+
+        Used in data table output.
+        """
         return len(self.bases)
 
     @property
     def outposts_count(self) -> int:
-        """Enumerate outposts."""
+        """
+        Enumerate outposts.
+
+        Used in data table output.
+        """
         return len(self.outposts)
 
     @property
     def factories_count(self) -> int:
-        """Enumerate factories."""
+        """
+        Enumerate factories.
+
+        Used in data table output.
+        """
         return len(self.factories)
 
     @property
     def resources_count(self) -> int:
-        """Enumerate resources."""
+        """
+        Enumerate resources.
+
+        Used in data table output.
+        """
         return len(self.resources)
 
     @property
     def total_military_zones_count(self) -> int:
-        """Count total military zones (not towns)."""
+        """
+        Count total military zones (not towns).
+
+        Used in data table output.
+        """
         return sum(
             (
                 self.airports_count,
@@ -156,7 +185,11 @@ class Mission:
 
     @property
     def towns_count(self) -> int | None:
-        """Enumerate towns."""
+        """
+        Enumerate towns.
+
+        Used in data table output.
+        """
         if not self.towns:
             return None
 
@@ -164,7 +197,11 @@ class Mission:
 
     @property
     def war_level_points(self) -> int | None:
-        """Count total war level points."""
+        """
+        Count total war level points.
+
+        Used in data table output.
+        """
         if not self.towns:
             return None
 
@@ -181,7 +218,11 @@ class Mission:
         )
 
     def war_level_points_ratio(self, max_value: int) -> float | None:
-        """Fraction of `max_value`."""
+        """
+        Fraction of `max_value`.
+
+        Used in data table output.
+        """
         if not self.war_level_points:
             return None
 
@@ -194,8 +235,15 @@ class Mission:
 
     @classmethod
     def from_data(cls, *, mission_dir: Path, map_index: MappingNode) -> Mission | None:
-        """Return instance from AU mission data and reference map index."""
+        """
+        Return instance from AU mission data and reference map index.
+
+        Returns None (and logs exception) if `mission.sqm` could not be parsed.
+        """
         map_name = map_name_from_mission_dir_path(mission_dir)
+        log_msg = f"{40 * '-'}\n'{map_name}': starting import."
+        LOGGER.info(log_msg)
+
         if map_name not in map_index:
             log_msg = f"'{map_name}': map index issue: key '{map_name}' not found."
             LOGGER.error(log_msg)
@@ -213,7 +261,18 @@ class Mission:
             LOGGER.error(log_msg)
 
         parsed_map_info = MapInfoHppData.from_file(mission_dir / "mapInfo.hpp")
-        mission_sqm = MissionSqm.from_file(mission_dir / "mission.sqm")
+        sqm_filepath = mission_dir / "mission.sqm"
+        try:
+            mission_sqm = MissionSqm.from_file(sqm_filepath)
+        except armaclass.parser.ParseError as err:
+            err_msg = (
+                f"Couldn't parse '{sqm_filepath.resolve()}' {err.args}. "
+                f"Is it binarized?"
+            )
+            LOGGER.error(err_msg)  # noqa: TRY400
+            # `logger.error` effectively hides the stack trace
+            return None
+
         log_msg = f"'{map_name}': parsed AU source data."
         LOGGER.info(log_msg)
 
